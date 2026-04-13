@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Ball Kalkulyator</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 50px;
+    }
+
+    .box {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 350px;
+      margin: auto;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 20px;
+      background: orange;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎓 Ball Kalkulyator</h1>
+
+  <div class="box">
+    <input type="number" id="jn" placeholder="JN ball">
+    <input type="number" id="or" placeholder="OR ball">
+    <input type="number" id="yn" placeholder="YN ball">
+
+    <button onclick="hisobla()">Hisoblash</button>
+
+    <div class="result" id="natija"></div>
+  </div>
+
+  <script>
+    function hisobla() {
+      let jn = Number(document.getElementById("jn").value);
+      let or = Number(document.getElementById("or").value);
+      let yn = Number(document.getElementById("yn").value);
+
+      let jami = jn + or + yn;
+      let kerak = 60 - jami;
+
+      let text = "Jami: " + jami + " ball<br>";
+
+      if (jami >= 60) {
+        text += "✅ Siz o‘tdingiz!";
+      } else {
+        text += "❌ Yana " + kerak + " ball kerak";
+      }
+
+      document.getElementById("natija").innerHTML = text;
+    }
+  </script>
+
+</body>
+</html>
