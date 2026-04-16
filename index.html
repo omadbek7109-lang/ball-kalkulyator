@@ -1,83 +1,366 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <title>Ball Kalkulyator</title>
-  <style>
-    body {
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
-      text-align: center;
-      padding: 50px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learnly • O'qishni osonlashtiramiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
-    .box {
-      background: #1e293b;
-      padding: 30px;
-      border-radius: 15px;
-      max-width: 350px;
-      margin: auto;
-    }
+        :root {
+            --primary: #6366f1;
+        }
 
-    input {
-      width: 90%;
-      padding: 10px;
-      margin: 10px;
-      border-radius: 10px;
-      border: none;
-      font-size: 16px;
-    }
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .heading-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
 
-    button {
-      padding: 12px 20px;
-      background: orange;
-      border: none;
-      border-radius: 10px;
-      font-size: 18px;
-      cursor: pointer;
-    }
+        .hero-bg {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
 
-    .result {
-      margin-top: 20px;
-      font-size: 20px;
-    }
-  </style>
+        .student-illustration {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-25px); }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cta-button {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 40%;
+            height: 400%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255,255,255,0.4),
+                transparent
+            );
+            transform: skewX(-25deg);
+            animation: shimmer 4s infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(400%);
+            }
+        }
+
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover:after {
+            width: 100%;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-zinc-950 text-white overflow-x-hidden">
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-950/80 backdrop-blur-lg border-b border-zinc-800">
+        <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-indigo-500 rounded-2xl flex items-center justify-center text-2xl font-bold">L</div>
+                <span class="heading-font text-2xl font-semibold tracking-tight">Learnly</span>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-10 text-sm font-medium">
+                <a href="#" class="nav-link text-zinc-300 hover:text-white transition-colors">Imkoniyatlar</a>
+                <a href="#" class="nav-link text-zinc-300 hover:text-white transition-colors">Qanday ishlaydi</a>
+                <a href="#" class="nav-link text-zinc-300 hover:text-white transition-colors">Narxlar</a>
+                <a href="#" class="nav-link text-zinc-300 hover:text-white transition-colors">Blog</a>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });" 
+                        class="px-6 py-3 text-sm font-semibold text-white border border-zinc-700 hover:border-white/50 rounded-2xl transition-all">
+                    Kirish
+                </button>
+                <button onclick="document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });" 
+                        class="px-8 py-3 bg-white text-zinc-900 font-semibold rounded-2xl hover:scale-105 transition-all flex items-center gap-2">
+                    <span>Bepul boshlash</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-  <h1>🎓 Ball Kalkulyator</h1>
+    <!-- Hero Section -->
+    <section id="hero" class="hero-bg min-h-screen flex items-center relative pt-20">
+        <div class="max-w-screen-2xl mx-auto px-8 grid md:grid-cols-2 gap-16 items-center h-full">
+            <!-- Left Content -->
+            <div class="pt-16 md:pt-0">
+                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2 rounded-3xl text-sm mb-8 border border-white/20">
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span class="font-medium">Yangi: AI yordamchi o'qituvchi</span>
+                </div>
+                
+                <h1 class="heading-font text-7xl md:text-8xl leading-none font-semibold tracking-tighter mb-6">
+                    Kelajagingizni<br>
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-violet-200">bugundan</span><br>
+                    boshlang
+                </h1>
+                
+                <p class="text-2xl text-zinc-300 max-w-lg mb-10">
+                    O'zbekistondagi eng zamonaviy o'quv platformasi. 
+                    Interaktiv darslar, real vaqt rejimida yordam va sertifikatlar.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-5">
+                    <button onclick="alert('Boshlash tugmasi bosildi! 🎉 (Bu demo sahifa)')" 
+                            id="boshlash-btn"
+                            class="cta-button group px-10 py-7 bg-white hover:bg-amber-300 text-zinc-950 text-xl font-semibold rounded-3xl flex items-center justify-center gap-4 transition-all duration-300 hover:scale-105 shadow-2xl shadow-indigo-500/30">
+                        <span>Boshlash</span>
+                        <i class="fas fa-rocket group-active:rotate-45 transition-transform"></i>
+                    </button>
+                    
+                    <button onclick="document.getElementById('demo-video').scrollIntoView({ behavior: 'smooth' });" 
+                            class="px-8 py-7 border-2 border-white/70 hover:border-white text-lg font-medium rounded-3xl flex items-center gap-3 transition-all">
+                        <i class="fas fa-play"></i>
+                        <span>Video ko'rish</span>
+                    </button>
+                </div>
+                
+                <div class="mt-12 flex items-center gap-8 text-sm">
+                    <div class="flex items-center gap-2">
+                        <div class="flex -space-x-4">
+                            <div class="w-8 h-8 bg-zinc-300 rounded-2xl border-2 border-indigo-600 overflow-hidden">
+                                <img src="https://picsum.photos/id/64/64/64" alt="" class="w-full h-full object-cover">
+                            </div>
+                            <div class="w-8 h-8 bg-zinc-300 rounded-2xl border-2 border-indigo-600 overflow-hidden">
+                                <img src="https://picsum.photos/id/91/64/64" alt="" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="font-semibold">+12,450 talaba</div>
+                            <div class="text-zinc-400 text-xs">bugun o'qimoqda</div>
+                        </div>
+                    </div>
+                    
+                    <div class="h-12 w-px bg-white/20"></div>
+                    
+                    <div class="flex items-center gap-6 text-amber-400">
+                        <div class="flex">
+                            ★★★★☆
+                        </div>
+                        <div class="text-sm leading-tight">
+                            <div class="font-medium text-white">4.98/5</div>
+                            <div class="text-zinc-400 text-xs">1500+ sharh</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side - Student Illustration -->
+            <div class="relative flex justify-center items-center">
+                <div class="relative w-full max-w-md">
+                    <!-- Background glow -->
+                    <div class="absolute -inset-20 bg-gradient-to-br from-violet-500/30 to-fuchsia-500/20 rounded-[4rem] blur-3xl"></div>
+                    
+                    <!-- Main Illustration Container -->
+                    <div class="relative bg-zinc-900/70 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl student-illustration">
+                        <!-- Student illustration (using SVG + Tailwind) -->
+                        <div class="relative mx-auto w-80 h-96 flex items-center justify-center">
+                            <!-- Simple modern student SVG illustration -->
+                            <svg width="320" height="380" viewBox="0 0 320 380" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-2xl">
+                                <!-- Chair -->
+                                <rect x="100" y="280" width="120" height="20" rx="8" fill="#27272a"/>
+                                <rect x="95" y="300" width="20" height="80" rx="4" fill="#27272a"/>
+                                <rect x="205" y="300" width="20" height="80" rx="4" fill="#27272a"/>
+                                
+                                <!-- Laptop -->
+                                <rect x="70" y="190" width="180" height="110" rx="12" fill="#18181b" stroke="#a1a1aa" stroke-width="12"/>
+                                <rect x="85" y="205" width="150" height="80" rx="6" fill="#27272a"/>
+                                <circle cx="160" cy="295" r="8" fill="#3b82f6"/>
+                                
+                                <!-- Student body -->
+                                <ellipse cx="160" cy="170" rx="55" ry="70" fill="#64748b"/>
+                                
+                                <!-- Hoodie -->
+                                <path d="M120 140 Q160 110 200 140 L195 190 Q160 205 125 190 Z" fill="#1e2937"/>
+                                
+                                <!-- Head -->
+                                <circle cx="160" cy="105" r="38" fill="#fcd34d"/>
+                                
+                                <!-- Hair -->
+                                <path d="M130 75 Q160 55 190 75 Q185 90 160 95 Q135 90 130 75" fill="#1e2937"/>
+                                
+                                <!-- Eyes -->
+                                <circle cx="145" cy="98" r="6" fill="#1e2937"/>
+                                <circle cx="175" cy="98" r="6" fill="#1e2937"/>
+                                <circle cx="147" cy="96" r="2" fill="white"/>
+                                <circle cx="177" cy="96" r="2" fill="white"/>
+                                
+                                <!-- Smile -->
+                                <path d="M145 115 Q160 125 175 115" stroke="#1e2937" stroke-width="4" stroke-linecap="round" fill="none"/>
+                                
+                                <!-- Books / Elements floating -->
+                                <rect x="40" y="140" width="35" height="48" rx="6" fill="#c026d3" transform="rotate(-18 40 140)"/>
+                                <rect x="245" y="165" width="35" height="48" rx="6" fill="#22d3ee" transform="rotate(22 245 165)"/>
+                            </svg>
+                            
+                            <!-- Floating badges -->
+                            <div class="absolute -top-6 -left-6 bg-emerald-400 text-emerald-950 text-xs font-bold px-5 py-2 rounded-2xl shadow-xl rotate-[-8deg] flex items-center gap-2">
+                                <i class="fas fa-check"></i>
+                                <span>100% tugallandi</span>
+                            </div>
+                            
+                            <div class="absolute -bottom-8 right-8 bg-white text-zinc-900 text-xs font-semibold px-6 py-3 rounded-3xl shadow-2xl flex items-center gap-2">
+                                <span class="text-emerald-500">+240 XP</span>
+                                <i class="fas fa-fire text-orange-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Decorative elements -->
+                    <div class="absolute -top-12 -right-12 w-24 h-24 bg-white/10 backdrop-blur-3xl rounded-3xl flex items-center justify-center text-5xl border border-white/20 shadow-inner">
+                        📚
+                    </div>
+                    
+                    <div class="absolute -bottom-10 -left-16 bg-violet-500/90 text-white text-xs px-6 py-3 rounded-3xl font-medium shadow-xl">
+                        Bugun 142 ta dars yakunlandi
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 text-xs tracking-widest opacity-70">
+            <div>PASTGA AYLANING</div>
+            <div class="w-px h-12 bg-gradient-to-b from-transparent via-white to-transparent"></div>
+        </div>
+        
+        <!-- Trust logos -->
+        <div class="absolute bottom-12 left-1/2 -translate-x-1/2 hidden md:flex items-center gap-12 text-zinc-400 text-sm">
+            <div class="flex items-center gap-2">
+                <span class="font-mono">UZ</span>
+                <span class="text-xs">EDU</span>
+            </div>
+            <div class="h-px w-12 bg-white/20"></div>
+            <div>PDP Academy</div>
+            <div class="h-px w-12 bg-white/20"></div>
+            <div>Inha University</div>
+            <div class="h-px w-12 bg-white/20"></div>
+            <div>IT Park</div>
+        </div>
+    </section>
 
-  <div class="box">
-    <input type="number" id="jn" placeholder="JN ball">
-    <input type="number" id="or" placeholder="OR ball">
-    <input type="number" id="yn" placeholder="YN ball">
+    <!-- Fake demo section for scroll demo -->
+    <section id="demo-video" class="py-32 bg-zinc-900">
+        <div class="max-w-screen-2xl mx-auto px-8 text-center">
+            <div class="max-w-2xl mx-auto">
+                <h2 class="text-5xl heading-font font-semibold mb-6">Platforma qanday ishlaydi?</h2>
+                <p class="text-zinc-400 text-xl">Bir necha soniyada ro'yxatdan o'ting va o'qishni boshlang. AI sizga mos darslarni tanlaydi.</p>
+            </div>
+            
+            <div class="mt-16 bg-black rounded-3xl aspect-video flex items-center justify-center border border-zinc-800 shadow-inner">
+                <div class="text-center">
+                    <div onclick="alert('Demo video boshlandi! (Real videoni bu yerga qo\'yishingiz mumkin)')" 
+                         class="w-20 h-20 mx-auto bg-white/10 hover:bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center cursor-pointer transition-all active:scale-95">
+                        <i class="fas fa-play text-4xl ml-1"></i>
+                    </div>
+                    <p class="mt-8 text-zinc-500">3 daqiqalik demo</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <button onclick="hisobla()">Hisoblash</button>
-
-    <div class="result" id="natija"></div>
-  </div>
-
-  <script>
-    function hisobla() {
-      let jn = Number(document.getElementById("jn").value);
-      let or = Number(document.getElementById("or").value);
-      let yn = Number(document.getElementById("yn").value);
-
-      let jami = jn + or + yn;
-      let kerak = 60 - jami;
-
-      let text = "Jami: " + jami + " ball<br>";
-
-      if (jami >= 60) {
-        text += "✅ Siz o‘tdingiz!";
-      } else {
-        text += "❌ Yana " + kerak + " ball kerak";
-      }
-
-      document.getElementById("natija").innerHTML = text;
-    }
-  </script>
-
+    <script>
+        // Tailwind script already included via CDN
+        
+        // Intersection Observer for fade-in animations
+        function handleScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            // Add fade-in to elements
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        }
+        
+        // Button press effect
+        function addButtonEffects() {
+            const boshlashBtn = document.getElementById('boshlash-btn');
+            
+            boshlashBtn.addEventListener('mousedown', () => {
+                boshlashBtn.style.transform = 'scale(0.95)';
+            });
+            
+            boshlashBtn.addEventListener('mouseup', () => {
+                boshlashBtn.style.transform = 'scale(1)';
+            });
+        }
+        
+        // Keyboard support for "Boshlash"
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Enter" && document.activeElement.tagName !== "BUTTON") {
+                // Could trigger something here
+            }
+        });
+        
+        // Initialize everything
+        window.onload = function() {
+            handleScrollAnimations();
+            addButtonEffects();
+            
+            // Make navbar more solid on scroll
+            window.addEventListener('scroll', () => {
+                const nav = document.querySelector('nav');
+                if (window.scrollY > 80) {
+                    nav.classList.add('shadow-2xl', 'bg-zinc-950/95');
+                } else {
+                    nav.classList.remove('shadow-2xl', 'bg-zinc-950/95');
+                }
+            });
+            
+            console.log('%c✅ Learnly landing page demo yuklandi. "Boshlash" tugmasini bosing!', 'color: #6366f1; font-family: monospace;');
+        };
+    </script>
 </body>
 </html>
