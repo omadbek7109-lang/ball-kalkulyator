@@ -3,245 +3,268 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ball Kalkulyator</title>
+  <title>Hemis Ball Kalkulyator</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap');
     
     body {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Inter', sans-serif;
     }
-    
+    .title-font {
+      font-family: 'Poppins', sans-serif;
+    }
+
     .card {
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
     }
-    
     .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+      transform: translateY(-10px);
     }
-    
-    .input-focus {
-      transition: all 0.3s ease;
-    }
-    
+
     .input-focus:focus {
       border-color: #eab308;
-      box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.2);
-      transform: scale(1.02);
+      box-shadow: 0 0 0 5px rgba(234, 179, 8, 0.3);
     }
-    
-    .btn-hover {
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .btn-hover::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 40%;
-      height: 400%;
-      background: linear-gradient(
-        120deg,
-        transparent,
-        rgba(255,255,255,0.5),
-        transparent
-      );
-      transform: skewX(-25deg);
-      animation: shimmer 3s infinite;
-    }
-    
-    @keyframes shimmer {
-      100% { transform: translateX(400%); }
-    }
-    
-    .progress-bar {
-      transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    .gradient-btn {
+      background: linear-gradient(90deg, #facc15, #f97316);
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-950 via-blue-950 to-slate-950 text-white min-h-screen">
-  <div class="max-w-md mx-auto pt-12 px-4 pb-24">
-    <!-- Header -->
-    <div class="text-center mb-10">
-      <div class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-lg px-6 py-3 rounded-3xl border border-white/10">
-        <i class="fa-solid fa-calculator text-yellow-400 text-3xl"></i>
-        <h1 class="text-4xl font-bold tracking-tight">Ball Kalkulyator</h1>
+<body class="bg-gradient-to-br from-indigo-950 to-blue-950 min-h-screen text-white overflow-hidden">
+  <div class="max-w-5xl mx-auto px-6 py-8">
+    
+    <!-- Top Navigation -->
+    <div class="flex justify-between items-center mb-10">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center text-3xl shadow-lg">🎓</div>
+        <div>
+          <h1 class="title-font text-3xl font-bold tracking-tight">HEMIS BALL</h1>
+          <p class="text-yellow-300 text-sm -mt-1">KALKULYATOR</p>
+        </div>
       </div>
-      <p class="text-blue-300 mt-3 text-sm">Joriy • Oraliq • Yakuniy nazorat ballari</p>
+      <div class="flex gap-4">
+        <button onclick="showLogin()" 
+                class="px-8 py-3 bg-white/10 hover:bg-white/20 backdrop-blur rounded-2xl font-medium transition-all">Kirish</button>
+        <button onclick="showRegister()" 
+                class="px-8 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-slate-950 font-semibold rounded-2xl hover:scale-105 transition-all">Ro'yxatdan o'tish</button>
+      </div>
     </div>
 
-    <!-- Main Card -->
-    <div class="card bg-slate-900/90 backdrop-blur-xl border border-slate-700 rounded-3xl shadow-2xl p-8">
+    <div class="grid md:grid-cols-2 gap-12 items-start">
       
-      <!-- Input Fields -->
-      <div class="space-y-6">
-        <div>
-          <label class="block text-sm font-medium text-slate-400 mb-2 flex items-center gap-2">
-            <i class="fa-solid fa-book"></i> Joriy Nazorat (JN)
-          </label>
-          <input type="number" id="jn" min="0" max="30" placeholder="0 - 30 ball" 
-                 class="input-focus w-full bg-slate-800 border border-slate-600 rounded-2xl px-6 py-4 text-xl focus:outline-none text-white"/>
+      <!-- Left Side - Input Form -->
+      <div class="card bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-10">
+        <h2 class="text-4xl title-font font-bold mb-2">Ballaringizni hisoblang</h2>
+        <p class="text-blue-200 mb-10">O'z baholaringizni osongina hisoblang</p>
+
+        <!-- Mode Switch -->
+        <div class="flex bg-white/10 rounded-3xl p-1 mb-8 w-fit">
+          <button onclick="switchMode(0)" id="mode0" 
+                  class="px-6 py-3 rounded-3xl font-medium transition-all active-mode">Ballarda</button>
+          <button onclick="switchMode(1)" id="mode1" 
+                  class="px-6 py-3 rounded-3xl font-medium transition-all">Foizda (%)</button>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-slate-400 mb-2 flex items-center gap-2">
-            <i class="fa-solid fa-layer-group"></i> Oraliq Nazorat (OR)
-          </label>
-          <input type="number" id="or" min="0" max="30" placeholder="0 - 30 ball"
-                 class="input-focus w-full bg-slate-800 border border-slate-600 rounded-2xl px-6 py-4 text-xl focus:outline-none text-white"/>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-slate-400 mb-2 flex items-center gap-2">
-            <i class="fa-solid fa-flag-checkered"></i> Yakuniy Nazorat (YN)
-          </label>
-          <input type="number" id="yn" min="0" max="40" placeholder="0 - 40 ball"
-                 class="input-focus w-full bg-slate-800 border border-slate-600 rounded-2xl px-6 py-4 text-xl focus:outline-none text-white"/>
-        </div>
-      </div>
-
-      <!-- Calculate Button -->
-      <button onclick="hisobla()" 
-              class="btn-hover mt-10 w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-slate-950 font-bold text-xl py-6 rounded-3xl flex items-center justify-center gap-3 transition-all active:scale-95">
-        <i class="fa-solid fa-calculator"></i>
-        <span>HISOBLASH</span>
-      </button>
-
-      <!-- Result Section -->
-      <div id="result" class="hidden mt-10 pt-8 border-t border-slate-700">
-        <div class="text-center mb-8">
-          <div id="totalScore" class="text-8xl font-bold text-white mb-2">85</div>
-          <div class="text-slate-400 text-lg">Jami ball</div>
-        </div>
-
-        <!-- Progress Bar -->
-        <div class="mb-8">
-          <div class="flex justify-between text-xs text-slate-400 mb-2">
-            <span>0</span>
-            <span>100</span>
+        <div class="space-y-8">
+          <!-- Joriy Nazorat -->
+          <div>
+            <label class="flex items-center gap-3 text-lg font-medium mb-3">
+              <i class="fa-solid fa-clipboard-check text-yellow-400"></i>
+              Joriy Nazorat (JN - 40 ball)
+            </label>
+            <input type="number" id="jn" placeholder="Ball yoki % kiriting" step="0.01"
+                   class="input-focus w-full bg-white/10 border border-white/30 rounded-2xl px-6 py-5 text-2xl focus:outline-none"/>
           </div>
-          <div class="h-4 bg-slate-800 rounded-3xl overflow-hidden">
-            <div id="progress" class="progress-bar h-full bg-gradient-to-r from-yellow-400 to-green-500 rounded-3xl" style="width: 0%"></div>
+
+          <!-- Oraliq Nazorat -->
+          <div>
+            <label class="flex items-center gap-3 text-lg font-medium mb-3">
+              <i class="fa-solid fa-layer-group text-yellow-400"></i>
+              Oraliq Nazorat (OR - 20 ball)
+            </label>
+            <input type="number" id="or" placeholder="Ball yoki % kiriting" step="0.01"
+                   class="input-focus w-full bg-white/10 border border-white/30 rounded-2xl px-6 py-5 text-2xl focus:outline-none"/>
+          </div>
+
+          <!-- Yakuniy Nazorat -->
+          <div>
+            <label class="flex items-center gap-3 text-lg font-medium mb-3">
+              <i class="fa-solid fa-flag-checkered text-yellow-400"></i>
+              Yakuniy Nazorat (YN - 40 ball)
+            </label>
+            <input type="number" id="yn" placeholder="Ball yoki % kiriting (ixtiyoriy)" step="0.01"
+                   class="input-focus w-full bg-white/10 border border-white/30 rounded-2xl px-6 py-5 text-2xl focus:outline-none"/>
           </div>
         </div>
 
-        <!-- Status -->
-        <div id="status" class="text-center py-6 px-8 rounded-3xl text-2xl font-semibold mb-6">
-          <!-- Dynamic content -->
-        </div>
-
-        <!-- Needed Points -->
-        <div id="needed" class="text-center text-lg text-slate-300"></div>
+        <button onclick="hisobla()" 
+                class="mt-12 w-full gradient-btn text-slate-950 font-bold text-2xl py-7 rounded-3xl hover:scale-105 transition-all flex items-center justify-center gap-3 shadow-xl">
+          <i class="fa-solid fa-calculator"></i>
+          <span>HISOBLASH</span>
+        </button>
       </div>
 
-      <!-- Clear Button -->
-      <button onclick="tozalash()" 
-              class="mt-6 w-full text-slate-400 hover:text-white transition-colors text-sm flex items-center justify-center gap-2">
-        <i class="fa-solid fa-trash"></i>
-        <span>Tozalash</span>
-      </button>
+      <!-- Right Side - Result + Illustration -->
+      <div id="resultPanel" class="hidden card bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-10 h-full">
+        <div class="text-center">
+          <h3 class="text-2xl font-medium text-blue-200 mb-2">Sizning jami balingiz</h3>
+          <div id="totalScore" class="text-8xl font-bold text-white mb-1">0</div>
+          <div class="text-3xl text-yellow-400 font-medium">BALL</div>
+        </div>
+
+        <div class="my-10">
+          <div class="h-3 bg-white/10 rounded-full overflow-hidden">
+            <div id="progressBar" class="h-full bg-gradient-to-r from-yellow-400 to-green-400 rounded-full transition-all duration-1000" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div id="statusMessage" class="text-2xl font-semibold text-center py-6 px-8 rounded-3xl mb-8"></div>
+
+        <div class="grid grid-cols-3 gap-4 text-center">
+          <div class="bg-white/5 rounded-2xl p-4">
+            <div class="text-xs text-slate-400">JN</div>
+            <div id="jnResult" class="text-2xl font-bold">0</div>
+          </div>
+          <div class="bg-white/5 rounded-2xl p-4">
+            <div class="text-xs text-slate-400">OR</div>
+            <div id="orResult" class="text-2xl font-bold">0</div>
+          </div>
+          <div class="bg-white/5 rounded-2xl p-4">
+            <div class="text-xs text-slate-400">YN</div>
+            <div id="ynResult" class="text-2xl font-bold">0</div>
+          </div>
+        </div>
+
+        <div id="finalMessage" class="mt-10 text-center text-lg"></div>
+      </div>
     </div>
 
-    <!-- Footer Info -->
-    <div class="text-center mt-12 text-xs text-slate-500">
-      Talabalar uchun • Minimal talab: <span class="text-yellow-400 font-medium">60 ball</span>
+    <!-- Bottom Info -->
+    <div class="mt-16 text-center text-sm text-blue-300">
+      Joriy + Oraliq = 60 ball • Yakuniy imtihon uchun minimal talab: <span class="text-yellow-400 font-medium">36 ball</span>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div id="registerModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur flex items-center justify-center z-50">
+    <div class="bg-slate-900 border border-white/10 rounded-3xl max-w-md w-full mx-4 overflow-hidden">
+      <div class="p-10">
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="text-3xl font-bold text-yellow-400">Talaba Ro'yxati</h2>
+          <button onclick="hideRegister()" class="text-3xl text-slate-400 hover:text-white">×</button>
+        </div>
+        
+        <div class="space-y-6">
+          <input type="text" id="fullName" placeholder="Ism va Familiya" 
+                 class="w-full bg-white/10 border border-white/30 rounded-2xl px-6 py-5 focus:outline-none focus:border-yellow-400"/>
+          <input type="text" id="university" placeholder="OTM (Universitet)" 
+                 class="w-full bg-white/10 border border-white/30 rounded-2xl px-6 py-5 focus:outline-none focus:border-yellow-400"/>
+          <input type="password" id="password" placeholder="Parol" 
+                 class="w-full bg-white/10 border border-white/30 rounded-2xl px-6 py-5 focus:outline-none focus:border-yellow-400"/>
+          <input type="password" id="confirmPassword" placeholder="Parolni tasdiqlash" 
+                 class="w-full bg-white/10 border border-white/30 rounded-2xl px-6 py-5 focus:outline-none focus:border-yellow-400"/>
+        </div>
+
+        <button onclick="registerUser()" 
+                class="mt-10 w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-slate-950 font-bold py-6 rounded-3xl text-xl hover:scale-105 transition-all">
+          Ro'yxatdan o'tish
+        </button>
+
+        <p class="text-center mt-6 text-sm text-slate-400">
+          Allaqachon hisobingiz bormi? 
+          <span onclick="hideRegister(); showLogin()" class="text-yellow-400 cursor-pointer hover:underline">Kirish</span>
+        </p>
+      </div>
     </div>
   </div>
 
   <script>
-    function hisobla() {
-      const jn = parseFloat(document.getElementById('jn').value) || 0;
-      const or = parseFloat(document.getElementById('or').value) || 0;
-      const yn = parseFloat(document.getElementById('yn').value) || 0;
+    let currentMode = 0; // 0 = ball, 1 = percent
 
-      // Validation
-      if (jn > 30 || or > 30 || yn > 40) {
-        alert("Ball chegarasini to'g'ri kiriting!\nJN va OR: 30 ballgacha\nYN: 40 ballgacha");
-        return;
-      }
+    function switchMode(mode) {
+      currentMode = mode;
+      document.getElementById('mode0').classList.toggle('bg-white/20', mode === 0);
+      document.getElementById('mode1').classList.toggle('bg-white/20', mode === 1);
+    }
+
+    function convertPercentToBall(value, maxBall) {
+      if (currentMode === 0) return Math.min(Math.max(parseFloat(value) || 0, 0), maxBall);
+      return Math.min(Math.max((parseFloat(value) || 0) / 100 * maxBall, 0), maxBall);
+    }
+
+    function hisobla() {
+      let jnInput = document.getElementById('jn').value;
+      let orInput = document.getElementById('or').value;
+      let ynInput = document.getElementById('yn').value || 0;
+
+      const jn = convertPercentToBall(jnInput, 40);
+      const or = convertPercentToBall(orInput, 20);
+      const yn = convertPercentToBall(ynInput, 40);
 
       const total = jn + or + yn;
-      const resultDiv = document.getElementById('result');
-      
-      // Show result section
-      resultDiv.classList.remove('hidden');
-      resultDiv.scrollIntoView({ behavior: 'smooth' });
+      const jnOrTotal = jn + or;
 
-      // Update total score
-      document.getElementById('totalScore').textContent = total;
+      // Show result panel
+      document.getElementById('resultPanel').classList.remove('hidden');
 
-      // Progress bar
-      const progressPercent = Math.min((total / 100) * 100, 100);
-      const progressBar = document.getElementById('progress');
-      progressBar.style.width = `${progressPercent}%`;
+      // Update scores
+      document.getElementById('totalScore').textContent = total.toFixed(1);
+      document.getElementById('jnResult').textContent = jn.toFixed(1);
+      document.getElementById('orResult').textContent = or.toFixed(1);
+      document.getElementById('ynResult').textContent = yn.toFixed(1);
 
-      // Status and color
-      const statusDiv = document.getElementById('status');
-      const neededDiv = document.getElementById('needed');
+      // Progress bar (based on JN + OR for final exam access)
+      const progress = Math.min((jnOrTotal / 60) * 100, 100);
+      document.getElementById('progressBar').style.width = `${progress}%`;
 
-      if (total >= 60) {
-        statusDiv.innerHTML = `Siz o'tdingiz ✅`;
-        statusDiv.className = `text-center py-6 px-8 rounded-3xl text-2xl font-semibold mb-6 bg-green-500/20 text-green-400 border border-green-500/30`;
-        neededDiv.innerHTML = `<span class="text-green-400">Ajoyib natija!</span>`;
+      // Status
+      const statusEl = document.getElementById('statusMessage');
+      const finalMsg = document.getElementById('finalMessage');
+
+      if (jnOrTotal >= 36) {
+        statusEl.innerHTML = `Siz muvaffaqiyatli Yakuniy nazorat imtihonini topshira olasiz ✅`;
+        statusEl.className = `text-2xl font-semibold text-center py-6 px-8 rounded-3xl mb-8 bg-green-500/20 text-green-400 border border-green-500/30`;
+        finalMsg.innerHTML = `<span class="text-green-400">Imtihonda omad tilayman!</span>`;
       } else {
-        const needed = 60 - total;
-        statusDiv.innerHTML = `Yana o'tolmadingiz ❌`;
-        statusDiv.className = `text-center py-6 px-8 rounded-3xl text-2xl font-semibold mb-6 bg-red-500/20 text-red-400 border border-red-500/30`;
-        neededDiv.innerHTML = `<span class="text-orange-400">${needed} ball</span> yetishmayapti`;
+        const needed = (36 - jnOrTotal).toFixed(1);
+        statusEl.innerHTML = `Afsuski, ballingiz Yakuniy Nazorat topshirish uchun yetmayapti ❌`;
+        statusEl.className = `text-2xl font-semibold text-center py-6 px-8 rounded-3xl mb-8 bg-red-500/20 text-red-400 border border-red-500/30`;
+        finalMsg.innerHTML = `<span class="text-orange-400">${needed} ball</span> yetishmayapti`;
       }
     }
 
-    function tozalash() {
-      document.getElementById('jn').value = '';
-      document.getElementById('or').value = '';
-      document.getElementById('yn').value = '';
-      
-      const resultDiv = document.getElementById('result');
-      resultDiv.classList.add('hidden');
+    // Modal functions
+    function showRegister() {
+      document.getElementById('registerModal').classList.remove('hidden');
     }
 
-    // Keyboard support: Press Enter to calculate
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        hisobla();
+    function hideRegister() {
+      document.getElementById('registerModal').classList.add('hidden');
+    }
+
+    function registerUser() {
+      const name = document.getElementById('fullName').value.trim();
+      if (!name) {
+        alert("Ism va familiyangizni kiriting!");
+        return;
       }
+      alert(`Tabriklaymiz, ${name}!\nSiz muvaffaqiyatli ro'yxatdan o'tdingiz.\nEndi ballaringizni hisoblang!`);
+      hideRegister();
+    }
+
+    function showLogin() {
+      alert("Kirish oynasi (demo versiya)\nReal loyihada backend bilan bog'lanadi.");
+    }
+
+    // Keyboard support
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') hisobla();
     });
 
-    // Auto-save inputs to localStorage
-    function saveToLocalStorage() {
-      const jn = document.getElementById('jn').value;
-      const or = document.getElementById('or').value;
-      const yn = document.getElementById('yn').value;
-      
-      localStorage.setItem('ballCalc_jn', jn);
-      localStorage.setItem('ballCalc_or', or);
-      localStorage.setItem('ballCalc_yn', yn);
-    }
-
-    // Load saved data
-    function loadFromLocalStorage() {
-      const jn = localStorage.getItem('ballCalc_jn');
-      const or = localStorage.getItem('ballCalc_or');
-      const yn = localStorage.getItem('ballCalc_yn');
-      
-      if (jn) document.getElementById('jn').value = jn;
-      if (or) document.getElementById('or').value = or;
-      if (yn) document.getElementById('yn').value = yn;
-    }
-
-    // Event listeners for auto-save
-    window.onload = function() {
-      loadFromLocalStorage();
-      
-      const inputs = document.querySelectorAll('input');
-      inputs.forEach(input => {
-        input.addEventListener('input', saveToLocalStorage);
-      });
-    };
+    // Tailwind script already loaded via CDN
   </script>
 </body>
 </html>
