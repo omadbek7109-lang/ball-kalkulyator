@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="uz">
-<head>
+<head> <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuaf oshxona Bonus tizimi</title>
@@ -184,7 +184,21 @@
         }
     </style>
 </head>
-<body>
+<body> 
+    <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // To'liq ekran
+    tg.MainButton.hide();
+    
+    // Telefondan foydalanuvchi ma'lumotlarini olish
+    let user = tg.initDataUnsafe?.user;
+    if (user) {
+        document.getElementById("user-name").innerText = user.first_name || "Foydalanuvchi";
+        document.getElementById("user-id").innerText = user.id;
+        // Bonusni Telegram ID asosida yuklash
+        localStorage.setItem("telegram_user_id", user.id);
+    }
+    </script>
     <div class="app-container">
         <div class="header">
             <h1>Kuaf oshxona</h1>
