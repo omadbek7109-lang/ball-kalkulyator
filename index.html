@@ -1,587 +1,749 @@
 <!DOCTYPE html>
-<html lang="uz">
-<head> <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kuaf oshxona Bonus tizimi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Prandium Campus | Kokand University</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
+
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            color: #1a1a1a;
+            font-family: system-ui, -apple-system, 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: #f8f9fc;
+            color: #1c1e24;
+            padding-bottom: 80px;
         }
+
+        /* smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* container */
         .app-container {
             max-width: 500px;
             margin: 0 auto;
-            background: white;
+            background: #f8f9fc;
             min-height: 100vh;
-            padding-bottom: 70px;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.02);
         }
+
+        /* header */
         .header {
-            background: linear-gradient(135deg, #ff8c00, #ff6200);
-            color: white;
-            padding: 20px;
-            text-align: center;
+            padding: 24px 20px 12px;
+            background: linear-gradient(135deg, #fff, #fef7e8);
+            border-bottom-left-radius: 28px;
+            border-bottom-right-radius: 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
         }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #DA7B2C, #F5A65B);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #6c6f78;
+            margin-top: 4px;
+        }
+
+        /* bottom nav */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             max-width: 500px;
             width: 100%;
-            background: white;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(20px);
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
-            border-top: 1px solid #ddd;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            padding: 10px 20px 26px;
+            border-top: 0.5px solid rgba(0,0,0,0.05);
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.03);
             z-index: 100;
         }
+
         .nav-btn {
-            background: none;
+            background: transparent;
             border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
             font-size: 12px;
-            padding: 8px 12px;
-            border-radius: 20px;
-            transition: 0.2s;
+            color: #8e919b;
+            font-weight: 500;
+            transition: all 0.2s ease;
             cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 40px;
         }
+
+        .nav-btn i { font-size: 22px; font-style: normal; font-weight: 500; }
         .nav-btn.active {
-            background: #ff8c00;
-            color: white;
+            color: #DA7B2C;
+            background: #fff2e6;
         }
+
+        /* pages */
         .page {
             display: none;
-            padding: 16px;
+            padding: 16px 18px 30px;
+            animation: fade 0.25s ease;
         }
+
         .page.active {
             display: block;
         }
-        .food-list {
-            display: grid;
-            gap: 12px;
-            margin-top: 12px;
+
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(8px);}
+            to { opacity: 1; transform: translateY(0);}
         }
+
+        /* food cards */
+        .food-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
         .food-card {
             background: white;
-            border-radius: 16px;
+            border-radius: 28px;
             padding: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.03), 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.1s ease;
+            border: 0.5px solid rgba(0,0,0,0.03);
+        }
+
+        .food-img {
+            width: 70px;
+            height: 70px;
+            background: #fef3e8;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+        }
+
+        .food-info {
+            flex: 1;
+        }
+
+        .food-name {
+            font-weight: 600;
+            font-size: 17px;
+        }
+
+        .food-price {
+            color: #DA7B2C;
+            font-weight: 600;
+            margin-top: 4px;
+            font-size: 15px;
+        }
+
+        .add-btn, .remove-item, .pay-btn {
+            background: #DA7B2C;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 2px 8px rgba(218,123,44,0.2);
+        }
+
+        .add-btn:active, .pay-btn:active { transform: scale(0.96); background: #c26a1f;}
+
+        /* cart styles */
+        .cart-item {
+            background: white;
+            border-radius: 24px;
+            padding: 12px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .food-info h4 {
-            margin-bottom: 4px;
-        }
-        .food-price {
-            color: #ff8c00;
-            font-weight: bold;
-        }
-        .add-btn {
-            background: #ff8c00;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            color: white;
-            cursor: pointer;
-        }
-        .bonus-banner {
-            background: linear-gradient(135deg, #ffd89b, #ffb347);
-            border-radius: 16px;
-            padding: 16px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .bonus-card {
-            background: #fff3e0;
-            border-radius: 16px;
-            padding: 16px;
-            text-align: center;
-            margin: 16px 0;
-        }
-        .bonus-amount {
-            font-size: 32px;
-            font-weight: bold;
-            color: #ff8c00;
-        }
+
         .cart-summary {
-            margin-top: 20px;
-            padding: 16px;
-            background: #f9f9f9;
-            border-radius: 16px;
-        }
-        #checkout-btn {
-            width: 100%;
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 30px;
-            font-size: 16px;
-            margin-top: 12px;
-            cursor: pointer;
-        }
-        .category-tabs {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            margin: 12px 0;
-        }
-        .cat-btn, .order-tab {
-            padding: 8px 16px;
-            border: 1px solid #ddd;
             background: white;
-            border-radius: 30px;
-            cursor: pointer;
+            border-radius: 28px;
+            padding: 18px;
+            margin-top: 20px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.03);
         }
-        .cat-btn.active, .order-tab.active {
-            background: #ff8c00;
-            color: white;
-            border-color: #ff8c00;
-        }
-        .referral-section {
-            margin-top: 24px;
-            background: #e8f5e9;
-            padding: 16px;
-            border-radius: 16px;
-        }
-        .referral-link {
+
+        .pay-options {
             display: flex;
-            gap: 8px;
-            margin: 12px 0;
+            gap: 16px;
+            margin-top: 20px;
         }
-        .referral-link input {
+
+        .pay-btn { flex: 1; text-align: center; background: #2c3e66; box-shadow: none; }
+        .payme { background: #005C9E; }
+        .click { background: #00A651; }
+
+        /* admin toggle switch */
+        .admin-toggle {
+            background: #f0f2f6;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 30px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .toggle-switch.active {
+            background: #DA7B2C;
+        }
+
+        .toggle-switch:after {
+            content: "";
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 20px;
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            transition: 0.2s;
+        }
+
+        .toggle-switch.active:after {
+            left: 21px;
+        }
+
+        /* admin panel */
+        .admin-panel {
+            background: #ffffffd9;
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
+            padding: 18px;
+            margin-top: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .admin-stats {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #f9f6f0;
             flex: 1;
-            padding: 8px;
+            padding: 12px;
+            border-radius: 24px;
+            text-align: center;
+        }
+
+        .order-list-admin {
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        .badge {
+            background: #ffeee2;
+            color: #DA7B2C;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+        }
+
+        button.status-btn {
+            background: none;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 30px;
+            padding: 4px 10px;
+            font-size: 11px;
+            margin-left: 6px;
         }
-        .referral-link button {
-            background: #ff8c00;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
+
+        .bonus-badge {
+            background: linear-gradient(145deg, #fff1e2, #ffe6d4);
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-block;
         }
-        .cart-item-controls button {
-            background: #ff8c00;
-            border: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            margin: 0 4px;
-        }
-        button {
-            cursor: pointer;
+
+        hr {
+            margin: 16px 0;
+            opacity: 0.2;
         }
     </style>
 </head>
-<body> 
-    <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // To'liq ekran
-    tg.MainButton.hide();
-    
-    // Telefondan foydalanuvchi ma'lumotlarini olish
-    let user = tg.initDataUnsafe?.user;
-    if (user) {
-        document.getElementById("user-name").innerText = user.first_name || "Foydalanuvchi";
-        document.getElementById("user-id").innerText = user.id;
-        // Bonusni Telegram ID asosida yuklash
-        localStorage.setItem("telegram_user_id", user.id);
-    }
-    </script>
-    <div class="app-container">
-        <div class="header">
-            <h1>Kuaf oshxona</h1>
-            <p>Topklent | 10% Bonus</p>
-        </div>
+<body>
+<div class="app-container">
+    <div class="header">
+        <h1>🍽️ Prandium</h1>
+        <p>Kokand University • Andijan Branch</p>
+        <div id="userGreet" style="font-weight: 500; margin-top: 8px;">👤 </div>
+        <div class="bonus-badge" id="bonusDisplay" style="margin-top: 10px;">🎁 Bonus: 0 UZS</div>
+    </div>
 
-        <div class="bottom-nav">
-            <button class="nav-btn active" data-page="home">🏠 Bosh sahifa</button>
-            <button class="nav-btn" data-page="catalog">📋 Katalog</button>
-            <button class="nav-btn" data-page="cart">🛒 Savatcha</button>
-            <button class="nav-btn" data-page="orders">📦 Buyurtmalar</button>
-            <button class="nav-btn" data-page="profile">👤 Profil</button>
-        </div>
+    <!-- bottom navigation -->
+    <div class="bottom-nav">
+        <button class="nav-btn active" data-nav="home">🏠 Home</button>
+        <button class="nav-btn" data-nav="cart">🛒 Cart</button>
+        <button class="nav-btn" data-nav="profile">👤 Profile</button>
+    </div>
 
-        <div id="home-page" class="page active">
-            <div class="bonus-banner">
-                <h3>🎉 10% BONUS</h3>
-                <p>Har buyurtmada 10% bonus oling!</p>
-            </div>
-            <div class="popular-foods">
-                <h3>Mashhur taomlar</h3>
-                <div class="food-list" id="popular-foods"></div>
-            </div>
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page active">
+        <div class="food-grid" id="menuContainer"></div>
+        <div class="admin-toggle" id="adminToggleZone">
+            <span>⚙️ Admin mode</span>
+            <div id="toggleAdminBtn" class="toggle-switch"></div>
         </div>
+        <div id="adminPanelArea" style="display: none;"></div>
+    </div>
 
-        <div id="catalog-page" class="page">
-            <h3>Katalog</h3>
-            <div class="category-tabs">
-                <button class="cat-btn active" data-cat="all">Barchasi</button>
-                <button class="cat-btn" data-cat="main">Asosiy</button>
-                <button class="cat-btn" data-cat="salads">Salatlar</button>
-                <button class="cat-btn" data-cat="drinks">Ichimliklar</button>
-                <button class="cat-btn" data-cat="desserts">Dessert</button>
+    <!-- CART PAGE -->
+    <div id="cartPage" class="page">
+        <div id="cartItemsList"></div>
+        <div class="cart-summary">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <span>💰 Jami summa:</span>
+                <strong id="totalPrice">0 UZS</strong>
             </div>
-            <div class="food-list" id="catalog-foods"></div>
-        </div>
-
-        <div id="cart-page" class="page">
-            <h3>Savatcha (<span id="cart-count">0</span>)</h3>
-            <div id="cart-items"></div>
-            <div class="cart-summary">
-                <p>Jami: <span id="cart-total">0</span> so‘m</p>
-                <p>Bonus (10%): <span id="cart-bonus">0</span> so‘m</p>
-                <p>Bonus balans: <span id="bonus-balance-header">0</span> so‘m</p>
-                <button id="checkout-btn">✅ Buyurtma berish</button>
+            <div class="pay-options">
+                <button class="pay-btn click" id="payClickBtn">💳 Click</button>
+                <button class="pay-btn payme" id="payPaymeBtn">📱 Payme</button>
             </div>
-        </div>
-
-        <div id="orders-page" class="page">
-            <h3>Buyurtmalarim</h3>
-            <div id="orders-list"></div>
-        </div>
-
-        <div id="profile-page" class="page">
-            <div class="profile-header">
-                <h3 id="user-name">Azizbek</h3>
-                <p>ID: <span id="user-id">1234567</span></p>
-            </div>
-            <div class="bonus-card">
-                <h4>🎁 Bonus balans</h4>
-                <p class="bonus-amount" id="bonus-balance">0</p>
-                <small>Amal qilish muddati: <span id="bonus-expiry">25.06.2024</span></small>
-            </div>
-            <div class="bonus-stats">
-                <p>Jami bonus olingan: <span id="total-earned">0</span> so‘m</p>
-                <p>Jami bonus ishlatilgan: <span id="total-used">0</span> so‘m</p>
-            </div>
-            <h4>Bonus tarixi</h4>
-            <div id="bonus-history"></div>
-            
-            <div class="referral-section">
-                <h4>👥 Do‘st taklif eting</h4>
-                <p>Do‘stingiz buyurtma qilsa: <strong>+5 000 so‘m</strong></p>
-                <div class="referral-link">
-                    <input type="text" id="referral-link" readonly>
-                    <button id="copy-link">📋 Nusxa olish</button>
-                </div>
-                <div class="referral-stats">
-                    <p>Taklif qilinganlar: <span id="ref-invited">0</span></p>
-                    <p>Buyurtma qilganlar: <span id="ref-ordered">0</span></p>
-                    <p>Bonus olingan: <span id="ref-bonus">0</span> so‘m</p>
-                </div>
-            </div>
+            <button id="confirmPaidBtn" style="margin-top: 16px; width: 100%; background:#2c3e66;">✅ I have paid</button>
         </div>
     </div>
 
-    <script>
-        // Mahsulotlar
-        const products = {
-            1: { id: 1, name: "Palov", price: 25000, category: "main", emoji: "🍛" },
-            2: { id: 2, name: "Lag'mon", price: 25000, category: "main", emoji: "🍜" },
-            3: { id: 3, name: "Shashlik", price: 28000, category: "main", emoji: "🍢" },
-            4: { id: 4, name: "Oliyye salat", price: 15000, category: "salads", emoji: "🥗" },
-            5: { id: 5, name: "Choy", price: 5000, category: "drinks", emoji: "🍵" },
-            6: { id: 6, name: "Moxito", price: 12000, category: "drinks", emoji: "🥤" },
-            7: { id: 7, name: "Medovik", price: 18000, category: "desserts", emoji: "🍰" },
-            8: { id: 8, name: "Manti", price: 22000, category: "main", emoji: "🥟" }
-        };
+    <!-- PROFILE PAGE -->
+    <div id="profilePage" class="page">
+        <div style="background: white; border-radius: 32px; padding: 20px;">
+            <h3 style="margin-bottom: 12px;">👤 User info</h3>
+            <p><strong>Name:</strong> <span id="profileName"></span></p>
+            <p><strong>User ID:</strong> <span id="profileUserId"></span></p>
+            <p><strong>Total orders:</strong> <span id="userTotalOrders">0</span></p>
+            <hr>
+            <h4>📋 My orders</h4>
+            <div id="userOrdersList"></div>
+        </div>
+    </div>
+</div>
 
-        // Foydalanuvchi ma'lumotlari
-        let userData = {
-            id: Math.floor(Math.random() * 1000000),
-            name: "Foydalanuvchi",
-            bonus: 10000,
-            totalEarned: 10000,
-            totalUsed: 0,
-            bonusExpiry: new Date(Date.now() + 30*86400000).toLocaleDateString(),
-            cart: [],
-            orders: [],
-            bonusHistory: [
-                { type: "earned", amount: 10000, orderId: null, date: new Date().toLocaleString() }
-            ],
-            referal: { invited: 0, ordered: 0, bonus: 0 }
-        };
+<script>
+    // ---------- DATA MODELS (localStorage) ----------
+    let menu = [
+        { id: 1, name: "Plov", price: 25000, image: "🍛", available: true },
+        { id: 2, name: "Somsa", price: 7000, image: "🥟", available: true },
+        { id: 3, name: "Tea", price: 3000, image: "🍵", available: true },
+        { id: 4, name: "Salad", price: 12000, image: "🥗", available: true }
+    ];
 
-        function saveData() {
-            localStorage.setItem(`bonus_app_${userData.id}`, JSON.stringify(userData));
-        }
+    let orders = [];          // { id, userId, userName, items, total, status, timestamp, orderCode }
+    let users = [];          // { id, name, createdAt, bonus }
+    let cart = [];
 
-        function loadData() {
-            const saved = localStorage.getItem(`bonus_app_${userData.id}`);
-            if (saved) {
-                const data = JSON.parse(saved);
-                userData = { ...userData, ...data };
-            }
-            updateUI();
-        }
+    let currentUser = null;
+    let adminMode = false;
+    let nextOrderId = 101;
 
-        function addToCart(productId) {
-            const product = products[productId];
-            const existing = userData.cart.find(item => item.id === productId);
-            if (existing) {
-                existing.quantity++;
-            } else {
-                userData.cart.push({ ...product, quantity: 1 });
-            }
-            saveData();
-            updateCartUI();
-            alert(`${product.name} savatchaga qo'shildi`);
-        }
+    // helper: save all to LS
+    function saveAllData() {
+        localStorage.setItem("prandium_menu", JSON.stringify(menu));
+        localStorage.setItem("prandium_orders", JSON.stringify(orders));
+        localStorage.setItem("prandium_users", JSON.stringify(users));
+        localStorage.setItem("prandium_cart", JSON.stringify(cart));
+        localStorage.setItem("prandium_nextOrderId", nextOrderId);
+        if(currentUser) localStorage.setItem("prandium_currentUser", JSON.stringify(currentUser));
+    }
 
-        function removeFromCart(index) {
-            userData.cart.splice(index, 1);
-            saveData();
-            updateCartUI();
-        }
+    function loadAllData() {
+        let savedMenu = localStorage.getItem("prandium_menu");
+        if(savedMenu) menu = JSON.parse(savedMenu);
+        let savedOrders = localStorage.getItem("prandium_orders");
+        if(savedOrders) orders = JSON.parse(savedOrders);
+        let savedUsers = localStorage.getItem("prandium_users");
+        if(savedUsers) users = JSON.parse(savedUsers);
+        let savedCart = localStorage.getItem("prandium_cart");
+        if(savedCart) cart = JSON.parse(savedCart);
+        let savedNext = localStorage.getItem("prandium_nextOrderId");
+        if(savedNext) nextOrderId = parseInt(savedNext);
+        let savedUser = localStorage.getItem("prandium_currentUser");
+        if(savedUser) currentUser = JSON.parse(savedUser);
+    }
 
-        function changeQuantity(index, delta) {
-            const item = userData.cart[index];
-            if (item.quantity + delta <= 0) {
-                removeFromCart(index);
-            } else {
-                item.quantity += delta;
-                saveData();
-                updateCartUI();
-            }
-        }
+    // generate order code #001 - Name
+    function generateOrderCode(userName) {
+        let num = nextOrderId++;
+        saveAllData();
+        let padded = num.toString().padStart(3, '0');
+        return `#${padded} - ${userName}`;
+    }
 
-        function updateCartUI() {
-            const cartContainer = document.getElementById("cart-items");
-            const totalSpan = document.getElementById("cart-total");
-            const bonusSpan = document.getElementById("cart-bonus");
-            const cartCount = document.getElementById("cart-count");
-            const bonusBalanceHeader = document.getElementById("bonus-balance-header");
-            
-            if (!cartContainer) return;
-            
-            let total = 0;
-            cartContainer.innerHTML = "";
-            
-            userData.cart.forEach((item, idx) => {
-                const itemTotal = item.price * item.quantity;
-                total += itemTotal;
-                cartContainer.innerHTML += `
-                    <div class="food-card">
-                        <div>
-                            <h4>${item.emoji} ${item.name}</h4>
-                            <p>${item.price} so‘m x ${item.quantity} = ${itemTotal} so‘m</p>
-                        </div>
-                        <div class="cart-item-controls">
-                            <button onclick="changeQuantity(${idx}, -1)">-</button>
-                            <span>${item.quantity}</span>
-                            <button onclick="changeQuantity(${idx}, 1)">+</button>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            if (userData.cart.length === 0) {
-                cartContainer.innerHTML = "<p style='text-align:center'>Savatcha bo'sh</p>";
-            }
-            
-            totalSpan.innerText = total;
-            bonusSpan.innerText = Math.floor(total * 0.1);
-            cartCount.innerText = userData.cart.reduce((sum, i) => sum + i.quantity, 0);
-            if (bonusBalanceHeader) bonusBalanceHeader.innerText = userData.bonus;
-        }
-
-        function checkout() {
-            if (userData.cart.length === 0) {
-                alert("Savatcha bo'sh!");
-                return;
-            }
-            
-            let total = userData.cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
-            let maxBonusToUse = Math.min(userData.bonus, total);
-            let finalTotal = total - maxBonusToUse;
-            
-            if (finalTotal < 20000) {
-                alert("Minimal buyurtma summasi 20 000 so‘m! (Bonus ishlatilgandan keyin)");
-                return;
-            }
-            
-            const order = {
+    // add user if new
+    function registerUserIfNeeded(name) {
+        let existing = users.find(u => u.name.toLowerCase() === name.toLowerCase());
+        if(existing) {
+            currentUser = existing;
+        } else {
+            let newUser = {
                 id: Date.now(),
-                date: new Date().toLocaleString(),
-                items: [...userData.cart],
-                total: total,
-                bonusUsed: maxBonusToUse,
-                finalTotal: finalTotal,
-                status: "✅ Tugallangan"
+                name: name,
+                createdAt: new Date().toISOString(),
+                bonus: 0,
+                totalOrders: 0
             };
-            
-            userData.orders.unshift(order);
-            userData.bonus -= maxBonusToUse;
-            userData.totalUsed += maxBonusToUse;
-            
-            const newBonus = Math.floor(finalTotal * 0.1);
-            userData.bonus += newBonus;
-            userData.totalEarned += newBonus;
-            
-            userData.bonusHistory.unshift({
-                type: "earned",
-                amount: newBonus,
-                orderId: order.id,
-                date: new Date().toLocaleString()
-            });
-            if (maxBonusToUse > 0) {
-                userData.bonusHistory.unshift({
-                    type: "used",
-                    amount: maxBonusToUse,
-                    orderId: order.id,
-                    date: new Date().toLocaleString()
-                });
-            }
-            
-            userData.cart = [];
-            saveData();
-            updateUI();
-            
-            alert(`✅ Buyurtma berildi!\nTo'lov: ${finalTotal} so‘m\nBonus: +${newBonus} so‘m`);
+            users.push(newUser);
+            currentUser = newUser;
+            saveAllData();
         }
+        renderProfileInfo();
+    }
 
-        function updateUI() {
-            document.getElementById("user-name").innerText = userData.name;
-            document.getElementById("user-id").innerText = userData.id;
-            document.getElementById("bonus-balance").innerText = userData.bonus.toLocaleString();
-            document.getElementById("total-earned").innerText = userData.totalEarned.toLocaleString();
-            document.getElementById("total-used").innerText = userData.totalUsed.toLocaleString();
-            document.getElementById("bonus-expiry").innerText = userData.bonusExpiry;
-            
-            const historyDiv = document.getElementById("bonus-history");
-            if (historyDiv) {
-                historyDiv.innerHTML = userData.bonusHistory.slice(0, 15).map(h => `
-                    <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:8px">
-                        <span>${h.date}</span>
-                        <span style="color:${h.type === 'earned' ? 'green' : 'red'}">
-                            ${h.type === 'earned' ? '+' : '-'}${h.amount.toLocaleString()} so‘m
-                        </span>
-                    </div>
-                `).join("");
-                if (userData.bonusHistory.length === 0) historyDiv.innerHTML = "<p>Hozircha tarix yo‘q</p>";
-            }
-            
-            const ordersDiv = document.getElementById("orders-list");
-            if (ordersDiv) {
-                if (userData.orders.length === 0) {
-                    ordersDiv.innerHTML = "<p style='text-align:center'>Hozircha buyurtma yo‘q</p>";
-                } else {
-                    ordersDiv.innerHTML = userData.orders.map(o => `
-                        <div class="food-card">
-                            <div>
-                                <strong>#${o.id}</strong><br>
-                                ${o.date}<br>
-                                ${o.items.reduce((s,i)=>s+i.quantity,0)} ta mahsulot<br>
-                                <strong>Jami: ${o.finalTotal.toLocaleString()} so‘m</strong>
-                            </div>
-                            <div style="color:green">${o.status}</div>
-                        </div>
-                    `).join("");
-                }
-            }
-            
-            document.getElementById("ref-invited").innerText = userData.referal.invited;
-            document.getElementById("ref-ordered").innerText = userData.referal.ordered;
-            document.getElementById("ref-bonus").innerText = userData.referal.bonus.toLocaleString();
-            
-            document.getElementById("referral-link").value = `https://t.me/YourBot?start=${userData.id}`;
-            
-            updateCartUI();
-            renderProducts();
+    // update bonus (5% cashback UI logic)
+    function getUserBonus() {
+        if(!currentUser) return 0;
+        let totalSpent = 0;
+        let userOrders = orders.filter(o => o.userId === currentUser.id);
+        userOrders.forEach(o => { totalSpent += o.total });
+        let bonus = Math.floor(totalSpent * 0.05);
+        if(currentUser) currentUser.bonus = bonus;
+        saveAllData();
+        return bonus;
+    }
+
+    // Add to cart
+    function addToCart(productId) {
+        let product = menu.find(p => p.id === productId);
+        if(!product || !product.available) return alert("Sold out or unavailable");
+        let existing = cart.find(i => i.id === productId);
+        if(existing) existing.quantity++;
+        else cart.push({ ...product, quantity: 1 });
+        saveAllData();
+        renderCart();
+    }
+
+    function removeCartItem(index) {
+        cart.splice(index,1);
+        saveAllData();
+        renderCart();
+    }
+
+    // render menu
+    function renderMenu() {
+        let container = document.getElementById("menuContainer");
+        if(!container) return;
+        container.innerHTML = menu.map(product => `
+            <div class="food-card">
+                <div class="food-img">${product.image}</div>
+                <div class="food-info">
+                    <div class="food-name">${product.name} ${!product.available ? '(sold out)' : ''}</div>
+                    <div class="food-price">${product.price.toLocaleString()} UZS</div>
+                </div>
+                <button class="add-btn" ${!product.available ? 'disabled style="opacity:0.5"' : ''} onclick="addToCart(${product.id})">+ Add</button>
+            </div>
+        `).join('');
+    }
+
+    function renderCart() {
+        let cartDiv = document.getElementById("cartItemsList");
+        let totalSpan = document.getElementById("totalPrice");
+        if(!cartDiv) return;
+        if(cart.length === 0) {
+            cartDiv.innerHTML = `<div style="text-align:center; padding:40px;">🛒 Savatcha bo'sh</div>`;
+            totalSpan.innerText = "0 UZS";
+            return;
         }
+        let total = 0;
+        cartDiv.innerHTML = cart.map((item, idx) => {
+            let itemTotal = item.price * item.quantity;
+            total += itemTotal;
+            return `
+                <div class="cart-item">
+                    <div><strong>${item.name}</strong> x${item.quantity}<br><span style="font-size:13px;">${item.price.toLocaleString()} UZS</span></div>
+                    <div><button class="remove-item" style="background:#ddd; color:#333; padding:6px 12px;" onclick="removeCartItem(${idx})">Remove</button></div>
+                </div>
+            `;
+        }).join('');
+        totalSpan.innerText = total.toLocaleString() + " UZS";
+    }
 
-        function renderProducts() {
-            const popularDiv = document.getElementById("popular-foods");
-            if (popularDiv) {
-                popularDiv.innerHTML = Object.values(products).slice(0, 4).map(p => `
-                    <div class="food-card">
-                        <div>
-                            <h4>${p.emoji} ${p.name}</h4>
-                            <p class="food-price">${p.price.toLocaleString()} so‘m</p>
-                        </div>
-                        <button class="add-btn" onclick="addToCart(${p.id})">+ Qo‘shish</button>
-                    </div>
-                `).join("");
-            }
-            
-            const catalogDiv = document.getElementById("catalog-foods");
-            if (catalogDiv) {
-                catalogDiv.innerHTML = Object.values(products).map(p => `
-                    <div class="food-card">
-                        <div>
-                            <h4>${p.emoji} ${p.name}</h4>
-                            <p class="food-price">${p.price.toLocaleString()} so‘m</p>
-                        </div>
-                        <button class="add-btn" onclick="addToCart(${p.id})">+ Qo‘shish</button>
-                    </div>
-                `).join("");
-            }
+    // order creation after payment confirmation
+    function createOrder(paymentMethod) {
+        if(!currentUser) { alert("User not found"); return false; }
+        if(cart.length === 0) { alert("Cart empty"); return false; }
+        let items = cart.map(i => ({ name: i.name, quantity: i.quantity, price: i.price }));
+        let total = cart.reduce((sum,i) => sum + i.price * i.quantity, 0);
+        let orderCode = generateOrderCode(currentUser.name);
+        let newOrder = {
+            id: Date.now(),
+            userId: currentUser.id,
+            userName: currentUser.name,
+            orderCode: orderCode,
+            items: items,
+            total: total,
+            status: "pending",
+            timestamp: new Date().toISOString(),
+            payment: paymentMethod
+        };
+        orders.push(newOrder);
+        currentUser.totalOrders = (currentUser.totalOrders || 0) + 1;
+        cart = [];
+        saveAllData();
+        // send to Telegram WebApp if available
+        if(window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.sendData(JSON.stringify({
+                action: "new_order",
+                order: newOrder
+            }));
         }
+        alert(`✅ Order ${orderCode} created! Status: pending`);
+        renderCart();
+        renderOrdersList();
+        renderAdminOrders();
+        renderUserOrders();
+        renderProfileInfo();
+        return true;
+    }
 
-        // Navigatsiya
-        document.querySelectorAll(".nav-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const page = btn.dataset.page;
-                document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-                document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-                document.getElementById(`${page}-page`).classList.add("active");
-                if (page === "cart") updateCartUI();
-                if (page === "profile") updateUI();
-                if (page === "orders") updateUI();
+    // external payment links
+    function openPay(service) {
+        if(cart.length===0) return alert("Cart empty");
+        let total = cart.reduce((s,i) => s + i.price * i.quantity, 0);
+        let link = "";
+        if(service === 'click') link = `https://my.click.uz/services/pay?service_id=22797&merchant_id=12345&amount=${total}&currency=uzs`;
+        else link = `https://payme.uz/pay?amount=${total}&m=60f3a4b0c5d8e2a4b8c9d0e1`;
+        window.open(link, '_blank');
+        alert("To'lovni tugatganingizdan so'ng 'I have paid' tugmasini bosing.");
+    }
+
+    document.getElementById("payClickBtn")?.addEventListener('click', () => openPay('click'));
+    document.getElementById("payPaymeBtn")?.addEventListener('click', () => openPay('payme'));
+    document.getElementById("confirmPaidBtn")?.addEventListener('click', () => {
+        if(cart.length===0) return alert("Savatcha bo'sh");
+        createOrder("click/payme");
+        switchPage('home');
+    });
+
+    // Admin panel render
+    function renderAdminPanel() {
+        let area = document.getElementById("adminPanelArea");
+        if(!adminMode) { area.style.display = "none"; return; }
+        area.style.display = "block";
+        let totalOrdersToday = orders.filter(o => {
+            let today = new Date().toDateString();
+            return new Date(o.timestamp).toDateString() === today;
+        }).length;
+        let totalRevenue = orders.reduce((sum,o) => sum + o.total, 0);
+        let uniqueUsers = users.length;
+        area.innerHTML = `
+            <div class="admin-panel">
+                <h3>🛠️ Admin Dashboard</h3>
+                <div class="admin-stats">
+                    <div class="stat-card">📦 Today orders <br><strong>${totalOrdersToday}</strong></div>
+                    <div class="stat-card">💰 Revenue <br><strong>${totalRevenue.toLocaleString()} UZS</strong></div>
+                    <div class="stat-card">👥 Users <br><strong>${uniqueUsers}</strong></div>
+                </div>
+                <h4>📋 Manage Products</h4>
+                <div id="adminProductsList"></div>
+                <button id="addProductBtn" style="background:#DA7B2C; border:none; padding:8px 16px; border-radius:40px; margin:12px 0; color:white;">+ Add new food</button>
+                <hr>
+                <h4>📦 Orders (manage status)</h4>
+                <div id="adminOrdersList" class="order-list-admin"></div>
+                <h4>👥 Registered users</h4>
+                <div id="adminUsersList"></div>
+            </div>
+        `;
+        renderAdminProducts();
+        renderAdminOrders();
+        renderAdminUsers();
+        document.getElementById("addProductBtn")?.addEventListener('click', () => {
+            let name = prompt("Food name");
+            let price = parseInt(prompt("Price UZS"));
+            if(name && price) {
+                let newId = Date.now();
+                menu.push({ id: newId, name, price, image: "🍲", available: true });
+                saveAllData();
+                renderMenu();
+                renderAdminProducts();
+            }
+        });
+    }
+
+    function renderAdminProducts() {
+        let container = document.getElementById("adminProductsList");
+        if(!container) return;
+        container.innerHTML = menu.map(p => `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#f9f6f0; margin-bottom:8px; padding:8px 12px; border-radius:40px;">
+                <span>${p.image} ${p.name} - ${p.price.toLocaleString()} UZS</span>
+                <div>
+                    <button class="status-btn" onclick="editProduct(${p.id})">✏️ Edit</button>
+                    <button class="status-btn" onclick="toggleAvailable(${p.id})">${p.available ? "✔️ Available" : "⛔ Sold out"}</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    window.editProduct = (id) => {
+        let prod = menu.find(p => p.id === id);
+        let newPrice = prompt("New price UZS", prod.price);
+        if(newPrice) prod.price = parseInt(newPrice);
+        saveAllData();
+        renderMenu();
+        renderAdminProducts();
+    };
+    window.toggleAvailable = (id) => {
+        let prod = menu.find(p => p.id === id);
+        prod.available = !prod.available;
+        saveAllData();
+        renderMenu();
+        renderAdminProducts();
+    };
+
+    function renderAdminOrders() {
+        let container = document.getElementById("adminOrdersList");
+        if(!container) return;
+        container.innerHTML = orders.slice().reverse().map(o => `
+            <div style="background:#f3f0ea; border-radius:20px; padding:12px; margin-bottom:10px;">
+                <div><strong>${o.orderCode}</strong> | ${o.userName} | ${o.total.toLocaleString()} UZS</div>
+                <div>Items: ${o.items.map(i=>i.name).join(', ')}</div>
+                <div>Status: <span class="badge">${o.status}</span>
+                    <button class="status-btn" onclick="updateOrderStatus('${o.id}', 'ready')">✅ Ready</button>
+                    <button class="status-btn" onclick="updateOrderStatus('${o.id}', 'completed')">🎉 Completed</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    window.updateOrderStatus = (orderId, newStatus) => {
+        let order = orders.find(o => o.id == orderId);
+        if(order) order.status = newStatus;
+        saveAllData();
+        renderAdminOrders();
+        renderUserOrders();
+    };
+
+    function renderAdminUsers() {
+        let container = document.getElementById("adminUsersList");
+        if(container) container.innerHTML = users.map(u => `<div>👤 ${u.name} | orders: ${u.totalOrders || 0} | bonus: ${getUserBonus()} UZS</div>`).join('');
+    }
+
+    function renderProfileInfo() {
+        if(!currentUser) return;
+        document.getElementById("profileName").innerText = currentUser.name;
+        document.getElementById("profileUserId").innerText = currentUser.id;
+        document.getElementById("userTotalOrders").innerText = currentUser.totalOrders || 0;
+        document.getElementById("bonusDisplay").innerHTML = `🎁 Bonus: ${getUserBonus()} UZS (5% cashback)`;
+        document.getElementById("userGreet").innerHTML = `👋 ${currentUser.name}, welcome!`;
+        renderUserOrders();
+    }
+
+    function renderUserOrders() {
+        let container = document.getElementById("userOrdersList");
+        if(!container) return;
+        let myOrders = orders.filter(o => o.userId === currentUser?.id).reverse();
+        if(myOrders.length === 0) container.innerHTML = "<p>No orders yet</p>";
+        else container.innerHTML = myOrders.map(o => `
+            <div style="background:#f9f3e9; border-radius: 20px; margin-top: 12px; padding: 12px;">
+                <strong>${o.orderCode}</strong>  |  ${o.total.toLocaleString()} UZS<br>
+                Status: <span class="badge">${o.status}</span>
+                <div style="font-size:13px;">📅 ${new Date(o.timestamp).toLocaleString()}</div>
+            </div>
+        `).join('');
+    }
+
+    function renderOrdersList() { renderUserOrders(); renderAdminOrders(); }
+
+    // navigation and ask name first
+    function askUserName() {
+        if(currentUser) return true;
+        let name = prompt("🍽️ Please enter your name to continue:", "Diyor");
+        if(name && name.trim()) {
+            registerUserIfNeeded(name.trim());
+            renderMenu();
+            renderCart();
+            renderProfileInfo();
+            return true;
+        }
+        return false;
+    }
+
+    function switchPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId + "Page").classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        if(pageId === 'home') document.querySelector('[data-nav="home"]').classList.add('active');
+        if(pageId === 'cart') document.querySelector('[data-nav="cart"]').classList.add('active');
+        if(pageId === 'profile') document.querySelector('[data-nav="profile"]').classList.add('active');
+        if(pageId === 'home') renderAdminPanel();
+        if(pageId === 'profile') renderProfileInfo();
+        if(pageId === 'cart') renderCart();
+    }
+
+    // init event
+    window.addEventListener('DOMContentLoaded', () => {
+        loadAllData();
+        if(!askUserName()) return;
+        renderMenu();
+        renderCart();
+        renderProfileInfo();
+        renderAdminPanel();
+        renderOrdersList();
+        // Toggle admin
+        const toggleBtn = document.getElementById("toggleAdminBtn");
+        toggleBtn.addEventListener('click', () => {
+            adminMode = !adminMode;
+            if(adminMode) toggleBtn.classList.add('active');
+            else toggleBtn.classList.remove('active');
+            renderAdminPanel();
+        });
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                let nav = btn.getAttribute('data-nav');
+                if(nav === 'home') switchPage('home');
+                if(nav === 'cart') switchPage('cart');
+                if(nav === 'profile') switchPage('profile');
             });
         });
-
-        document.getElementById("checkout-btn")?.addEventListener("click", checkout);
-        document.getElementById("copy-link")?.addEventListener("click", () => {
-            const input = document.getElementById("referral-link");
-            input.select();
-            document.execCommand("copy");
-            alert("Havola nusxalandi!");
-        });
-
-        // Kategoriya filtri (sodda)
-        document.querySelectorAll(".cat-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-                const cat = btn.dataset.cat;
-                const catalogDiv = document.getElementById("catalog-foods");
-                if (cat === "all") {
-                    catalogDiv.innerHTML = Object.values(products).map(p => `
-                        <div class="food-card">
-                            <div><h4>${p.emoji} ${p.name}</h4><p class="food-price">${p.price.toLocaleString()} so‘m</p></div>
-                            <button class="add-btn" onclick="addToCart(${p.id})">+ Qo‘shish</button>
-                        </div>
-                    `).join("");
-                } else {
-                    const filtered = Object.values(products).filter(p => p.category === cat);
-                    catalogDiv.innerHTML = filtered.map(p => `
-                        <div class="food-card">
-                            <div><h4>${p.emoji} ${p.name}</h4><p class="food-price">${p.price.toLocaleString()} so‘m</p></div>
-                            <button class="add-btn" onclick="addToCart(${p.id})">+ Qo‘shish</button>
-                        </div>
-                    `).join("");
-                }
-            });
-        });
-
-        loadData();
-        window.addToCart = addToCart;
-        window.changeQuantity = changeQuantity;
-        window.removeFromCart = removeFromCart;
-    </script>
+        if(window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+        }
+    });
+</script>
 </body>
-</html> 
+</html>
