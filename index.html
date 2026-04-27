@@ -454,22 +454,21 @@
 
     let savedFoods = localStorage.getItem("prandium_foods");
 
-    const defaultFoods = [
+try {
+    foods = savedFoods ? JSON.parse(savedFoods) : [];
+} catch(e) {
+    foods = [];
+}
+
+if(!Array.isArray(foods) || foods.length === 0){
+    foods = [
         { id: 1, name: "Palov", price: 15000, image: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg", available: true },
         { id: 2, name: "Samsa", price: 7000, image: "https://images.pexels.com/photos/6287765/pexels-photo-6287765.jpeg", available: true },
-        { id: 3, name: "Choy", price: 3000, image: "https://images.pexels.com/photos/1391379/pexels-photo-1391379.jpeg", available: true },
-        { id: 4, name: "Lag'mon", price: 18000, image: "https://images.pexels.com/photos/4061523/pexels-photo-4061523.jpeg", available: true },
-        { id: 5, name: "Manti", price: 12000, image: "https://images.pexels.com/photos/6287760/pexels-photo-6287760.jpeg", available: true }
+        { id: 3, name: "Choy", price: 3000, image: "https://images.pexels.com/photos/1391379/pexels-photo-1391379.jpeg", available: true }
     ];
 
-    if(savedFoods) {
-        foods = JSON.parse(savedFoods);
-
-        if(!foods || foods.length === 0){
-            foods = defaultFoods;
-            localStorage.setItem("prandium_foods", JSON.stringify(foods));
-        }
-
+    localStorage.setItem("prandium_foods", JSON.stringify(foods));
+}
     } else {
         foods = defaultFoods;
         localStorage.setItem("prandium_foods", JSON.stringify(foods));
