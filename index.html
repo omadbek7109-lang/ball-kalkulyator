@@ -448,28 +448,39 @@
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 2500);
     }
-
     function loadData() {
-        let saved = localStorage.getItem("prandium_user");
-        if(saved) currentUser = JSON.parse(saved);
-        let savedFoods = localStorage.getItem("prandium_foods");
-        if(savedFoods) foods = JSON.parse(savedFoods);
-        else {
-            foods = [
-                { id: 1, name: "Palov", price: 15000, image: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
-                { id: 2, name: "Samsa", price: 7000, image: "https://images.pexels.com/photos/6287765/pexels-photo-6287765.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
-                { id: 3, name: "Choy", price: 3000, image: "https://images.pexels.com/photos/1391379/pexels-photo-1391379.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
-                { id: 4, name: "Lag'mon", price: 18000, image: "https://images.pexels.com/photos/4061523/pexels-photo-4061523.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
-                { id: 5, name: "Manti", price: 12000, image: "https://images.pexels.com/photos/6287760/pexels-photo-6287760.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true }
-            ];
+    let saved = localStorage.getItem("prandium_user");
+    if(saved) currentUser = JSON.parse(saved);
+
+    let savedFoods = localStorage.getItem("prandium_foods");
+
+    const defaultFoods = [
+        { id: 1, name: "Palov", price: 15000, image: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg", available: true },
+        { id: 2, name: "Samsa", price: 7000, image: "https://images.pexels.com/photos/6287765/pexels-photo-6287765.jpeg", available: true },
+        { id: 3, name: "Choy", price: 3000, image: "https://images.pexels.com/photos/1391379/pexels-photo-1391379.jpeg", available: true },
+        { id: 4, name: "Lag'mon", price: 18000, image: "https://images.pexels.com/photos/4061523/pexels-photo-4061523.jpeg", available: true },
+        { id: 5, name: "Manti", price: 12000, image: "https://images.pexels.com/photos/6287760/pexels-photo-6287760.jpeg", available: true }
+    ];
+
+    if(savedFoods) {
+        foods = JSON.parse(savedFoods);
+
+        if(!foods || foods.length === 0){
+            foods = defaultFoods;
             localStorage.setItem("prandium_foods", JSON.stringify(foods));
         }
-        let savedCart = localStorage.getItem(`cart_${currentUser?.phone || "guest"}`);
-        cart = savedCart ? JSON.parse(savedCart) : [];
-        let savedOrders = localStorage.getItem("prandium_orders");
-        allOrders = savedOrders ? JSON.parse(savedOrders) : [];
+
+    } else {
+        foods = defaultFoods;
+        localStorage.setItem("prandium_foods", JSON.stringify(foods));
     }
 
+    let savedCart = localStorage.getItem(`cart_${currentUser?.phone || "guest"}`);
+    cart = savedCart ? JSON.parse(savedCart) : [];
+
+    let savedOrders = localStorage.getItem("prandium_orders");
+    allOrders = savedOrders ? JSON.parse(savedOrders) : [];
+            }
     function saveAll() {
         if(currentUser) localStorage.setItem("prandium_user", JSON.stringify(currentUser));
         localStorage.setItem("prandium_foods", JSON.stringify(foods));
