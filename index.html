@@ -3,347 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Prandium | Cafeteria</title>
+    <title>Prandium | Admin</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-        }
-        body {
-            background: #f5f3ef;
-            padding-bottom: 70px;
-        }
-        /* Toast notification */
-        .toast {
-            position: fixed;
-            bottom: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #2c2c2c;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 40px;
-            font-size: 14px;
-            z-index: 1000;
-            animation: fadeInUp 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        /* Splash Screen */
-        .splash {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(135deg, #2e7d32, #1b5e20);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            color: white;
-            transition: opacity 0.5s;
-        }
-        .splash h1 { font-size: 48px; letter-spacing: 2px; margin-bottom: 10px; }
-        .splash p { font-size: 14px; opacity: 0.9; }
-        .spinner {
-            width: 50px; height: 50px;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top: 4px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui; }
+        body { background: #f5f3ef; padding-bottom: 70px; }
+        .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #2c2c2c; color: white; padding: 10px 20px; border-radius: 40px; font-size: 14px; z-index: 1000; animation: fadeInUp 0.3s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        .splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #2e7d32, #1b5e20); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; color: white; transition: opacity 0.5s; }
+        .splash h1 { font-size: 48px; margin-bottom: 10px; }
+        .spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        /* App Container */
-        .app-container {
-            display: none;
-            max-width: 500px;
-            margin: 0 auto;
-            background: #f5f3ef;
-            min-height: 100vh;
-        }
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0; right: 0;
-            max-width: 500px;
-            margin: 0 auto;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 20px;
-            border-top: 1px solid #eee;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            z-index: 100;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            color: #888;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            padding: 4px 12px;
-            border-radius: 30px;
-        }
-        .nav-item:active { transform: scale(0.95); background: #f0f0f0; }
+        .app-container { display: none; max-width: 500px; margin: 0 auto; background: #f5f3ef; min-height: 100vh; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; background: white; display: flex; justify-content: space-around; padding: 12px 20px; border-top: 1px solid #eee; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: #888; cursor: pointer; padding: 4px 12px; border-radius: 30px; transition: all 0.15s; }
+        .nav-item:active { transform: scale(0.95); }
         .nav-item.active { color: #2e7d32; font-weight: 600; background: #e8f5e9; }
         .nav-icon { font-size: 24px; }
-        /* Pages */
         .page { display: none; padding: 20px 16px 80px 16px; }
         .page.active-page { display: block; }
-        /* Food Card */
-        .food-card {
-            background: white;
-            border-radius: 20px;
-            padding: 12px;
-            margin-bottom: 12px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: all 0.2s ease;
-        }
-        .food-card:active { transform: scale(0.98); }
-        .food-img {
-            width: 70px; height: 70px;
-            border-radius: 16px;
-            object-fit: cover;
-            background: #e0e0e0;
-        }
+        .food-card { background: white; border-radius: 20px; padding: 12px; margin-bottom: 12px; display: flex; gap: 12px; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .food-img { width: 70px; height: 70px; border-radius: 16px; object-fit: cover; background: #e0e0e0; }
         .food-info { flex: 1; }
-        .food-name { font-weight: 700; font-size: 16px; }
+        .food-name { font-weight: 700; }
         .food-price { color: #2e7d32; font-weight: 600; margin-top: 4px; }
-        .btn-add {
-            background: #2e7d32;
-            color: white;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            font-weight: 500;
-        }
-        .btn-add:active { transform: scale(0.94); opacity: 0.8; }
-        .admin-remove {
-            background: #e53935;
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-        .admin-remove:active { transform: scale(0.94); }
-        /* Cart Card */
-        .cart-card {
-            background: white;
-            border-radius: 16px;
-            padding: 14px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .cart-item-info { flex: 1; }
-        .cart-item-name { font-weight: 600; }
-        .cart-item-price { color: #2e7d32; font-size: 14px; }
-        .cart-quantity {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .qty-btn {
-            background: #f0f0f0;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.1s ease;
-        }
-        .qty-btn:active { transform: scale(0.9); background: #ddd; }
-        .cart-delete {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: #999;
-            margin-left: 8px;
-        }
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-            font-size: 20px;
-            margin-top: 16px;
-            padding: 16px;
-            background: white;
-            border-radius: 16px;
-        }
-        .btn-order {
-            background: #2e7d32;
-            color: white;
-            width: 100%;
-            padding: 16px;
-            border-radius: 40px;
-            border: none;
-            font-weight: bold;
-            font-size: 16px;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-        .btn-order:active { transform: scale(0.97); opacity: 0.9; }
-        /* Order Card */
-        .order-card {
-            background: white;
-            border-radius: 16px;
-            padding: 14px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+        .btn-add { background: #2e7d32; color: white; border: none; padding: 8px 18px; border-radius: 30px; cursor: pointer; transition: 0.1s; }
+        .btn-add:active { transform: scale(0.94); }
+        .toggle-btn { background: #ff9800; color: white; border: none; padding: 6px 12px; border-radius: 30px; font-size: 12px; cursor: pointer; margin-left: 6px; }
+        .admin-remove { background: #e53935; color: white; border: none; padding: 6px 12px; border-radius: 30px; font-size: 12px; cursor: pointer; }
+        .cart-card { background: white; border-radius: 16px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .total-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 20px; margin-top: 16px; padding: 16px; background: white; border-radius: 16px; }
+        .btn-order { background: #2e7d32; color: white; width: 100%; padding: 16px; border-radius: 40px; border: none; font-weight: bold; margin-top: 20px; cursor: pointer; }
+        .order-card { background: white; border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
         .status-prep { background: #fff3e0; color: #f5a623; }
         .status-ready { background: #c8e6c9; color: #2e7d32; }
-        .admin-ready-btn {
-            background: #2e7d32;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 30px;
-            margin-top: 10px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-        .admin-ready-btn:active { transform: scale(0.96); }
-        .admin-badge {
-            background: #f5a623;
-            color: #2c2c2c;
-            padding: 8px 16px;
-            border-radius: 30px;
-            display: inline-block;
-            margin-bottom: 16px;
-            font-weight: bold;
-        }
-        /* Admin add food form */
-        .add-food-form {
-            background: white;
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 20px;
-        }
-        .add-food-form input {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 30px;
-        }
-        .btn-admin-add {
-            background: #2e7d32;
-            color: white;
-            width: 100%;
-            padding: 12px;
-            border-radius: 30px;
-            border: none;
-            margin-top: 8px;
-            cursor: pointer;
-        }
-        /* Login Overlay */
-        .login-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 200;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-card {
-            background: white;
-            padding: 28px;
-            border-radius: 32px;
-            width: 85%;
-            max-width: 320px;
-        }
-        .login-card input {
-            width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 30px;
-            font-size: 16px;
-        }
-        .login-btn {
-            background: #2e7d32;
-            color: white;
-            width: 100%;
-            padding: 14px;
-            border-radius: 40px;
-            border: none;
-            font-weight: bold;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-        /* Profile */
-        .profile-card {
-            background: white;
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .profile-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .lang-select {
-            display: flex;
-            gap: 12px;
-            margin: 20px 0;
-        }
-        .lang-btn {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            border-radius: 40px;
-            background: #f0f0f0;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-        .lang-btn:active { transform: scale(0.96); }
+        .admin-badge { background: #f5a623; color: #2c2c2c; padding: 8px 16px; border-radius: 30px; display: inline-block; margin-bottom: 16px; font-weight: bold; }
+        .admin-ready-btn { background: #2e7d32; color: white; border: none; padding: 8px 16px; border-radius: 30px; margin-top: 10px; cursor: pointer; }
+        .add-food-form { background: white; border-radius: 20px; padding: 16px; margin-bottom: 20px; }
+        .add-food-form input, .add-food-form textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 30px; }
+        .image-preview { width: 80px; height: 80px; object-fit: cover; border-radius: 16px; margin-top: 8px; }
+        .btn-admin-add { background: #2e7d32; color: white; width: 100%; padding: 12px; border-radius: 30px; border: none; margin-top: 8px; cursor: pointer; }
+        .btn-gallery { background: #2196f3; color: white; border: none; padding: 8px; border-radius: 30px; margin-top: 5px; cursor: pointer; font-size: 12px; }
+        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: white; padding: 28px; border-radius: 32px; width: 85%; max-width: 320px; }
+        .login-card input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #ddd; border-radius: 30px; }
+        .login-btn { background: #2e7d32; color: white; width: 100%; padding: 14px; border-radius: 40px; border: none; font-weight: bold; }
+        .profile-card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; }
+        .profile-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; }
+        .lang-select { display: flex; gap: 12px; margin: 20px 0; }
+        .lang-btn { flex: 1; text-align: center; padding: 12px; border-radius: 40px; background: #f0f0f0; cursor: pointer; }
         .lang-btn.active-lang { background: #2e7d32; color: white; }
-        .logout-btn {
-            background: #e53935;
-            color: white;
-            width: 100%;
-            padding: 14px;
-            border-radius: 40px;
-            border: none;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        button { cursor: pointer; }
+        .logout-btn { background: #e53935; color: white; width: 100%; padding: 14px; border-radius: 40px; border: none; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -356,21 +66,21 @@
 
 <div id="app" class="app-container">
     <div id="menuPage" class="page active-page">
-        <h2 style="margin-bottom: 16px;">🍽️ Menyu</h2>
+        <h2>🍽️ Menyu</h2>
         <div id="menuList"></div>
     </div>
     <div id="cartPage" class="page">
-        <h2 style="margin-bottom: 16px;">🛒 Savat</h2>
+        <h2>🛒 Savat</h2>
         <div id="cartList"></div>
         <div id="cartTotal" class="total-row"></div>
-        <button id="checkoutBtn" class="btn-order">✅ Buyurtma berish</button>
+        <button id="checkoutBtn" class="btn-order">Buyurtma berish</button>
     </div>
     <div id="ordersPage" class="page">
-        <h2 style="margin-bottom: 16px;">📦 Buyurtmalar</h2>
+        <h2>📦 Buyurtmalar</h2>
         <div id="ordersList"></div>
     </div>
     <div id="profilePage" class="page">
-        <h2 style="margin-bottom: 16px;">👤 Profil</h2>
+        <h2>👤 Profil</h2>
         <div id="profileContent"></div>
     </div>
 
@@ -388,55 +98,6 @@
     let foods = [];
     let cart = [];
     let allOrders = [];
-    let currentLang = localStorage.getItem("prandium_lang") || "uz";
-
-    const translations = {
-        uz: {
-            orderReady: "✅ Tayyor",
-            orderPreparing: "Tayyorlanmoqda",
-            addToCart: "Qo‘shish",
-            remove: "O‘chir",
-            emptyCart: "Savat bo'sh",
-            orderPlaced: "Buyurtma qabul qilindi!",
-            bonusEarned: "so‘m bonus",
-            adminPanel: "🔧 Admin panel",
-            markReady: "✅ Tayyor deb belgilash",
-            addNewFood: "➕ Yangi ovqat qo‘shish",
-            foodName: "Ovqat nomi",
-            foodPrice: "Narxi (so‘m)",
-            imageUrl: "Rasm URL",
-            submit: "Qo‘shish",
-            profile: "Profil",
-            name: "Ism",
-            phone: "Telefon",
-            bonus: "Bonus balansi",
-            editName: "Ismni o‘zgartirish",
-            logout: "Chiqish"
-        },
-        ru: {
-            orderReady: "✅ Готово",
-            orderPreparing: "Готовится",
-            addToCart: "Добавить",
-            remove: "Удалить",
-            emptyCart: "Корзина пуста",
-            orderPlaced: "Заказ принят!",
-            bonusEarned: "сум бонус",
-            adminPanel: "🔧 Панель администратора",
-            markReady: "✅ Отметить готовым",
-            addNewFood: "➕ Добавить блюдо",
-            foodName: "Название",
-            foodPrice: "Цена (сум)",
-            imageUrl: "URL фото",
-            submit: "Добавить",
-            profile: "Профиль",
-            name: "Имя",
-            phone: "Телефон",
-            bonus: "Бонусный баланс",
-            editName: "Изменить имя",
-            logout: "Выйти"
-        }
-    };
-    const t = () => translations[currentLang];
 
     function showToast(msg, isError = false) {
         let existing = document.querySelector(".toast");
@@ -448,33 +109,28 @@
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 2500);
     }
+
     function loadData() {
-    let saved = localStorage.getItem("prandium_user");
-    if(saved) currentUser = JSON.parse(saved);
-
-    let savedFoods = localStorage.getItem("prandium_foods");
-
-    try {
-        foods = savedFoods ? JSON.parse(savedFoods) : [];
-    } catch(e) {
-        foods = [];
+        let saved = localStorage.getItem("prandium_user");
+        if(saved) currentUser = JSON.parse(saved);
+        let savedFoods = localStorage.getItem("prandium_foods");
+        if(savedFoods) foods = JSON.parse(savedFoods);
+        else {
+            foods = [
+                { id: 1, name: "Palov", price: 15000, image: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
+                { id: 2, name: "Samsa", price: 7000, image: "https://images.pexels.com/photos/6287765/pexels-photo-6287765.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
+                { id: 3, name: "Choy", price: 3000, image: "https://images.pexels.com/photos/1391379/pexels-photo-1391379.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
+                { id: 4, name: "Lag'mon", price: 18000, image: "https://images.pexels.com/photos/4061523/pexels-photo-4061523.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
+                { id: 5, name: "Manti", price: 12000, image: "https://images.pexels.com/photos/6287760/pexels-photo-6287760.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true }
+            ];
+            localStorage.setItem("prandium_foods", JSON.stringify(foods));
+        }
+        let savedCart = localStorage.getItem(`cart_${currentUser?.phone || "guest"}`);
+        cart = savedCart ? JSON.parse(savedCart) : [];
+        let savedOrders = localStorage.getItem("prandium_orders");
+        allOrders = savedOrders ? JSON.parse(savedOrders) : [];
     }
 
-    if(!Array.isArray(foods) || foods.length === 0){
-        foods = [
-            { id: 1, name: "Palov", price: 15000, image: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg", available: true },
-            { id: 2, name: "Samsa", price: 7000, image: "https://images.pexels.com/photos/6287765/pexels-photo-6287765.jpeg", available: true },
-            { id: 3, name: "Choy", price: 3000, image: "https://images.pexels.com/photos/1391379/pexels-photo-1391379.jpeg", available: true }
-        ];
-        localStorage.setItem("prandium_foods", JSON.stringify(foods));
-    }
-
-    let savedCart = localStorage.getItem(`cart_${currentUser?.phone || "guest"}`);
-    cart = savedCart ? JSON.parse(savedCart) : [];
-
-    let savedOrders = localStorage.getItem("prandium_orders");
-    allOrders = savedOrders ? JSON.parse(savedOrders) : [];
-    }
     function saveAll() {
         if(currentUser) localStorage.setItem("prandium_user", JSON.stringify(currentUser));
         localStorage.setItem("prandium_foods", JSON.stringify(foods));
@@ -484,61 +140,130 @@
 
     function isAdmin() { return currentUser && currentUser.phone === ADMIN_PHONE; }
 
+    // Rasm yuklash (galereya yoki URL)
+    function openImagePicker(callback) {
+        let input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.onchange = (e) => {
+            let file = e.target.files[0];
+            if(file) {
+                let reader = new FileReader();
+                reader.onload = (ev) => callback(ev.target.result);
+                reader.readAsDataURL(file);
+            }
+        };
+        input.click();
+    }
+
     function renderMenu() {
         let container = document.getElementById("menuList");
         let availableFoods = foods.filter(f => f.available);
-        if(availableFoods.length === 0) {
-            container.innerHTML = "<p style='text-align:center; padding:40px;'>Menyu bo'sh</p>";
-            return;
-        }
+        
         let html = "";
-        availableFoods.forEach(f => {
+        
+        // Admin uchun qo'shish formasi
+        if(isAdmin()) {
             html += `
-                <div class="food-card">
-                    <img class="food-img" src="${f.image}" onerror="this.src='https://placehold.co/100x100?text=Food'">
-                    <div class="food-info">
-                        <div class="food-name">${f.name}</div>
-                        <div class="food-price">${f.price.toLocaleString()} so‘m</div>
-                    </div>
-                    <button class="btn-add" data-id="${f.id}">${t().addToCart}</button>
-                    ${isAdmin() ? `<button class="admin-remove" data-del="${f.id}">${t().remove}</button>` : ""}
+                <div class="add-food-form">
+                    <h4>➕ Yangi ovqat qo'shish</h4>
+                    <input type="text" id="newFoodName" placeholder="Ovqat nomi">
+                    <input type="number" id="newFoodPrice" placeholder="Narxi (so'm)">
+                    <input type="text" id="newFoodUrl" placeholder="Rasm URL yoki galereyadan tanlang">
+                    <button id="galleryBtn" class="btn-gallery">📷 Galereyadan tanlash</button>
+                    <div id="imagePreviewDiv"></div>
+                    <button id="addFoodBtn" class="btn-admin-add">✅ Qo'shish</button>
                 </div>
             `;
-        });
-        if(isAdmin()) {
-            html = `<div class="add-food-form">
-                        <h4>${t().addNewFood}</h4>
-                        <input type="text" id="newFoodName" placeholder="${t().foodName}">
-                        <input type="number" id="newFoodPrice" placeholder="${t().foodPrice}">
-                        <input type="text" id="newFoodImage" placeholder="${t().imageUrl} (URL)">
-                        <button id="addFoodBtn" class="btn-admin-add">${t().submit}</button>
-                    </div>` + html;
         }
+        
+        if(availableFoods.length === 0) {
+            html += "<p style='text-align:center; padding:40px;'>Menyu bo'sh</p>";
+        } else {
+            availableFoods.forEach(f => {
+                html += `
+                    <div class="food-card">
+                        <img class="food-img" src="${f.image}" onerror="this.src='https://placehold.co/100x100?text=Food'">
+                        <div class="food-info">
+                            <div class="food-name">${f.name}</div>
+                            <div class="food-price">${f.price.toLocaleString()} so‘m</div>
+                        </div>
+                        <button class="btn-add" data-id="${f.id}">Qo‘shish</button>
+                        ${isAdmin() ? `
+                            <button class="toggle-btn" data-id="${f.id}" data-available="${f.available}">${f.available ? '🔴 O‘chirish' : '🟢 Yoqish'}</button>
+                        ` : ""}
+                    </div>
+                `;
+            });
+        }
+        
         container.innerHTML = html;
+        
+        // Qo'shish tugmalari
         document.querySelectorAll('.btn-add').forEach(btn => {
             btn.onclick = () => addToCart(parseInt(btn.dataset.id));
         });
+        
         if(isAdmin()) {
-            document.querySelectorAll('.admin-remove').forEach(btn => {
+            // O'chirish/yoqish tugmalari
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
                 btn.onclick = () => {
-                    let id = parseInt(btn.dataset.del);
-                    let idx = foods.findIndex(f => f.id === id);
-                    if(idx !== -1) { foods[idx].available = false; saveAll(); renderMenu(); showToast("Ovqat o‘chirildi"); }
+                    let id = parseInt(btn.dataset.id);
+                    let food = foods.find(f => f.id === id);
+                    if(food) {
+                        food.available = !food.available;
+                        saveAll();
+                        renderMenu();
+                        showToast(food.available ? `${food.name} yoqildi` : `${food.name} o‘chirildi`);
+                    }
                 };
             });
+            
+            // Galereya tanlash
+            let currentImageUrl = "";
+            document.getElementById("galleryBtn")?.addEventListener("click", () => {
+                openImagePicker((dataUrl) => {
+                    currentImageUrl = dataUrl;
+                    document.getElementById("newFoodUrl").value = dataUrl.substring(0, 50) + "...";
+                    let preview = document.getElementById("imagePreviewDiv");
+                    preview.innerHTML = `<img src="${dataUrl}" class="image-preview">`;
+                });
+            });
+            
+            // URL yozilganda preview
+            document.getElementById("newFoodUrl")?.addEventListener("input", (e) => {
+                let url = e.target.value;
+                if(url.startsWith("http")) {
+                    let preview = document.getElementById("imagePreviewDiv");
+                    preview.innerHTML = `<img src="${url}" class="image-preview" onerror="this.src='https://placehold.co/100x100?text=Error'">`;
+                }
+            });
+            
+            // Yangi ovqat qo'shish
             document.getElementById("addFoodBtn")?.addEventListener("click", () => {
                 let name = document.getElementById("newFoodName").value.trim();
                 let price = parseInt(document.getElementById("newFoodPrice").value);
-                let image = document.getElementById("newFoodImage").value.trim() || "https://placehold.co/100x100?text=Food";
-                if(!name || isNaN(price)) { showToast("Nomi va narxni kiriting", true); return; }
+                let image = document.getElementById("newFoodUrl").value.trim();
+                
+                if(!name || isNaN(price)) {
+                    showToast("Nomi va narxni kiriting", true);
+                    return;
+                }
+                if(!image) {
+                    image = "https://placehold.co/100x100?text=Food";
+                }
+                
                 let newId = Date.now();
                 foods.push({ id: newId, name, price, image, available: true });
                 saveAll();
                 renderMenu();
                 showToast(`${name} qo'shildi`);
+                
+                // Tozalash
                 document.getElementById("newFoodName").value = "";
                 document.getElementById("newFoodPrice").value = "";
-                document.getElementById("newFoodImage").value = "";
+                document.getElementById("newFoodUrl").value = "";
+                document.getElementById("imagePreviewDiv").innerHTML = "";
             });
         }
     }
@@ -573,31 +298,22 @@
             total += sum;
             html += `
                 <div class="cart-card">
-                    <div class="cart-item-info">
-                        <div class="cart-item-name">${item.name}</div>
-                        <div class="cart-item-price">${item.price.toLocaleString()} so‘m</div>
-                    </div>
-                    <div class="cart-quantity">
-                        <button class="qty-btn" data-id="${item.id}" data-delta="-1">-</button>
-                        <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
-                        <button class="qty-btn" data-id="${item.id}" data-delta="1">+</button>
-                        <button class="cart-delete" data-id="${item.id}">🗑️</button>
+                    <div>${item.name} x${item.quantity}</div>
+                    <div>${sum.toLocaleString()} so‘m
+                        <button onclick="updateCartItem(${item.id}, -1)" style="background:#f0f0f0; border:none; width:30px; border-radius:50%;">-</button>
+                        <button onclick="updateCartItem(${item.id}, 1)" style="background:#f0f0f0; border:none; width:30px; border-radius:50%;">+</button>
+                        <button onclick="updateCartItem(${item.id}, -${item.quantity})" style="background:none; border:none; color:red;">🗑️</button>
                     </div>
                 </div>
             `;
         });
-        container.innerHTML = html || `<p style="text-align:center; padding:40px;">${t().emptyCart}</p>`;
+        container.innerHTML = html || "<p style='text-align:center; padding:40px;'>Savat bo'sh</p>";
         document.getElementById("cartTotal").innerHTML = `<span>Jami:</span><span>${total.toLocaleString()} so‘m</span>`;
-        document.querySelectorAll('.qty-btn').forEach(btn => {
-            btn.onclick = () => updateCartItem(parseInt(btn.dataset.id), parseInt(btn.dataset.delta));
-        });
-        document.querySelectorAll('.cart-delete').forEach(btn => {
-            btn.onclick = () => { cart = cart.filter(i => i.id !== parseInt(btn.dataset.id)); saveAll(); renderCart(); showToast("Olib tashlandi"); };
-        });
     }
+    window.updateCartItem = updateCartItem;
 
     function placeOrder() {
-        if(cart.length === 0) { showToast(t().emptyCart, true); return; }
+        if(cart.length === 0) { showToast("Savat bo'sh", true); return; }
         let total = cart.reduce((s,i)=> s + i.price*i.quantity,0);
         let bonusEarn = Math.floor(total * 0.05);
         let newOrder = {
@@ -616,7 +332,7 @@
         saveAll();
         renderCart();
         renderOrders();
-        showToast(`${t().orderPlaced} +${bonusEarn} ${t().bonusEarned}`);
+        showToast(`Buyurtma qabul qilindi! +${bonusEarn} so‘m bonus`);
     }
 
     function renderOrders() {
@@ -624,15 +340,15 @@
         let userOrders = allOrders.filter(o => o.userPhone === currentUser.phone);
         let html = "";
         if(isAdmin()) {
-            html = `<div class="admin-badge">${t().adminPanel}</div>`;
+            html = `<div class="admin-badge">🔧 Admin panel - barcha buyurtmalar</div>`;
             allOrders.forEach(order => {
                 let itemsText = order.items.map(i => `${i.name} x${i.quantity}`).join(", ");
                 html += `<div class="order-card">
                     <div><strong>#${order.id}</strong> | ${order.userName} (${order.userPhone})</div>
                     <div>${itemsText}</div>
                     <div>Jami: ${order.total.toLocaleString()} so‘m</div>
-                    <div><span class="status-badge ${order.status === 'Tayyor' ? 'status-ready' : 'status-prep'}">${order.status === 'Tayyor' ? t().orderReady : t().orderPreparing}</span></div>
-                    ${order.status !== 'Tayyor' ? `<button class="admin-ready-btn" data-id="${order.id}">${t().markReady}</button>` : ''}
+                    <div><span class="status-badge ${order.status === 'Tayyor' ? 'status-ready' : 'status-prep'}">${order.status}</span></div>
+                    ${order.status !== 'Tayyor' ? `<button class="admin-ready-btn" data-id="${order.id}">✅ Tayyor deb belgilash</button>` : ''}
                 </div>`;
             });
         } else {
@@ -643,7 +359,7 @@
                     <div><strong>#${order.id}</strong> ${order.date}</div>
                     <div>${itemsText}</div>
                     <div>Jami: ${order.total.toLocaleString()} so‘m</div>
-                    <div><span class="status-badge ${order.status === 'Tayyor' ? 'status-ready' : 'status-prep'}">${order.status === 'Tayyor' ? t().orderReady : t().orderPreparing}</span></div>
+                    <div><span class="status-badge ${order.status === 'Tayyor' ? 'status-ready' : 'status-prep'}">${order.status}</span></div>
                 </div>`;
             });
         }
@@ -661,34 +377,30 @@
 
     function renderProfile() {
         let bonus = currentUser.bonus || 0;
-        let adminHtml = isAdmin() ? '<div class="admin-badge">👑 Admin rejimi</div>' : '';
+        let adminHtml = isAdmin() ? '<div class="admin-badge">👑 Admin rejimi faol</div>' : '';
         document.getElementById("profileContent").innerHTML = `
             <div class="profile-card">
                 ${adminHtml}
-                <div class="profile-row"><strong>${t().name}:</strong> ${currentUser.name}</div>
-                <div class="profile-row"><strong>${t().phone}:</strong> ${currentUser.phone}</div>
-                <div class="profile-row"><strong>🎁 ${t().bonus}:</strong> ${bonus.toLocaleString()} so‘m</div>
-                <button id="editNameBtn" style="margin-top:16px; padding:10px; border-radius:30px; border:none; background:#e0e0e0; width:100%;">✏️ ${t().editName}</button>
+                <div class="profile-row"><strong>Ism:</strong> ${currentUser.name}</div>
+                <div class="profile-row"><strong>Telefon:</strong> ${currentUser.phone}</div>
+                <div class="profile-row"><strong>🎁 Bonus:</strong> ${bonus.toLocaleString()} so‘m</div>
+                <button id="editNameBtn" style="margin-top:16px; padding:10px; border-radius:30px; border:none; background:#e0e0e0; width:100%;">✏️ Ismni o‘zgartirish</button>
             </div>
             <div class="lang-select">
-                <div class="lang-btn ${currentLang === 'uz' ? 'active-lang' : ''}" data-lang="uz">🇺🇿 O'zbekcha</div>
-                <div class="lang-btn ${currentLang === 'ru' ? 'active-lang' : ''}" data-lang="ru">🇷🇺 Русский</div>
+                <div class="lang-btn" data-lang="uz">🇺🇿 O'zbekcha</div>
+                <div class="lang-btn" data-lang="ru">🇷🇺 Русский</div>
             </div>
-            <button id="logoutProfileBtn" class="logout-btn">🚪 ${t().logout}</button>
+            <button id="logoutProfileBtn" class="logout-btn">🚪 Chiqish</button>
         `;
         document.getElementById("editNameBtn")?.addEventListener("click", () => {
-            let newName = prompt(t().editName, currentUser.name);
+            let newName = prompt("Yangi ism:", currentUser.name);
             if(newName) { currentUser.name = newName; saveAll(); renderProfile(); }
         });
         document.querySelectorAll(".lang-btn").forEach(btn => {
             btn.onclick = () => {
-                currentLang = btn.dataset.lang;
-                localStorage.setItem("prandium_lang", currentLang);
-                renderMenu();
-                renderCart();
-                renderOrders();
-                renderProfile();
-                showToast(currentLang === "uz" ? "Til o‘zbekchaga o‘zgartirildi" : "Язык изменен на русский");
+                let lang = btn.dataset.lang;
+                localStorage.setItem("prandium_lang", lang);
+                showToast(lang === "uz" ? "Til o‘zbekchaga o‘zgartirildi" : "Язык изменен");
             };
         });
         document.getElementById("logoutProfileBtn")?.addEventListener("click", () => {
@@ -748,4 +460,4 @@
     }, 3000);
 </script>
 </body>
-</html>
+    </html>
