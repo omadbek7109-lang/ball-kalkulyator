@@ -1,749 +1,746 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Prandium Campus | Kokand University</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Prandium | Cafeteria</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
         }
-
         body {
-            font-family: system-ui, -apple-system, 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, sans-serif;
-            background: #f8f9fc;
-            color: #1c1e24;
-            padding-bottom: 80px;
+            background: #f5f3ef;
+            padding-bottom: 70px;
         }
-
-        /* smooth scroll */
-        html {
-            scroll-behavior: smooth;
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c2c2c;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            z-index: 1000;
+            animation: fadeInUp 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-
-        /* container */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        /* Splash Screen */
+        .splash {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+            transition: opacity 0.5s;
+        }
+        .splash h1 { font-size: 48px; letter-spacing: 2px; margin-bottom: 10px; }
+        .splash p { font-size: 14px; opacity: 0.9; }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        /* App Container */
         .app-container {
+            display: none;
             max-width: 500px;
             margin: 0 auto;
-            background: #f8f9fc;
+            background: #f5f3ef;
             min-height: 100vh;
-            position: relative;
-            box-shadow: 0 0 40px rgba(0,0,0,0.02);
         }
-
-        /* header */
-        .header {
-            padding: 24px 20px 12px;
-            background: linear-gradient(135deg, #fff, #fef7e8);
-            border-bottom-left-radius: 28px;
-            border-bottom-right-radius: 28px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-        }
-
-        .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #DA7B2C, #F5A65B);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.3px;
-        }
-
-        .header p {
-            font-size: 14px;
-            color: #6c6f78;
-            margin-top: 4px;
-        }
-
-        /* bottom nav */
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
+            left: 0; right: 0;
             max-width: 500px;
-            width: 100%;
-            background: rgba(255,255,255,0.96);
-            backdrop-filter: blur(20px);
+            margin: 0 auto;
+            background: white;
             display: flex;
             justify-content: space-around;
-            padding: 10px 20px 26px;
-            border-top: 0.5px solid rgba(0,0,0,0.05);
-            box-shadow: 0 -2px 20px rgba(0,0,0,0.03);
+            padding: 12px 20px;
+            border-top: 1px solid #eee;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             z-index: 100;
         }
-
-        .nav-btn {
-            background: transparent;
-            border: none;
+        .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
             font-size: 12px;
-            color: #8e919b;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            color: #888;
             cursor: pointer;
-            padding: 8px 16px;
-            border-radius: 40px;
+            transition: all 0.2s ease;
+            padding: 4px 12px;
+            border-radius: 30px;
         }
-
-        .nav-btn i { font-size: 22px; font-style: normal; font-weight: 500; }
-        .nav-btn.active {
-            color: #DA7B2C;
-            background: #fff2e6;
-        }
-
-        /* pages */
-        .page {
-            display: none;
-            padding: 16px 18px 30px;
-            animation: fade 0.25s ease;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        @keyframes fade {
-            from { opacity: 0; transform: translateY(8px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
-
-        /* food cards */
-        .food-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-top: 16px;
-        }
-
+        .nav-item:active { transform: scale(0.95); background: #f0f0f0; }
+        .nav-item.active { color: #2e7d32; font-weight: 600; background: #e8f5e9; }
+        .nav-icon { font-size: 24px; }
+        /* Pages */
+        .page { display: none; padding: 20px 16px 80px 16px; }
+        .page.active-page { display: block; }
+        /* Food Card */
         .food-card {
             background: white;
-            border-radius: 28px;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.03), 0 2px 4px rgba(0,0,0,0.02);
-            transition: transform 0.1s ease;
-            border: 0.5px solid rgba(0,0,0,0.03);
-        }
-
-        .food-img {
-            width: 70px;
-            height: 70px;
-            background: #fef3e8;
-            border-radius: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 38px;
-        }
-
-        .food-info {
-            flex: 1;
-        }
-
-        .food-name {
-            font-weight: 600;
-            font-size: 17px;
-        }
-
-        .food-price {
-            color: #DA7B2C;
-            font-weight: 600;
-            margin-top: 4px;
-            font-size: 15px;
-        }
-
-        .add-btn, .remove-item, .pay-btn {
-            background: #DA7B2C;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 40px;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 2px 8px rgba(218,123,44,0.2);
-        }
-
-        .add-btn:active, .pay-btn:active { transform: scale(0.96); background: #c26a1f;}
-
-        /* cart styles */
-        .cart-item {
-            background: white;
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 12px;
             margin-bottom: 12px;
             display: flex;
-            justify-content: space-between;
+            gap: 12px;
             align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
         }
-
-        .cart-summary {
-            background: white;
-            border-radius: 28px;
-            padding: 18px;
-            margin-top: 20px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+        .food-card:active { transform: scale(0.98); }
+        .food-img {
+            width: 70px; height: 70px;
+            border-radius: 16px;
+            object-fit: cover;
+            background: #e0e0e0;
         }
-
-        .pay-options {
-            display: flex;
-            gap: 16px;
-            margin-top: 20px;
-        }
-
-        .pay-btn { flex: 1; text-align: center; background: #2c3e66; box-shadow: none; }
-        .payme { background: #005C9E; }
-        .click { background: #00A651; }
-
-        /* admin toggle switch */
-        .admin-toggle {
-            background: #f0f2f6;
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 500;
-            margin-top: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .toggle-switch {
-            width: 44px;
-            height: 24px;
-            background: #ccc;
+        .food-info { flex: 1; }
+        .food-name { font-weight: 700; font-size: 16px; }
+        .food-price { color: #2e7d32; font-weight: 600; margin-top: 4px; }
+        .btn-add {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 8px 18px;
             border-radius: 30px;
-            position: relative;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.15s ease;
+            font-weight: 500;
         }
-
-        .toggle-switch.active {
-            background: #DA7B2C;
+        .btn-add:active { transform: scale(0.94); opacity: 0.8; }
+        .admin-remove {
+            background: #e53935;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
         }
-
-        .toggle-switch:after {
-            content: "";
-            width: 20px;
-            height: 20px;
+        .admin-remove:active { transform: scale(0.94); }
+        /* Cart Card */
+        .cart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { font-weight: 600; }
+        .cart-item-price { color: #2e7d32; font-size: 14px; }
+        .cart-quantity {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .qty-btn {
+            background: #f0f0f0;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        .qty-btn:active { transform: scale(0.9); background: #ddd; }
+        .cart-delete {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+            margin-left: 8px;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 20px;
+            margin-top: 16px;
+            padding: 16px;
+            background: white;
+            border-radius: 16px;
+        }
+        .btn-order {
+            background: #2e7d32;
+            color: white;
+            width: 100%;
+            padding: 16px;
+            border-radius: 40px;
+            border: none;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-order:active { transform: scale(0.97); opacity: 0.9; }
+        /* Order Card */
+        .order-card {
+            background: white;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-prep { background: #fff3e0; color: #f5a623; }
+        .status-ready { background: #c8e6c9; color: #2e7d32; }
+        .admin-ready-btn {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .admin-ready-btn:active { transform: scale(0.96); }
+        .admin-badge {
+            background: #f5a623;
+            color: #2c2c2c;
+            padding: 8px 16px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 16px;
+            font-weight: bold;
+        }
+        /* Admin add food form */
+        .add-food-form {
             background: white;
             border-radius: 20px;
-            position: absolute;
-            top: 2px;
-            left: 3px;
-            transition: 0.2s;
+            padding: 16px;
+            margin-bottom: 20px;
         }
-
-        .toggle-switch.active:after {
-            left: 21px;
-        }
-
-        /* admin panel */
-        .admin-panel {
-            background: #ffffffd9;
-            backdrop-filter: blur(12px);
-            border-radius: 32px;
-            padding: 18px;
-            margin-top: 20px;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .admin-stats {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: #f9f6f0;
-            flex: 1;
+        .add-food-form input {
+            width: 100%;
             padding: 12px;
-            border-radius: 24px;
-            text-align: center;
-        }
-
-        .order-list-admin {
-            max-height: 260px;
-            overflow-y: auto;
-        }
-
-        .badge {
-            background: #ffeee2;
-            color: #DA7B2C;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 12px;
-        }
-
-        button.status-btn {
-            background: none;
+            margin: 8px 0;
             border: 1px solid #ddd;
             border-radius: 30px;
-            padding: 4px 10px;
-            font-size: 11px;
-            margin-left: 6px;
         }
-
-        .bonus-badge {
-            background: linear-gradient(145deg, #fff1e2, #ffe6d4);
+        .btn-admin-add {
+            background: #2e7d32;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border-radius: 30px;
+            border: none;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+        /* Login Overlay */
+        .login-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            background: white;
+            padding: 28px;
+            border-radius: 32px;
+            width: 85%;
+            max-width: 320px;
+        }
+        .login-card input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+        }
+        .login-btn {
+            background: #2e7d32;
+            color: white;
+            width: 100%;
+            padding: 14px;
             border-radius: 40px;
-            padding: 8px 16px;
-            font-weight: 600;
-            font-size: 14px;
-            display: inline-block;
+            border: none;
+            font-weight: bold;
+            margin-top: 10px;
+            cursor: pointer;
         }
-
-        hr {
-            margin: 16px 0;
-            opacity: 0.2;
+        /* Profile */
+        .profile-card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
+        .profile-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .lang-select {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .lang-btn {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 40px;
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .lang-btn:active { transform: scale(0.96); }
+        .lang-btn.active-lang { background: #2e7d32; color: white; }
+        .logout-btn {
+            background: #e53935;
+            color: white;
+            width: 100%;
+            padding: 14px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button { cursor: pointer; }
     </style>
 </head>
 <body>
-<div class="app-container">
-    <div class="header">
-        <h1>🍽️ Prandium</h1>
-        <p>Kokand University • Andijan Branch</p>
-        <div id="userGreet" style="font-weight: 500; margin-top: 8px;">👤 </div>
-        <div class="bonus-badge" id="bonusDisplay" style="margin-top: 10px;">🎁 Bonus: 0 UZS</div>
-    </div>
 
-    <!-- bottom navigation -->
-    <div class="bottom-nav">
-        <button class="nav-btn active" data-nav="home">🏠 Home</button>
-        <button class="nav-btn" data-nav="cart">🛒 Cart</button>
-        <button class="nav-btn" data-nav="profile">👤 Profile</button>
-    </div>
+<div id="splash" class="splash">
+    <div class="spinner"></div>
+    <h1>PRANDIUM</h1>
+    <p>Kokand University of Andijan Branch Cafeteria</p>
+</div>
 
-    <!-- HOME PAGE -->
-    <div id="homePage" class="page active">
-        <div class="food-grid" id="menuContainer"></div>
-        <div class="admin-toggle" id="adminToggleZone">
-            <span>⚙️ Admin mode</span>
-            <div id="toggleAdminBtn" class="toggle-switch"></div>
-        </div>
-        <div id="adminPanelArea" style="display: none;"></div>
+<div id="app" class="app-container">
+    <div id="menuPage" class="page active-page">
+        <h2 style="margin-bottom: 16px;">🍽️ Menyu</h2>
+        <div id="menuList"></div>
     </div>
-
-    <!-- CART PAGE -->
     <div id="cartPage" class="page">
-        <div id="cartItemsList"></div>
-        <div class="cart-summary">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                <span>💰 Jami summa:</span>
-                <strong id="totalPrice">0 UZS</strong>
-            </div>
-            <div class="pay-options">
-                <button class="pay-btn click" id="payClickBtn">💳 Click</button>
-                <button class="pay-btn payme" id="payPaymeBtn">📱 Payme</button>
-            </div>
-            <button id="confirmPaidBtn" style="margin-top: 16px; width: 100%; background:#2c3e66;">✅ I have paid</button>
-        </div>
+        <h2 style="margin-bottom: 16px;">🛒 Savat</h2>
+        <div id="cartList"></div>
+        <div id="cartTotal" class="total-row"></div>
+        <button id="checkoutBtn" class="btn-order">✅ Buyurtma berish</button>
+    </div>
+    <div id="ordersPage" class="page">
+        <h2 style="margin-bottom: 16px;">📦 Buyurtmalar</h2>
+        <div id="ordersList"></div>
+    </div>
+    <div id="profilePage" class="page">
+        <h2 style="margin-bottom: 16px;">👤 Profil</h2>
+        <div id="profileContent"></div>
     </div>
 
-    <!-- PROFILE PAGE -->
-    <div id="profilePage" class="page">
-        <div style="background: white; border-radius: 32px; padding: 20px;">
-            <h3 style="margin-bottom: 12px;">👤 User info</h3>
-            <p><strong>Name:</strong> <span id="profileName"></span></p>
-            <p><strong>User ID:</strong> <span id="profileUserId"></span></p>
-            <p><strong>Total orders:</strong> <span id="userTotalOrders">0</span></p>
-            <hr>
-            <h4>📋 My orders</h4>
-            <div id="userOrdersList"></div>
-        </div>
+    <div class="bottom-nav">
+        <div class="nav-item active" data-page="menuPage"><span class="nav-icon">🍽️</span><span>Menu</span></div>
+        <div class="nav-item" data-page="cartPage"><span class="nav-icon">🛒</span><span>Savat</span></div>
+        <div class="nav-item" data-page="ordersPage"><span class="nav-icon">📦</span><span>Buyurtmalar</span></div>
+        <div class="nav-item" data-page="profilePage"><span class="nav-icon">👤</span><span>Profil</span></div>
     </div>
 </div>
 
 <script>
-    // ---------- DATA MODELS (localStorage) ----------
-    let menu = [
-        { id: 1, name: "Plov", price: 25000, image: "🍛", available: true },
-        { id: 2, name: "Somsa", price: 7000, image: "🥟", available: true },
-        { id: 3, name: "Tea", price: 3000, image: "🍵", available: true },
-        { id: 4, name: "Salad", price: 12000, image: "🥗", available: true }
-    ];
-
-    let orders = [];          // { id, userId, userName, items, total, status, timestamp, orderCode }
-    let users = [];          // { id, name, createdAt, bonus }
-    let cart = [];
-
+    const ADMIN_PHONE = "+998910005505";
     let currentUser = null;
-    let adminMode = false;
-    let nextOrderId = 101;
+    let foods = [];
+    let cart = [];
+    let allOrders = [];
+    let currentLang = localStorage.getItem("prandium_lang") || "uz";
 
-    // helper: save all to LS
-    function saveAllData() {
-        localStorage.setItem("prandium_menu", JSON.stringify(menu));
-        localStorage.setItem("prandium_orders", JSON.stringify(orders));
-        localStorage.setItem("prandium_users", JSON.stringify(users));
-        localStorage.setItem("prandium_cart", JSON.stringify(cart));
-        localStorage.setItem("prandium_nextOrderId", nextOrderId);
-        if(currentUser) localStorage.setItem("prandium_currentUser", JSON.stringify(currentUser));
-    }
-
-    function loadAllData() {
-        let savedMenu = localStorage.getItem("prandium_menu");
-        if(savedMenu) menu = JSON.parse(savedMenu);
-        let savedOrders = localStorage.getItem("prandium_orders");
-        if(savedOrders) orders = JSON.parse(savedOrders);
-        let savedUsers = localStorage.getItem("prandium_users");
-        if(savedUsers) users = JSON.parse(savedUsers);
-        let savedCart = localStorage.getItem("prandium_cart");
-        if(savedCart) cart = JSON.parse(savedCart);
-        let savedNext = localStorage.getItem("prandium_nextOrderId");
-        if(savedNext) nextOrderId = parseInt(savedNext);
-        let savedUser = localStorage.getItem("prandium_currentUser");
-        if(savedUser) currentUser = JSON.parse(savedUser);
-    }
-
-    // generate order code #001 - Name
-    function generateOrderCode(userName) {
-        let num = nextOrderId++;
-        saveAllData();
-        let padded = num.toString().padStart(3, '0');
-        return `#${padded} - ${userName}`;
-    }
-
-    // add user if new
-    function registerUserIfNeeded(name) {
-        let existing = users.find(u => u.name.toLowerCase() === name.toLowerCase());
-        if(existing) {
-            currentUser = existing;
-        } else {
-            let newUser = {
-                id: Date.now(),
-                name: name,
-                createdAt: new Date().toISOString(),
-                bonus: 0,
-                totalOrders: 0
-            };
-            users.push(newUser);
-            currentUser = newUser;
-            saveAllData();
+    const translations = {
+        uz: {
+            orderReady: "✅ Tayyor",
+            orderPreparing: "Tayyorlanmoqda",
+            addToCart: "Qo‘shish",
+            remove: "O‘chir",
+            emptyCart: "Savat bo'sh",
+            orderPlaced: "Buyurtma qabul qilindi!",
+            bonusEarned: "so‘m bonus",
+            adminPanel: "🔧 Admin panel",
+            markReady: "✅ Tayyor deb belgilash",
+            addNewFood: "➕ Yangi ovqat qo‘shish",
+            foodName: "Ovqat nomi",
+            foodPrice: "Narxi (so‘m)",
+            imageUrl: "Rasm URL",
+            submit: "Qo‘shish",
+            profile: "Profil",
+            name: "Ism",
+            phone: "Telefon",
+            bonus: "Bonus balansi",
+            editName: "Ismni o‘zgartirish",
+            logout: "Chiqish"
+        },
+        ru: {
+            orderReady: "✅ Готово",
+            orderPreparing: "Готовится",
+            addToCart: "Добавить",
+            remove: "Удалить",
+            emptyCart: "Корзина пуста",
+            orderPlaced: "Заказ принят!",
+            bonusEarned: "сум бонус",
+            adminPanel: "🔧 Панель администратора",
+            markReady: "✅ Отметить готовым",
+            addNewFood: "➕ Добавить блюдо",
+            foodName: "Название",
+            foodPrice: "Цена (сум)",
+            imageUrl: "URL фото",
+            submit: "Добавить",
+            profile: "Профиль",
+            name: "Имя",
+            phone: "Телефон",
+            bonus: "Бонусный баланс",
+            editName: "Изменить имя",
+            logout: "Выйти"
         }
-        renderProfileInfo();
+    };
+    const t = () => translations[currentLang];
+
+    function showToast(msg, isError = false) {
+        let existing = document.querySelector(".toast");
+        if(existing) existing.remove();
+        let toast = document.createElement("div");
+        toast.className = "toast";
+        toast.style.background = isError ? "#e53935" : "#2c2c2c";
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
     }
 
-    // update bonus (5% cashback UI logic)
-    function getUserBonus() {
-        if(!currentUser) return 0;
-        let totalSpent = 0;
-        let userOrders = orders.filter(o => o.userId === currentUser.id);
-        userOrders.forEach(o => { totalSpent += o.total });
-        let bonus = Math.floor(totalSpent * 0.05);
-        if(currentUser) currentUser.bonus = bonus;
-        saveAllData();
-        return bonus;
+    function loadData() {
+        let saved = localStorage.getItem("prandium_user");
+        if(saved) currentUser = JSON.parse(saved);
+        let savedFoods = localStorage.getItem("prandium_foods");
+        if(savedFoods) foods = JSON.parse(savedFoods);
+        else {
+            foods = [
+                { id: 1, name: "Palov", price: 15000, image: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
+                { id: 2, name: "Samsa", price: 7000, image: "https://images.pexels.com/photos/6287765/pexels-photo-6287765.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
+                { id: 3, name: "Choy", price: 3000, image: "https://images.pexels.com/photos/1391379/pexels-photo-1391379.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
+                { id: 4, name: "Lag'mon", price: 18000, image: "https://images.pexels.com/photos/4061523/pexels-photo-4061523.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
+                { id: 5, name: "Manti", price: 12000, image: "https://images.pexels.com/photos/6287760/pexels-photo-6287760.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true }
+            ];
+            localStorage.setItem("prandium_foods", JSON.stringify(foods));
+        }
+        let savedCart = localStorage.getItem(`cart_${currentUser?.phone || "guest"}`);
+        cart = savedCart ? JSON.parse(savedCart) : [];
+        let savedOrders = localStorage.getItem("prandium_orders");
+        allOrders = savedOrders ? JSON.parse(savedOrders) : [];
     }
 
-    // Add to cart
-    function addToCart(productId) {
-        let product = menu.find(p => p.id === productId);
-        if(!product || !product.available) return alert("Sold out or unavailable");
-        let existing = cart.find(i => i.id === productId);
-        if(existing) existing.quantity++;
-        else cart.push({ ...product, quantity: 1 });
-        saveAllData();
-        renderCart();
+    function saveAll() {
+        if(currentUser) localStorage.setItem("prandium_user", JSON.stringify(currentUser));
+        localStorage.setItem("prandium_foods", JSON.stringify(foods));
+        localStorage.setItem(`cart_${currentUser?.phone || "guest"}`, JSON.stringify(cart));
+        localStorage.setItem("prandium_orders", JSON.stringify(allOrders));
     }
 
-    function removeCartItem(index) {
-        cart.splice(index,1);
-        saveAllData();
-        renderCart();
-    }
+    function isAdmin() { return currentUser && currentUser.phone === ADMIN_PHONE; }
 
-    // render menu
     function renderMenu() {
-        let container = document.getElementById("menuContainer");
-        if(!container) return;
-        container.innerHTML = menu.map(product => `
-            <div class="food-card">
-                <div class="food-img">${product.image}</div>
-                <div class="food-info">
-                    <div class="food-name">${product.name} ${!product.available ? '(sold out)' : ''}</div>
-                    <div class="food-price">${product.price.toLocaleString()} UZS</div>
+        let container = document.getElementById("menuList");
+        let availableFoods = foods.filter(f => f.available);
+        if(availableFoods.length === 0) {
+            container.innerHTML = "<p style='text-align:center; padding:40px;'>Menyu bo'sh</p>";
+            return;
+        }
+        let html = "";
+        availableFoods.forEach(f => {
+            html += `
+                <div class="food-card">
+                    <img class="food-img" src="${f.image}" onerror="this.src='https://placehold.co/100x100?text=Food'">
+                    <div class="food-info">
+                        <div class="food-name">${f.name}</div>
+                        <div class="food-price">${f.price.toLocaleString()} so‘m</div>
+                    </div>
+                    <button class="btn-add" data-id="${f.id}">${t().addToCart}</button>
+                    ${isAdmin() ? `<button class="admin-remove" data-del="${f.id}">${t().remove}</button>` : ""}
                 </div>
-                <button class="add-btn" ${!product.available ? 'disabled style="opacity:0.5"' : ''} onclick="addToCart(${product.id})">+ Add</button>
-            </div>
-        `).join('');
+            `;
+        });
+        if(isAdmin()) {
+            html = `<div class="add-food-form">
+                        <h4>${t().addNewFood}</h4>
+                        <input type="text" id="newFoodName" placeholder="${t().foodName}">
+                        <input type="number" id="newFoodPrice" placeholder="${t().foodPrice}">
+                        <input type="text" id="newFoodImage" placeholder="${t().imageUrl} (URL)">
+                        <button id="addFoodBtn" class="btn-admin-add">${t().submit}</button>
+                    </div>` + html;
+        }
+        container.innerHTML = html;
+        document.querySelectorAll('.btn-add').forEach(btn => {
+            btn.onclick = () => addToCart(parseInt(btn.dataset.id));
+        });
+        if(isAdmin()) {
+            document.querySelectorAll('.admin-remove').forEach(btn => {
+                btn.onclick = () => {
+                    let id = parseInt(btn.dataset.del);
+                    let idx = foods.findIndex(f => f.id === id);
+                    if(idx !== -1) { foods[idx].available = false; saveAll(); renderMenu(); showToast("Ovqat o‘chirildi"); }
+                };
+            });
+            document.getElementById("addFoodBtn")?.addEventListener("click", () => {
+                let name = document.getElementById("newFoodName").value.trim();
+                let price = parseInt(document.getElementById("newFoodPrice").value);
+                let image = document.getElementById("newFoodImage").value.trim() || "https://placehold.co/100x100?text=Food";
+                if(!name || isNaN(price)) { showToast("Nomi va narxni kiriting", true); return; }
+                let newId = Date.now();
+                foods.push({ id: newId, name, price, image, available: true });
+                saveAll();
+                renderMenu();
+                showToast(`${name} qo'shildi`);
+                document.getElementById("newFoodName").value = "";
+                document.getElementById("newFoodPrice").value = "";
+                document.getElementById("newFoodImage").value = "";
+            });
+        }
+    }
+
+    function addToCart(id) {
+        let food = foods.find(f => f.id === id && f.available);
+        if(!food) return;
+        let existing = cart.find(i => i.id === id);
+        if(existing) existing.quantity++;
+        else cart.push({ id: food.id, name: food.name, price: food.price, quantity: 1 });
+        saveAll();
+        renderCart();
+        showToast(`${food.name} savatga qo'shildi`);
+    }
+
+    function updateCartItem(id, delta) {
+        let item = cart.find(i => i.id === id);
+        if(item) {
+            item.quantity += delta;
+            if(item.quantity <= 0) cart = cart.filter(i => i.id !== id);
+            saveAll();
+            renderCart();
+        }
     }
 
     function renderCart() {
-        let cartDiv = document.getElementById("cartItemsList");
-        let totalSpan = document.getElementById("totalPrice");
-        if(!cartDiv) return;
-        if(cart.length === 0) {
-            cartDiv.innerHTML = `<div style="text-align:center; padding:40px;">🛒 Savatcha bo'sh</div>`;
-            totalSpan.innerText = "0 UZS";
-            return;
-        }
+        let container = document.getElementById("cartList");
         let total = 0;
-        cartDiv.innerHTML = cart.map((item, idx) => {
-            let itemTotal = item.price * item.quantity;
-            total += itemTotal;
-            return `
-                <div class="cart-item">
-                    <div><strong>${item.name}</strong> x${item.quantity}<br><span style="font-size:13px;">${item.price.toLocaleString()} UZS</span></div>
-                    <div><button class="remove-item" style="background:#ddd; color:#333; padding:6px 12px;" onclick="removeCartItem(${idx})">Remove</button></div>
+        let html = "";
+        cart.forEach(item => {
+            let sum = item.price * item.quantity;
+            total += sum;
+            html += `
+                <div class="cart-card">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">${item.price.toLocaleString()} so‘m</div>
+                    </div>
+                    <div class="cart-quantity">
+                        <button class="qty-btn" data-id="${item.id}" data-delta="-1">-</button>
+                        <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
+                        <button class="qty-btn" data-id="${item.id}" data-delta="1">+</button>
+                        <button class="cart-delete" data-id="${item.id}">🗑️</button>
+                    </div>
                 </div>
             `;
-        }).join('');
-        totalSpan.innerText = total.toLocaleString() + " UZS";
+        });
+        container.innerHTML = html || `<p style="text-align:center; padding:40px;">${t().emptyCart}</p>`;
+        document.getElementById("cartTotal").innerHTML = `<span>Jami:</span><span>${total.toLocaleString()} so‘m</span>`;
+        document.querySelectorAll('.qty-btn').forEach(btn => {
+            btn.onclick = () => updateCartItem(parseInt(btn.dataset.id), parseInt(btn.dataset.delta));
+        });
+        document.querySelectorAll('.cart-delete').forEach(btn => {
+            btn.onclick = () => { cart = cart.filter(i => i.id !== parseInt(btn.dataset.id)); saveAll(); renderCart(); showToast("Olib tashlandi"); };
+        });
     }
 
-    // order creation after payment confirmation
-    function createOrder(paymentMethod) {
-        if(!currentUser) { alert("User not found"); return false; }
-        if(cart.length === 0) { alert("Cart empty"); return false; }
-        let items = cart.map(i => ({ name: i.name, quantity: i.quantity, price: i.price }));
-        let total = cart.reduce((sum,i) => sum + i.price * i.quantity, 0);
-        let orderCode = generateOrderCode(currentUser.name);
+    function placeOrder() {
+        if(cart.length === 0) { showToast(t().emptyCart, true); return; }
+        let total = cart.reduce((s,i)=> s + i.price*i.quantity,0);
+        let bonusEarn = Math.floor(total * 0.05);
         let newOrder = {
             id: Date.now(),
-            userId: currentUser.id,
+            userId: currentUser.phone,
             userName: currentUser.name,
-            orderCode: orderCode,
-            items: items,
+            userPhone: currentUser.phone,
+            items: JSON.parse(JSON.stringify(cart)),
             total: total,
-            status: "pending",
-            timestamp: new Date().toISOString(),
-            payment: paymentMethod
+            status: "Tayyorlanmoqda",
+            date: new Date().toLocaleString()
         };
-        orders.push(newOrder);
-        currentUser.totalOrders = (currentUser.totalOrders || 0) + 1;
+        allOrders.unshift(newOrder);
+        currentUser.bonus = (currentUser.bonus || 0) + bonusEarn;
         cart = [];
-        saveAllData();
-        // send to Telegram WebApp if available
-        if(window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.sendData(JSON.stringify({
-                action: "new_order",
-                order: newOrder
-            }));
-        }
-        alert(`✅ Order ${orderCode} created! Status: pending`);
+        saveAll();
         renderCart();
-        renderOrdersList();
-        renderAdminOrders();
-        renderUserOrders();
-        renderProfileInfo();
-        return true;
+        renderOrders();
+        showToast(`${t().orderPlaced} +${bonusEarn} ${t().bonusEarned}`);
     }
 
-    // external payment links
-    function openPay(service) {
-        if(cart.length===0) return alert("Cart empty");
-        let total = cart.reduce((s,i) => s + i.price * i.quantity, 0);
-        let link = "";
-        if(service === 'click') link = `https://my.click.uz/services/pay?service_id=22797&merchant_id=12345&amount=${total}&currency=uzs`;
-        else link = `https://payme.uz/pay?amount=${total}&m=60f3a4b0c5d8e2a4b8c9d0e1`;
-        window.open(link, '_blank');
-        alert("To'lovni tugatganingizdan so'ng 'I have paid' tugmasini bosing.");
-    }
-
-    document.getElementById("payClickBtn")?.addEventListener('click', () => openPay('click'));
-    document.getElementById("payPaymeBtn")?.addEventListener('click', () => openPay('payme'));
-    document.getElementById("confirmPaidBtn")?.addEventListener('click', () => {
-        if(cart.length===0) return alert("Savatcha bo'sh");
-        createOrder("click/payme");
-        switchPage('home');
-    });
-
-    // Admin panel render
-    function renderAdminPanel() {
-        let area = document.getElementById("adminPanelArea");
-        if(!adminMode) { area.style.display = "none"; return; }
-        area.style.display = "block";
-        let totalOrdersToday = orders.filter(o => {
-            let today = new Date().toDateString();
-            return new Date(o.timestamp).toDateString() === today;
-        }).length;
-        let totalRevenue = orders.reduce((sum,o) => sum + o.total, 0);
-        let uniqueUsers = users.length;
-        area.innerHTML = `
-            <div class="admin-panel">
-                <h3>🛠️ Admin Dashboard</h3>
-                <div class="admin-stats">
-                    <div class="stat-card">📦 Today orders <br><strong>${totalOrdersToday}</strong></div>
-                    <div class="stat-card">💰 Revenue <br><strong>${totalRevenue.toLocaleString()} UZS</strong></div>
-                    <div class="stat-card">👥 Users <br><strong>${uniqueUsers}</strong></div>
-                </div>
-                <h4>📋 Manage Products</h4>
-                <div id="adminProductsList"></div>
-                <button id="addProductBtn" style="background:#DA7B2C; border:none; padding:8px 16px; border-radius:40px; margin:12px 0; color:white;">+ Add new food</button>
-                <hr>
-                <h4>📦 Orders (manage status)</h4>
-                <div id="adminOrdersList" class="order-list-admin"></div>
-                <h4>👥 Registered users</h4>
-                <div id="adminUsersList"></div>
-            </div>
-        `;
-        renderAdminProducts();
-        renderAdminOrders();
-        renderAdminUsers();
-        document.getElementById("addProductBtn")?.addEventListener('click', () => {
-            let name = prompt("Food name");
-            let price = parseInt(prompt("Price UZS"));
-            if(name && price) {
-                let newId = Date.now();
-                menu.push({ id: newId, name, price, image: "🍲", available: true });
-                saveAllData();
-                renderMenu();
-                renderAdminProducts();
-            }
-        });
-    }
-
-    function renderAdminProducts() {
-        let container = document.getElementById("adminProductsList");
-        if(!container) return;
-        container.innerHTML = menu.map(p => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:#f9f6f0; margin-bottom:8px; padding:8px 12px; border-radius:40px;">
-                <span>${p.image} ${p.name} - ${p.price.toLocaleString()} UZS</span>
-                <div>
-                    <button class="status-btn" onclick="editProduct(${p.id})">✏️ Edit</button>
-                    <button class="status-btn" onclick="toggleAvailable(${p.id})">${p.available ? "✔️ Available" : "⛔ Sold out"}</button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    window.editProduct = (id) => {
-        let prod = menu.find(p => p.id === id);
-        let newPrice = prompt("New price UZS", prod.price);
-        if(newPrice) prod.price = parseInt(newPrice);
-        saveAllData();
-        renderMenu();
-        renderAdminProducts();
-    };
-    window.toggleAvailable = (id) => {
-        let prod = menu.find(p => p.id === id);
-        prod.available = !prod.available;
-        saveAllData();
-        renderMenu();
-        renderAdminProducts();
-    };
-
-    function renderAdminOrders() {
-        let container = document.getElementById("adminOrdersList");
-        if(!container) return;
-        container.innerHTML = orders.slice().reverse().map(o => `
-            <div style="background:#f3f0ea; border-radius:20px; padding:12px; margin-bottom:10px;">
-                <div><strong>${o.orderCode}</strong> | ${o.userName} | ${o.total.toLocaleString()} UZS</div>
-                <div>Items: ${o.items.map(i=>i.name).join(', ')}</div>
-                <div>Status: <span class="badge">${o.status}</span>
-                    <button class="status-btn" onclick="updateOrderStatus('${o.id}', 'ready')">✅ Ready</button>
-                    <button class="status-btn" onclick="updateOrderStatus('${o.id}', 'completed')">🎉 Completed</button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    window.updateOrderStatus = (orderId, newStatus) => {
-        let order = orders.find(o => o.id == orderId);
-        if(order) order.status = newStatus;
-        saveAllData();
-        renderAdminOrders();
-        renderUserOrders();
-    };
-
-    function renderAdminUsers() {
-        let container = document.getElementById("adminUsersList");
-        if(container) container.innerHTML = users.map(u => `<div>👤 ${u.name} | orders: ${u.totalOrders || 0} | bonus: ${getUserBonus()} UZS</div>`).join('');
-    }
-
-    function renderProfileInfo() {
-        if(!currentUser) return;
-        document.getElementById("profileName").innerText = currentUser.name;
-        document.getElementById("profileUserId").innerText = currentUser.id;
-        document.getElementById("userTotalOrders").innerText = currentUser.totalOrders || 0;
-        document.getElementById("bonusDisplay").innerHTML = `🎁 Bonus: ${getUserBonus()} UZS (5% cashback)`;
-        document.getElementById("userGreet").innerHTML = `👋 ${currentUser.name}, welcome!`;
-        renderUserOrders();
-    }
-
-    function renderUserOrders() {
-        let container = document.getElementById("userOrdersList");
-        if(!container) return;
-        let myOrders = orders.filter(o => o.userId === currentUser?.id).reverse();
-        if(myOrders.length === 0) container.innerHTML = "<p>No orders yet</p>";
-        else container.innerHTML = myOrders.map(o => `
-            <div style="background:#f9f3e9; border-radius: 20px; margin-top: 12px; padding: 12px;">
-                <strong>${o.orderCode}</strong>  |  ${o.total.toLocaleString()} UZS<br>
-                Status: <span class="badge">${o.status}</span>
-                <div style="font-size:13px;">📅 ${new Date(o.timestamp).toLocaleString()}</div>
-            </div>
-        `).join('');
-    }
-
-    function renderOrdersList() { renderUserOrders(); renderAdminOrders(); }
-
-    // navigation and ask name first
-    function askUserName() {
-        if(currentUser) return true;
-        let name = prompt("🍽️ Please enter your name to continue:", "Diyor");
-        if(name && name.trim()) {
-            registerUserIfNeeded(name.trim());
-            renderMenu();
-            renderCart();
-            renderProfileInfo();
-            return true;
-        }
-        return false;
-    }
-
-    function switchPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId + "Page").classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        if(pageId === 'home') document.querySelector('[data-nav="home"]').classList.add('active');
-        if(pageId === 'cart') document.querySelector('[data-nav="cart"]').classList.add('active');
-        if(pageId === 'profile') document.querySelector('[data-nav="profile"]').classList.add('active');
-        if(pageId === 'home') renderAdminPanel();
-        if(pageId === 'profile') renderProfileInfo();
-        if(pageId === 'cart') renderCart();
-    }
-
-    // init event
-    window.addEventListener('DOMContentLoaded', () => {
-        loadAllData();
-        if(!askUserName()) return;
-        renderMenu();
-        renderCart();
-        renderProfileInfo();
-        renderAdminPanel();
-        renderOrdersList();
-        // Toggle admin
-        const toggleBtn = document.getElementById("toggleAdminBtn");
-        toggleBtn.addEventListener('click', () => {
-            adminMode = !adminMode;
-            if(adminMode) toggleBtn.classList.add('active');
-            else toggleBtn.classList.remove('active');
-            renderAdminPanel();
-        });
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                let nav = btn.getAttribute('data-nav');
-                if(nav === 'home') switchPage('home');
-                if(nav === 'cart') switchPage('cart');
-                if(nav === 'profile') switchPage('profile');
+    function renderOrders() {
+        let container = document.getElementById("ordersList");
+        let userOrders = allOrders.filter(o => o.userPhone === currentUser.phone);
+        let html = "";
+        if(isAdmin()) {
+            html = `<div class="admin-badge">${t().adminPanel}</div>`;
+            allOrders.forEach(order => {
+                let itemsText = order.items.map(i => `${i.name} x${i.quantity}`).join(", ");
+                html += `<div class="order-card">
+                    <div><strong>#${order.id}</strong> | ${order.userName} (${order.userPhone})</div>
+                    <div>${itemsText}</div>
+                    <div>Jami: ${order.total.toLocaleString()} so‘m</div>
+                    <div><span class="status-badge ${order.status === 'Tayyor' ? 'status-ready' : 'status-prep'}">${order.status === 'Tayyor' ? t().orderReady : t().orderPreparing}</span></div>
+                    ${order.status !== 'Tayyor' ? `<button class="admin-ready-btn" data-id="${order.id}">${t().markReady}</button>` : ''}
+                </div>`;
             });
-        });
-        if(window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
+        } else {
+            if(userOrders.length === 0) html = "<p style='text-align:center; padding:40px;'>Buyurtmalar yo‘q</p>";
+            userOrders.forEach(order => {
+                let itemsText = order.items.map(i => `${i.name} x${i.quantity}`).join(", ");
+                html += `<div class="order-card">
+                    <div><strong>#${order.id}</strong> ${order.date}</div>
+                    <div>${itemsText}</div>
+                    <div>Jami: ${order.total.toLocaleString()} so‘m</div>
+                    <div><span class="status-badge ${order.status === 'Tayyor' ? 'status-ready' : 'status-prep'}">${order.status === 'Tayyor' ? t().orderReady : t().orderPreparing}</span></div>
+                </div>`;
+            });
         }
-    });
+        container.innerHTML = html;
+        if(isAdmin()) {
+            document.querySelectorAll('.admin-ready-btn').forEach(btn => {
+                btn.onclick = () => {
+                    let orderId = parseInt(btn.dataset.id);
+                    let order = allOrders.find(o => o.id === orderId);
+                    if(order) { order.status = "Tayyor"; saveAll(); renderOrders(); showToast("Buyurtma tayyor!"); }
+                };
+            });
+        }
+    }
+
+    function renderProfile() {
+        let bonus = currentUser.bonus || 0;
+        let adminHtml = isAdmin() ? '<div class="admin-badge">👑 Admin rejimi</div>' : '';
+        document.getElementById("profileContent").innerHTML = `
+            <div class="profile-card">
+                ${adminHtml}
+                <div class="profile-row"><strong>${t().name}:</strong> ${currentUser.name}</div>
+                <div class="profile-row"><strong>${t().phone}:</strong> ${currentUser.phone}</div>
+                <div class="profile-row"><strong>🎁 ${t().bonus}:</strong> ${bonus.toLocaleString()} so‘m</div>
+                <button id="editNameBtn" style="margin-top:16px; padding:10px; border-radius:30px; border:none; background:#e0e0e0; width:100%;">✏️ ${t().editName}</button>
+            </div>
+            <div class="lang-select">
+                <div class="lang-btn ${currentLang === 'uz' ? 'active-lang' : ''}" data-lang="uz">🇺🇿 O'zbekcha</div>
+                <div class="lang-btn ${currentLang === 'ru' ? 'active-lang' : ''}" data-lang="ru">🇷🇺 Русский</div>
+            </div>
+            <button id="logoutProfileBtn" class="logout-btn">🚪 ${t().logout}</button>
+        `;
+        document.getElementById("editNameBtn")?.addEventListener("click", () => {
+            let newName = prompt(t().editName, currentUser.name);
+            if(newName) { currentUser.name = newName; saveAll(); renderProfile(); }
+        });
+        document.querySelectorAll(".lang-btn").forEach(btn => {
+            btn.onclick = () => {
+                currentLang = btn.dataset.lang;
+                localStorage.setItem("prandium_lang", currentLang);
+                renderMenu();
+                renderCart();
+                renderOrders();
+                renderProfile();
+                showToast(currentLang === "uz" ? "Til o‘zbekchaga o‘zgartirildi" : "Язык изменен на русский");
+            };
+        });
+        document.getElementById("logoutProfileBtn")?.addEventListener("click", () => {
+            localStorage.removeItem("prandium_user");
+            location.reload();
+        });
+    }
+
+    function initApp() {
+        loadData();
+        renderMenu();
+        renderCart();
+        renderOrders();
+        renderProfile();
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.onclick = () => {
+                let pageId = item.dataset.page;
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+                document.getElementById(pageId).classList.add('active-page');
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+                if(pageId === 'menuPage') renderMenu();
+                if(pageId === 'cartPage') renderCart();
+                if(pageId === 'ordersPage') renderOrders();
+                if(pageId === 'profilePage') renderProfile();
+            };
+        });
+        document.getElementById("checkoutBtn").onclick = placeOrder;
+    }
+
+    function showLogin() {
+        let div = document.createElement("div");
+        div.className = "login-overlay";
+        div.innerHTML = `<div class="login-card"><h3>Ro‘yxatdan o‘tish</h3><input id="regName" placeholder="Ism" value="Abulloh"><input id="regPhone" placeholder="+998 xx xxx xx xx"><button id="doReg" class="login-btn">Kirish</button></div>`;
+        document.body.appendChild(div);
+        document.getElementById("doReg").onclick = () => {
+            let name = document.getElementById("regName").value.trim();
+            let phone = document.getElementById("regPhone").value.trim();
+            if(!name || !phone) { showToast("Ism va telefon kiriting", true); return; }
+            currentUser = { name, phone, bonus: 0 };
+            saveAll();
+            div.remove();
+            initApp();
+        };
+    }
+
+    setTimeout(() => {
+        let splash = document.getElementById("splash");
+        splash.style.opacity = "0";
+        setTimeout(() => {
+            splash.style.display = "none";
+            document.getElementById("app").style.display = "block";
+            let u = localStorage.getItem("prandium_user");
+            if(u) { initApp(); }
+            else { showLogin(); }
+        }, 500);
+    }, 3000);
 </script>
 </body>
 </html>
