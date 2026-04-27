@@ -155,119 +155,127 @@
         };
         input.click();
     }
-
-    function renderMenu() {
-        let container = document.getElementById("menuList");
-        let availableFoods = foods.filter(f => f.available);
-        
-        let html = "";
-        
-        // Admin uchun qo'shish formasi
-        if(isAdmin()) {
-            html += `
-                <div class="add-food-form">
-                    <h4>➕ Yangi ovqat qo'shish</h4>
-                    <input type="text" id="newFoodName" placeholder="Ovqat nomi">
-                    <input type="number" id="newFoodPrice" placeholder="Narxi (so'm)">
-                    <input type="text" id="newFoodUrl" placeholder="Rasm URL yoki galereyadan tanlang">
-                    <button id="galleryBtn" class="btn-gallery">📷 Galereyadan tanlash</button>
-                    <div id="imagePreviewDiv"></div>
-                    <button id="addFoodBtn" class="btn-admin-add">✅ Qo'shish</button>
+function renderMenu() {
+    let container = document.getElementById("menuList");
+    
+    // HAMMA available = true bo'lgan ovqatlar (admin qo'shganlar ham)
+    let availableFoods = foods.filter(f => f.available === true);
+    
+    let html = "";
+    
+    // Admin uchun qo'shish formasi
+    if(isAdmin()) {
+        html = `<div class="add-food-form">
+            <h4>➕ Yangi ovqat qo'shish</h4>
+            <input type="text" id="newFoodName" placeholder="Ovqat nomi">
+            <input type="number" id="newFoodPrice" placeholder="Narxi (so'm)">
+            <input type="text" id="newFoodUrl" placeholder="Rasm URL yoki galereyadan">
+            <button id="galleryBtn" class="btn-gallery">📷 Galereyadan tanlash</button>
+            <div id="imagePreviewDiv"></div>
+            <button id="addFoodBtn" class="btn-admin-add">✅ Qo'shish</button>
+        </div>`;
+    }
+    
+    // Menyu qismi
+    if(availableFoods.length === 0) {
+        html += "<p style='text-align:center; padding:40px;'>🍽️ Menyu bo'sh</p>";
+    } else {
+        availableFoods.forEach(f => {
+            html += `<div class="food-card">
+                <img class="food-img" src="${f.image}" onerror="this.src='https://placehold.co/100x100?text=Food'">
+                <div class="food-info">
+                    <div class="food-name">${f.name}</div>
+                    <div class="food-price">${f.price.toLocaleString()} so‘m</div>
                 </div>
-            `;
-        }
-        
-        if(availableFoods.length === 0) {
-            html += "<p style='text-align:center; padding:40px;'>Menyu bo'sh</p>";
-        } else {
-            availableFoods.forEach(f => {
-                html += `
-                    <div class="food-card">
-                        <img class="food-img" src="${f.image}" onerror="this.src='https://placehold.co/100x100?text=Food'">
-                        <div class="food-info">
-                            <div class="food-name">${f.name}</div>
-                            <div class="food-price">${f.price.toLocaleString()} so‘m</div>
-                        </div>
-                        <button class="btn-add" data-id="${f.id}">Qo‘shish</button>
-                        ${isAdmin() ? `
-                            <button class="toggle-btn" data-id="${f.id}" data-available="${f.available}">${f.available ? '🔴 O‘chirish' : '🟢 Yoqish'}</button>
-                        ` : ""}
-                    </div>
-                `;
-            });
-        }
-        
-        container.innerHTML = html;
-        
-        // Qo'shish tugmalari
-        document.querySelectorAll('.btn-add').forEach(btn => {
-            btn.onclick = () => addToCart(parseInt(btn.dataset.id));
+                <button class="btn-add" data-id="${f.id}">Qo‘shish</button>
+                ${isAdmin() ? `<button class="toggle-btn" data-id="${f.id}" data-available="${f.available}">${f.available ? '🔴 O‘chirish' : '🟢 Yoqish'}</button>` : ""}
+            </div>`;
+        });
+    }
+    
+    container.innerHTML = html;
+    
+    // Qo'shish tugmalari
+    document.querySelectorAll('.btn-add').forEach(btn => {
+        btn.onclick = () => addToCart(parseInt(btn.dataset.id));
+    });
+    
+    // Admin toggle (o'chirish/yoqish)
+    if(isAdmin()) {
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.onclick = () => {
+                let id = parseInt(btn.dataset.id);
+                let food = foods.find(f => f.id === id);
+                if(food) {
+                    food.available = !food.available;
+                    saveAll();
+                    renderMenu();
+                    showToast(food.available ? `${food.name} yoqildi` : `${food.name} o‘chirildi`);
+                }
+            };
         });
         
-        if(isAdmin()) {
-            // O'chirish/yoqish tugmalari
-            document.querySelectorAll('.toggle-btn').forEach(btn => {
-                btn.onclick = () => {
-                    let id = parseInt(btn.dataset.id);
-                    let food = foods.find(f => f.id === id);
-                    if(food) {
-                        food.available = !food.available;
-                        saveAll();
-                        renderMenu();
-                        showToast(food.available ? `${food.name} yoqildi` : `${food.name} o‘chirildi`);
-                    }
-                };
-            });
-            
-            // Galereya tanlash
-            let currentImageUrl = "";
-            document.getElementById("galleryBtn")?.addEventListener("click", () => {
-                openImagePicker((dataUrl) => {
-                    currentImageUrl = dataUrl;
-                    document.getElementById("newFoodUrl").value = dataUrl.substring(0, 50) + "...";
-                    let preview = document.getElementById("imagePreviewDiv");
-                    preview.innerHTML = `<img src="${dataUrl}" class="image-preview">`;
-                });
-            });
-            
-            // URL yozilganda preview
-            document.getElementById("newFoodUrl")?.addEventListener("input", (e) => {
-                let url = e.target.value;
-                if(url.startsWith("http")) {
-                    let preview = document.getElementById("imagePreviewDiv");
-                    preview.innerHTML = `<img src="${url}" class="image-preview" onerror="this.src='https://placehold.co/100x100?text=Error'">`;
+        // Galereya
+        let currentImageUrl = "";
+        document.getElementById("galleryBtn")?.addEventListener("click", () => {
+            let input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/*";
+            input.onchange = (e) => {
+                let file = e.target.files[0];
+                if(file) {
+                    let reader = new FileReader();
+                    reader.onload = (ev) => {
+                        currentImageUrl = ev.target.result;
+                        document.getElementById("newFoodUrl").value = "Rasm tanlandi";
+                        document.getElementById("imagePreviewDiv").innerHTML = `<img src="${currentImageUrl}" class="image-preview" style="width:80px;height:80px;border-radius:16px;margin-top:8px;">`;
+                    };
+                    reader.readAsDataURL(file);
                 }
-            });
+            };
+            input.click();
+        });
+        
+        // URL yozilganda preview
+        document.getElementById("newFoodUrl")?.addEventListener("input", (e) => {
+            let url = e.target.value;
+            if(url.startsWith("http")) {
+                document.getElementById("imagePreviewDiv").innerHTML = `<img src="${url}" class="image-preview" style="width:80px;height:80px;border-radius:16px;margin-top:8px;" onerror="this.src='https://placehold.co/100x100?text=Error'">`;
+            }
+        });
+        
+        // Yangi ovqat qo'shish
+        document.getElementById("addFoodBtn")?.addEventListener("click", () => {
+            let name = document.getElementById("newFoodName").value.trim();
+            let price = parseInt(document.getElementById("newFoodPrice").value);
+            let image = document.getElementById("newFoodUrl").value.trim();
             
-            // Yangi ovqat qo'shish
-            document.getElementById("addFoodBtn")?.addEventListener("click", () => {
-                let name = document.getElementById("newFoodName").value.trim();
-                let price = parseInt(document.getElementById("newFoodPrice").value);
-                let image = document.getElementById("newFoodUrl").value.trim();
-                
-                if(!name || isNaN(price)) {
-                    showToast("Nomi va narxni kiriting", true);
-                    return;
-                }
-                if(!image) {
-                    image = "https://placehold.co/100x100?text=Food";
-                }
-                
-                let newId = Date.now();
-                foods.push({ id: newId, name, price, image, available: true });
-                saveAll();
-                renderMenu();
-                showToast(`${name} qo'shildi`);
-                
-                // Tozalash
-                document.getElementById("newFoodName").value = "";
-                document.getElementById("newFoodPrice").value = "";
-                document.getElementById("newFoodUrl").value = "";
-                document.getElementById("imagePreviewDiv").innerHTML = "";
-            });
-        }
+            if(!name || isNaN(price)) {
+                showToast("Nomi va narxni kiriting", true);
+                return;
+            }
+            if(image === "Rasm tanlandi" && currentImageUrl) {
+                image = currentImageUrl;
+            }
+            if(!image) {
+                image = "https://placehold.co/100x100?text=Food";
+            }
+            
+            let newId = Date.now();
+            foods.push({ id: newId, name, price, image, available: true });
+            saveAll();
+            renderMenu();
+            showToast(`${name} qo'shildi`);
+            
+            // Tozalash
+            document.getElementById("newFoodName").value = "";
+            document.getElementById("newFoodPrice").value = "";
+            document.getElementById("newFoodUrl").value = "";
+            document.getElementById("imagePreviewDiv").innerHTML = "";
+            currentImageUrl = "";
+        });
     }
-
+                               }
     function addToCart(id) {
         let food = foods.find(f => f.id === id && f.available);
         if(!food) return;
