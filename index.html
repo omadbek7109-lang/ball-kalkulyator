@@ -726,88 +726,83 @@
             `;
         }
 
-        function showRoulette() {
-            const foods = FOODS.slice(0, 6);
-            let currentAngle = 0;
-            let spinning = false;
-            
-            const modal = document.createElement('div');
-            modal.className = 'roulette-modal';
-            modal.innerHTML = `
-                <div class="card" style="position: relative; width: 90%; max-width: 350px; text-align: center;">
-                    <div class="wheel-wrapper">
-                        <canvas id="wheelCanvas" width="300" height="300"></canvas>
-                        <div class="pointer"></div>
-                    </div>
-                    <button class="btn-primary" id="spinWheelBtn" style="margin-top: 20px;">🎡 Aylantirish</button>
-                    <button class="btn-secondary" id="closeRouletteBtn" style="margin-top: 12px;">Yopish</button>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            
-            const canvas = modal.querySelector('#wheelCanvas');
-            const ctx = canvas.getContext('2d');
-            const size = 300;
-            const angles = (Math.PI * 2) / foods.length;
-            
-            function drawWheel() {
-                let start = currentAngle;
-                for (let i = 0; i < foods.length; i++) {
-                    const end = start + angles;
-                    ctx.beginPath();
-                    ctx.fillStyle = i % 2 === 0 ? '#1b3b1f' : '#2e7d32';
-                    ctx.moveTo(size/2, size/2);
-                    ctx.arc(size/2, size/2, size/2, start, end);
-                    ctx.fill();
-                    ctx.save();
-                    ctx.translate(size/2, size/2);
-                    ctx.rotate(start + angles/2);
-                    ctx.fillStyle = 'white';
-                    ctx.font = 'bold 12px Inter';
-                    ctx.fillText((currentLang === 'uz' ? foods[i].name_uz : foods[i].name_ru).slice(0, 8), 65, 8);
-                    ctx.restore();
-                    start = end;
-                }
-            }
-            
-            drawWheel();
-            
-            modal.querySelector('#spinWheelBtn').onclick = () => {
-                if (spinning) return;
-                spinning = true;
-                const spins = 20 + Math.random() * 10;
-                const finalIndex = Math.floor(Math.random() * foods.length);
-                const targetAngle = (finalIndex * angles) + (angles/2);
-                
-                let startTime = null;
-                const duration = 2000;
-                
-                function animateSpin(timestamp) {
-                    if (!startTime) startTime = timestamp;
-                    const elapsed = timestamp - startTime;
-                    const progress = Math.min(1, elapsed / duration);
-                    const easeOut = 1 - Math.pow(1 - progress, 3);
-                    currentAngle = (currentAngle + spins * angles * easeOut) % (Math.PI * 2);
-                    drawWheel();
-                    
-                    if (progress < 1) {
-                        requestAnimationFrame(animateSpin);
-                    } else {
-                        spinning = false;
-                        const result = foods[finalIndex];
-                        addToCart(result);
-                        modal.remove();
-                        renderCurrentScreen();
-                    }
-                }
-                
-                requestAnimationFrame(animateSpin);
-            };
-            
-            modal.querySelector('#closeRouletteBtn').onclick = () => modal.remove();
-        }
+        function showRoulette() { let velocity = 0;
+let friction = 0.985;
+let spinning = false;
 
+function spinAnimation() {
+    if (!spinning) return;
+
+    currentAngle += velocity;
+    velocity *= friction;
+
+    drawWheel();
+
+    if (velocity < 0.002) {
+        spinning = false;
+
+        // 🎯 REAL RESULT (pointer asosida)
+        const normalized = currentAngle % (Math.PI * 2);
+        const index = Math.floor((foods.length - (normalized / (Math.PI*2)) * foods.length)) % foods.length;
+
+        const result = foods[index];
+
+        setTimeout(() => {
+            addToCart(result);
+            modal.remove();
+            renderAllScreens();
+        }, 500);
+
+        return;
+    }
+
+    requestAnimationFrame(spinAnimation);
+}
+
+// 🎡 BUTTON
+modal.querySelector('#spinWheelBtn').onclick = () => {
+    if (spinning) return;
+
+    velocity = Math.random() * 0.3 + 0.25;
+    spinning = true;
+
+    spinAnimation();
+}; 
+    function drawWheel() {
+    ctx.clearRect(0, 0, size, size);
+
+    let start = currentAngle;
+
+    for (let i = 0; i < foods.length; i++) {
+        const end = start + angles;
+
+        // segment
+        ctx.beginPath();
+        ctx.fillStyle = i % 2 === 0 ? '#1b3b1f' : '#2e7d32';
+        ctx.moveTo(size/2, size/2);
+        ctx.arc(size/2, size/2, size/2, start, end);
+        ctx.fill();
+
+        // text
+        ctx.save();
+        ctx.translate(size/2, size/2);
+        ctx.rotate(start + angles/2);
+
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 13px sans-serif';
+
+        const text = currentLang === 'uz' 
+            ? foods[i].name_uz 
+            : foods[i].name_ru;
+
+        ctx.fillText(text.slice(0, 8), 70, 5);
+
+        ctx.restore();
+
+        start = end;
+    }
+            }                             
+            
         function renderAllScreens() {
 
     const container = document.getElementById('screens');
