@@ -809,119 +809,170 @@
         }
 
         function renderAllScreens() {
-            const container = document.getElementById('screens');
-            container.innerHTML = `
-                ${renderHome()}
-                ${renderCart()}
-                ${renderOrders()}
-                ${renderProfile()}
-                ${renderPayment()}
-                ${renderSuccess()}
-                
-                <div class="bottom-nav">
-                    <button class="nav-item ${currentScreen === 'home' ? 'active' : ''}" data-nav="home">🏠 ${currentLang === 'uz' ? 'Bosh' : 'Глав'}</button>
-                    <button class="nav-item ${currentScreen === 'cart' ? 'active' : ''}" data-nav="cart">🛒 ${currentLang === 'uz' ? 'Savat' : 'Корз'}</button>
-                    <button class="nav-item ${currentScreen === 'orders' ? 'active' : ''}" data-nav="orders">📋 ${currentLang === 'uz' ? 'Buyurtma' : 'Заказы'}</button>
-                    <button class="nav-item ${currentScreen === 'profile' ? 'active' : ''}" data-nav="profile">👤 ${currentLang === 'uz' ? 'Profil' : 'Профиль'}</button>
-                </div>
-                <button class="fab" id="rouletteFab">🎡</button>
-            `;
-            
-            // Attach events
-            document.querySelectorAll('.nav-item').forEach(btn => {
-                btn.onclick = () => {
-                    currentScreen = btn.dataset.nav;
-                    renderAllScreens();
-                };
-            });
-            
-            document.getElementById('rouletteFab').onclick = showRoulette;
-            
-            // Category filters
-            document.querySelectorAll('.chip').forEach(chip => {
-                chip.onclick = () => {
-                    currentCategory = chip.dataset.cat;
-                    renderAllScreens();
-                };
-            });
-            
-            // Add to cart buttons
-            document.querySelectorAll('.add-btn').forEach(btn => {
-                btn.onclick = () => {
-                    const food = FOODS.find(f => f.id === parseInt(btn.dataset.id));
-                    if (food) addToCart(food);
-                };
-            });
-            
-            // Cart quantity buttons
-            document.querySelectorAll('.qty-btn').forEach(btn => {
-                btn.onclick = () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    const delta = parseInt(btn.dataset.delta);
-                    if (cart[idx]) {
-                        cart[idx].quantity += delta;
-                        if (cart[idx].quantity <= 0) cart.splice(idx, 1);
-                        saveData();
-                        renderAllScreens();
-                    }
-                };
-            });
-            
-            // Cashback toggle
-            const toggle = document.getElementById('useCashbackToggle');
-            if (toggle) {
-                toggle.onchange = (e) => {
-                    useCashback = e.target.checked;
-                    renderAllScreens();
-                };
+
+    const container = document.getElementById('screens');
+    if (!container) return;
+
+    // 🔴 AGAR USER YO‘Q BO‘LSA HECH NIMA CHIQMASIN
+    if (!currentUser) {
+        container.innerHTML = "";
+        return;
+    }
+
+    // 🔴 HAMMA SCREENLARNI RENDER QILAMIZ
+    container.innerHTML = `
+        ${renderHome()}
+        ${renderCart()}
+        ${renderOrders()}
+        ${renderProfile()}
+        ${renderPayment()}
+        ${renderSuccess()}
+
+        <div class="bottom-nav">
+            <button class="nav-item" data-nav="home">🏠 Bosh</button>
+            <button class="nav-item" data-nav="cart">🛒 Savat</button>
+            <button class="nav-item" data-nav="orders">📋 Buyurtma</button>
+            <button class="nav-item" data-nav="profile">👤 Profil</button>
+        </div>
+
+        <button class="fab" id="rouletteFab">🎡</button>
+    `;
+
+    // 🔴 ACTIVE SCREENNI KO‘RSATAMIZ
+    document.querySelectorAll('.screen').forEach(el => {
+        el.classList.remove('active');
+    });
+
+    const activeScreen = document.getElementById(currentScreen + "Screen");
+    if (activeScreen) {
+        activeScreen.classList.add('active');
+    } else {
+        // fallback
+        document.getElementById("homeScreen")?.classList.add("active");
+    }
+
+    // 🔴 NAVIGATION CLICK
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.onclick = () => {
+            currentScreen = btn.dataset.nav;
+            renderAllScreens();
+        };
+    });
+
+    // 🔴 CATEGORY FILTER
+    document.querySelectorAll('.chip').forEach(chip => {
+        chip.onclick = () => {
+            currentCategory = chip.dataset.cat;
+            renderAllScreens();
+        };
+    });
+
+    // 🔴 ADD TO CART
+    document.querySelectorAll('.add-btn').forEach(btn => {
+        btn.onclick = () => {
+            const food = FOODS.find(f => f.id === parseInt(btn.dataset.id));
+            if (food) addToCart(food);
+        };
+    });
+
+    // 🔴 CART +/- BUTTON
+    document.querySelectorAll('.qty-btn').forEach(btn => {
+        btn.onclick = () => {
+            const idx = parseInt(btn.dataset.idx);
+            const delta = parseInt(btn.dataset.delta);
+
+            if (cart[idx]) {
+                cart[idx].quantity += delta;
+                if (cart[idx].quantity <= 0) cart.splice(idx, 1);
+                saveData();
+                renderAllScreens();
             }
-            
-            // Payment button
-            const paymentBtn = document.getElementById('paymentBtn');
-            if (paymentBtn) paymentBtn.onclick = () => { currentScreen = 'payment'; renderAllScreens(); };
-            
-            // Confirm payment
-            const confirmBtn = document.getElementById('confirmPaymentBtn');
-            if (confirmBtn) {
-                confirmBtn.onclick = () => {
-                    const earned = getCashbackAmount();
-                    cashbackBalance += earned;
-                    if (useCashback) cashbackBalance = Math.max(0, cashbackBalance - getTotalCart());
-                    
-                    const newOrder = {
-                        id: Date.now(),
-                        items: [...cart],
-                        total: getTotalCart(),
-                        date: new Date().toLocaleString(),
-                        status: "Qabul qilindi"
-                    };
-                    orders.unshift(newOrder);
-                    cart = [];
-                    useCashback = false;
-                    saveData();
-                    currentScreen = 'success';
-                    renderAllScreens();
-                };
+        };
+    });
+
+    // 🔴 CASHBACK SWITCH
+    const toggle = document.getElementById('useCashbackToggle');
+    if (toggle) {
+        toggle.onchange = (e) => {
+            useCashback = e.target.checked;
+            renderAllScreens();
+        };
+    }
+
+    // 🔴 PAYMENT
+    const paymentBtn = document.getElementById('paymentBtn');
+    if (paymentBtn) {
+        paymentBtn.onclick = () => {
+            currentScreen = 'payment';
+            renderAllScreens();
+        };
+    }
+
+    // 🔴 CONFIRM PAYMENT
+    const confirmBtn = document.getElementById('confirmPaymentBtn');
+    if (confirmBtn) {
+        confirmBtn.onclick = () => {
+
+            const earned = getCashbackAmount();
+            cashbackBalance += earned;
+
+            if (useCashback) {
+                cashbackBalance = Math.max(0, cashbackBalance - getTotalCart());
             }
-            
-            // New order button
-            const newOrderBtn = document.getElementById('newOrderBtn');
-            if (newOrderBtn) newOrderBtn.onclick = () => { currentScreen = 'home'; renderAllScreens(); };
-            
-            // Language selector
-            const langSelect = document.getElementById('langSelect');
-            if (langSelect) {
-                langSelect.onchange = (e) => {
-                    currentLang = e.target.value;
-                    saveData();
-                    renderAllScreens();
-                };
-            }
-            
-            // Support button
-            const supportBtn = document.getElementById('supportBtn');
-            if (supportBtn) supportBtn.onclick = () => window.open('https://t.me/CampusEatsSupport', '_blank');
-        }
+
+            const newOrder = {
+                id: Date.now(),
+                items: [...cart],
+                total: getTotalCart(),
+                date: new Date().toLocaleString(),
+                status: "Qabul qilindi"
+            };
+
+            orders.unshift(newOrder);
+
+            cart = [];
+            useCashback = false;
+
+            saveData();
+
+            currentScreen = 'success';
+            renderAllScreens();
+        };
+    }
+
+    // 🔴 NEW ORDER
+    const newOrderBtn = document.getElementById('newOrderBtn');
+    if (newOrderBtn) {
+        newOrderBtn.onclick = () => {
+            currentScreen = 'home';
+            renderAllScreens();
+        };
+    }
+
+    // 🔴 LANGUAGE
+    const langSelect = document.getElementById('langSelect');
+    if (langSelect) {
+        langSelect.onchange = (e) => {
+            currentLang = e.target.value;
+            saveData();
+            renderAllScreens();
+        };
+    }
+
+    // 🔴 SUPPORT
+    const supportBtn = document.getElementById('supportBtn');
+    if (supportBtn) {
+        supportBtn.onclick = () => {
+            window.open('https://t.me/CampusEatsSupport', '_blank');
+        };
+    }
+
+    // 🔴 ROULETTE
+    const fab = document.getElementById('rouletteFab');
+    if (fab) {
+        fab.onclick = showRoulette;
+    }
+}
         
         // ========== INIT ==========
         loadData();
