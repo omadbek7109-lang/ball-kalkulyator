@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Cafeteria Pre-order | SmartMenu</title>
+    <title>CampusEats | Pre-order University Cafeteria</title>
     <style>
         * {
             margin: 0;
@@ -13,187 +13,285 @@
         }
 
         body {
-            background-color: #0a0a0a;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
-            color: #ededed;
-            padding: 20px 16px 80px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #0f0f0f 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', Helvetica, sans-serif;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* App Container */
+        .app-container {
             max-width: 500px;
             margin: 0 auto;
+            padding: 20px 16px 80px;
+            position: relative;
         }
 
-        /* Modern scroll */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1c1c1c;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2e7d32;
-            border-radius: 10px;
-        }
-
-        /* Typography */
-        h1, h2, h3, p {
-            letter-spacing: -0.02em;
-        }
-
-        /* App container */
+        /* Screens */
         .screen {
             display: none;
-            animation: fadeIn 0.25s ease;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .screen.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px);}
-            to { opacity: 1; transform: translateY(0);}
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* Navigation tabs */
-        .bottom-nav {
+        /* Auth Overlay */
+        .auth-overlay {
             position: fixed;
-            bottom: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 32px);
-            max-width: 450px;
-            background: rgba(18, 18, 18, 0.9);
-            backdrop-filter: blur(20px);
-            border-radius: 40px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            z-index: 1000;
             display: flex;
-            justify-content: space-between;
-            padding: 8px 20px;
-            border: 0.5px solid rgba(46, 125, 50, 0.3);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            z-index: 100;
-        }
-        .nav-item {
-            background: transparent;
-            border: none;
-            color: #aaa;
-            font-size: 12px;
-            font-weight: 500;
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 4px;
-            padding: 6px 12px;
-            border-radius: 30px;
-            transition: all 0.2s;
-            cursor: pointer;
+            justify-content: center;
+            padding: 20px;
+            transition: all 0.3s;
         }
-        .nav-item.active {
-            color: #4caf50;
-            background: rgba(76, 175, 80, 0.12);
-        }
-        .nav-icon {
-            font-size: 22px;
+
+        .auth-overlay.hidden {
+            display: none;
         }
 
         /* Cards */
         .card {
-            background: #141414;
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(10px);
             border-radius: 28px;
-            padding: 18px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-            border: 0.5px solid #2a2a2a;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(46, 125, 50, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        /* Inputs */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #aaa;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: #1e1e1e;
+            border: 1.5px solid #2a2a2a;
+            border-radius: 16px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4caf50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .error-message {
+            color: #ff5252;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
         }
 
         /* Buttons */
         .btn-primary {
-            background: #2e7d32;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
             border: none;
-            padding: 14px 18px;
+            padding: 14px 24px;
             border-radius: 60px;
             font-weight: 600;
             font-size: 16px;
             color: white;
             width: 100%;
             cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 4px 12px rgba(46,125,50,0.3);
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
         }
-        .btn-primary:active { transform: scale(0.97); background: #1b5e20;}
 
-        .btn-outline {
+        .btn-primary:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(46, 125, 50, 0.2);
+        }
+
+        .btn-secondary {
             background: transparent;
-            border: 1px solid #2e7d32;
-            padding: 10px 16px;
-            border-radius: 32px;
+            border: 1.5px solid #2e7d32;
+            padding: 12px 20px;
+            border-radius: 60px;
             color: #4caf50;
             font-weight: 500;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
-        /* language switch */
-        .lang-switch {
-            display: flex;
-            gap: 8px;
-            justify-content: flex-end;
-            margin-bottom: 20px;
+        .btn-secondary:active {
+            transform: scale(0.97);
+            background: rgba(76, 175, 80, 0.1);
         }
-        .lang-btn {
-            background: #1e1e1e;
-            border: none;
-            padding: 6px 14px;
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
+            max-width: 450px;
+            background: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(20px);
             border-radius: 40px;
-            color: #bbb;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        .lang-btn.active {
-            background: #2e7d32;
-            color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 20px;
+            border: 1px solid rgba(46, 125, 50, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            z-index: 100;
         }
 
-        /* food grid */
+        .nav-item {
+            background: transparent;
+            border: none;
+            color: #888;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item.active {
+            color: #4caf50;
+            background: rgba(76, 175, 80, 0.15);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(46, 125, 50, 0.4);
+            transition: all 0.3s;
+            z-index: 99;
+            border: none;
+            font-size: 28px;
+        }
+
+        .fab:active {
+            transform: scale(0.92);
+        }
+
+        /* Food Grid */
         .food-grid {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
+
         .food-item {
-            background: #101010;
+            background: #111;
             border-radius: 24px;
             display: flex;
             gap: 16px;
             align-items: center;
             padding: 12px;
-            border: 0.5px solid #2c2c2c;
+            border: 1px solid #2a2a2a;
+            transition: all 0.2s;
         }
+
+        .food-item:hover {
+            transform: translateX(4px);
+            border-color: #4caf50;
+        }
+
         .food-img {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             border-radius: 20px;
             object-fit: cover;
-            background: #1f1f1f;
         }
+
         .food-info {
             flex: 1;
         }
+
         .food-name {
             font-weight: 700;
             font-size: 17px;
+            margin-bottom: 4px;
         }
+
         .food-price {
             color: #4caf50;
             font-weight: 600;
-            margin-top: 4px;
+            font-size: 16px;
         }
+
         .add-btn {
             background: #2e7d32;
             border: none;
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             border-radius: 30px;
             font-size: 24px;
             color: white;
             cursor: pointer;
+            transition: all 0.2s;
         }
+
+        .add-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* Categories */
         .category-filter {
             display: flex;
             gap: 12px;
@@ -201,498 +299,667 @@
             margin-bottom: 20px;
             padding-bottom: 4px;
         }
+
         .chip {
-            background: #1f1f1f;
-            padding: 8px 18px;
+            background: #1a1a1a;
+            padding: 10px 20px;
             border-radius: 40px;
             white-space: nowrap;
             font-size: 14px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s;
+            border: 1px solid #2a2a2a;
         }
+
         .chip.active {
             background: #2e7d32;
             color: white;
+            border-color: #4caf50;
         }
 
-        /* roulette wheel */
-        .wheel-container {
-            position: relative;
-            width: 280px;
-            height: 280px;
-            margin: 20px auto;
+        /* Roulette */
+        .roulette-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
         }
+
+        .roulette-modal.hidden {
+            display: none;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
         canvas {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
         }
-        .spin-btn {
+
+        .pointer {
             position: absolute;
-            top: 50%;
+            top: -20px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            background: #2e7d32;
-            border: none;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            font-weight: bold;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #ff5722;
             z-index: 10;
         }
-        .timer-text {
-            text-align: center;
-            margin-top: 12px;
-            font-family: monospace;
-            font-size: 18px;
-        }
 
-        /* cart item */
-        .cart-item {
+        /* Toggle Switch */
+        .toggle-switch {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .qty-control {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        .qty-btn {
-            background: #2a2a2a;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 30px;
-            font-size: 18px;
-            color: white;
-            cursor: pointer;
+            padding: 12px 0;
         }
 
-        /* Responsive */
-        @media (max-width: 450px) {
-            body { padding: 16px 12px 80px; }
+        .toggle-label {
+            font-weight: 500;
+        }
+
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #3a3a3a;
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4caf50;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Utility */
+        .text-green {
+            color: #4caf50;
+        }
+
+        .mb-2 {
+            margin-bottom: 8px;
+        }
+
+        .mb-3 {
+            margin-bottom: 12px;
         }
     </style>
 </head>
 <body>
+    <div class="app-container">
+        <div id="screens"></div>
+    </div>
 
-<div id="app"></div>
+    <script>
+        // ========== DATABASE ==========
+        const FOODS = [
+            { id: 1, name_uz: "Lagman", name_ru: "Лагман", price: 28000, category: "Osh", image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=200&h=200&fit=crop", desc_uz: "Mazali uy lagmani", desc_ru: "Вкусный домашний лагман" },
+            { id: 2, name_uz: "Palov", name_ru: "Плов", price: 32000, category: "Osh", image: "https://images.unsplash.com/photo-1549304413-5b195f6d8b4e?w=200&h=200&fit=crop", desc_uz: "An'anaviy to'y palovi", desc_ru: "Традиционный плов" },
+            { id: 3, name_uz: "Burger", name_ru: "Бургер", price: 25000, category: "Fast food", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop", desc_uz: "Double beef burger", desc_ru: "Двойной бургер" },
+            { id: 4, name_uz: "Pizza", name_ru: "Пицца", price: 45000, category: "Fast food", image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200&h=200&fit=crop", desc_uz: "Pepperoni pizza", desc_ru: "Пицца Пепперони" },
+            { id: 5, name_uz: "Somsa", name_ru: "Самса", price: 8000, category: "Fast food", image: "https://images.unsplash.com/photo-1655892611559-84fe00b6e026?w=200&h=200&fit=crop", desc_uz: "Tandir somsa", desc_ru: "Тандыр самса" },
+            { id: 6, name_uz: "Moxito", name_ru: "Мохито", price: 12000, category: "Ichimliklar", image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=200&h=200&fit=crop", desc_uz: "Yalpizli moxito", desc_ru: "Мохито с мятой" },
+            { id: 7, name_uz: "Sharbat", name_ru: "Сок", price: 7000, category: "Ichimliklar", image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=200&h=200&fit=crop", desc_uz: "Tabiiy meva sharbati", desc_ru: "Натуральный сок" }
+        ];
 
-<script>
-    // ---------- MULTI LANGUAGE DICTIONARY ----------
-    const translations = {
-        uz: {
-            greeting: "Salom",
-            balance: "Cashback balans",
-            randomBtn: "🎡 Nima yeyishni bilmayapsiz?",
-            categories: ["Barchasi", "Osh", "Fast food", "Ichimliklar"],
-            orderBtn: "Buyurtma berish", spinAgain: "Yana aylantirish",
-            cartTitle: "Savat", total: "Jami", cashbackInfo: "Cashback (5%)", finalPrice: "Yakuniy",
-            payment: "To‘lovga o‘tish", paymentOptions: "To‘lov usuli", confirmPay: "To‘lovni tasdiqlash",
-            successMsg: "To‘lov muvaffaqiyatli! +5% cashback qo‘shildi",
-            ordersTitle: "Buyurtmalar tarixi", statusPending: "Qabul qilindi", statusPrep: "Tayyorlanmoqda", statusReady: "Tayyor",
-            profileTitle: "Profil", nameLabel: "Ism", phoneLabel: "Telefon", cashbackLabel: "Cashback",
-            language: "Til", addToCart: "Qo‘shish"
-        },
-        ru: {
-            greeting: "Здравствуйте",
-            balance: "Кешбэк баланс",
-            randomBtn: "🎡 Не знаете, что поесть?",
-            categories: ["Все", "Плов", "Фастфуд", "Напитки"],
-            orderBtn: "Заказать", spinAgain: "Крутить снова",
-            cartTitle: "Корзина", total: "Итого", cashbackInfo: "Кешбэк (5%)", finalPrice: "Итоговая цена",
-            payment: "Перейти к оплате", paymentOptions: "Способ оплаты", confirmPay: "Подтвердить оплату",
-            successMsg: "Оплата успешна! +5% кешбэк начислен",
-            ordersTitle: "История заказов", statusPending: "Принят", statusPrep: "Готовится", statusReady: "Готов",
-            profileTitle: "Профиль", nameLabel: "Имя", phoneLabel: "Телефон", cashbackLabel: "Кешбэк",
-            language: "Язык", addToCart: "Добавить"
-        }
-    };
+        // ========== APP STATE ==========
+        let currentUser = null;
+        let currentLang = "uz";
+        let cart = [];
+        let orders = [];
+        let cashbackBalance = 0;
+        let useCashback = false;
+        let currentCategory = "Barchasi";
+        let currentScreen = "home";
 
-    let lang = "uz";
-    let currentUser = null;
-    let cart = []; // {id, name, price, quantity, image}
-    let orders = [];
-    let cashbackBalance = 0;
-    let rouletteItems = [];
-    let spinCooldown = false;
-    let spinTimer = null;
-
-    // Food database
-    const FOODS = [
-        { id: "lagman", name_uz: "Lagman", name_ru: "Лагман", price: 28000, category: "Osh", image: "https://picsum.photos/id/127/100/100", desc_uz: "Mazali lagman", desc_ru: "Вкусный лагман" },
-        { id: "osh", name_uz: "Palov", name_ru: "Плов", price: 32000, category: "Osh", image: "https://picsum.photos/id/128/100/100", desc_uz: "An'anaviy palov", desc_ru: "Традиционный плов" },
-        { id: "burger", name_uz: "Burger", name_ru: "Бургер", price: 25000, category: "Fast food", image: "https://picsum.photos/id/129/100/100", desc_uz: "Double patty", desc_ru: "Двойная котлета" },
-        { id: "pizza", name_uz: "Pizza", name_ru: "Пицца", price: 45000, category: "Fast food", image: "https://picsum.photos/id/130/100/100", desc_uz: "Pepperoni", desc_ru: "Пепперони" },
-        { id: "somsa", name_uz: "Somsa", name_ru: "Самса", price: 8000, category: "Fast food", image: "https://picsum.photos/id/131/100/100", desc_uz: "Tandir somsa", desc_ru: "Тандыр самса" },
-        { id: "coca", name_uz: "Coca-Cola", name_ru: "Кока-Кола", price: 7000, category: "Ichimliklar", image: "https://picsum.photos/id/132/100/100", desc_uz: "Sovuq ichimlik", desc_ru: "Холодный напиток" },
-        { id: "ayran", name_uz: "Ayran", name_ru: "Айран", price: 5000, category: "Ichimliklar", image: "https://picsum.photos/id/133/100/100", desc_uz: "Tabiiy", desc_ru: "Натуральный" }
-    ];
-
-    function t(key, fallback = "") {
-        return translations[lang][key] || fallback;
-    }
-
-    function getFoodName(food) {
-        return lang === "uz" ? food.name_uz : food.name_ru;
-    }
-
-    function getDesc(food) {
-        return lang === "uz" ? food.desc_uz : food.desc_ru;
-    }
-
-    // initialize roulette items from first 5 foods
-    function initRoulette() {
-        rouletteItems = FOODS.slice(0,5);
-    }
-
-    // localStorage
-    function saveUserData() {
-        if(currentUser) {
-            localStorage.setItem("cafe_user", JSON.stringify({
-                name: currentUser.name,
-                phone: currentUser.phone,
-                cashback: cashbackBalance,
-                orders: orders
-            }));
-        }
-        localStorage.setItem("cafe_cart", JSON.stringify(cart));
-        localStorage.setItem("cafe_lang", lang);
-    }
-
-    function loadUserData() {
-        const saved = localStorage.getItem("cafe_user");
-        if(saved) {
-            try {
-                const u = JSON.parse(saved);
-                currentUser = { name: u.name, phone: u.phone };
-                cashbackBalance = u.cashback || 0;
-                orders = u.orders || [];
-            } catch(e) {}
-        }
-        const savedCart = localStorage.getItem("cafe_cart");
-        if(savedCart) cart = JSON.parse(savedCart);
-        const savedLang = localStorage.getItem("cafe_lang");
-        if(savedLang === "ru" || savedLang === "uz") lang = savedLang;
-    }
-
-    function renderAuthScreen() {
-        return `
-            <div class="card" style="margin-top: 40px;">
-                <h2 style="margin-bottom: 24px;">🍽️ SmartMenu</h2>
-                <input type="text" id="userName" placeholder="Ismingiz / Ваше имя" class="card" style="width:100%; background:#1e1e1e; border:none; color:white;" />
-                <input type="tel" id="userPhone" placeholder="+998 XX XXX XX XX" class="card" style="width:100%; margin-top:12px; background:#1e1e1e; border:none; color:white;" />
-                <button id="authSubmitBtn" class="btn-primary" style="margin-top: 24px;">Kirish / Вход</button>
-            </div>
-        `;
-    }
-
-    function validatePhone(phone) {
-        const digits = phone.replace(/\\D/g, '');
-        return digits.length === 12 && phone.startsWith('+998');
-    }
-
-    function setScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-        const scr = document.getElementById(screenId);
-        if(scr) scr.classList.add('active');
-    }
-
-    // core functions: update cart, home, cartScreen...
-    function addToCart(foodId) {
-        const food = FOODS.find(f => f.id === foodId);
-        if(!food) return;
-        const existing = cart.find(i => i.id === foodId);
-        if(existing) existing.quantity++;
-        else cart.push({ id: food.id, name_uz: food.name_uz, name_ru: food.name_ru, price: food.price, quantity: 1, image: food.image });
-        saveUserData();
-        renderAllScreens();
-    }
-
-    function updateCartUI() { if(document.getElementById('cartScreen')) renderCartScreen(); renderOrdersBadge();}
-    function renderOrdersBadge() {}
-
-    function getTotalCart() { return cart.reduce((sum, i) => sum + i.price * i.quantity, 0); }
-
-    function renderCartScreen() {
-        const container = document.getElementById('cart-list');
-        if(!container) return;
-        if(cart.length === 0) { container.innerHTML = "<p class='card'>Savat bo‘sh / Корзина пуста</p>"; document.getElementById('cart-total').innerHTML = "0"; document.getElementById('cart-final').innerHTML = "0"; return; }
-        let html = "";
-        cart.forEach((item, idx) => {
-            html += `<div class="cart-item"><div><b>${lang==='uz'?item.name_uz:item.name_ru}</b><br/>${item.price} so'm</div>
-            <div class="qty-control"><button class="qty-btn" data-idx="${idx}" data-delta="-1">-</button><span>${item.quantity}</span><button class="qty-btn" data-idx="${idx}" data-delta="1">+</button></div></div>`;
-        });
-        container.innerHTML = html;
-        const total = getTotalCart();
-        const cashbackAmount = total * 0.05;
-        const finalPrice = total;
-        document.getElementById('cart-total').innerText = total;
-        document.getElementById('cart-cashback').innerText = Math.floor(cashbackAmount);
-        document.getElementById('cart-final').innerText = finalPrice;
-        document.querySelectorAll('.qty-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const idx = parseInt(btn.dataset.idx);
-                const delta = parseInt(btn.dataset.delta);
-                if(cart[idx]) {
-                    cart[idx].quantity += delta;
-                    if(cart[idx].quantity <= 0) cart.splice(idx,1);
-                    saveUserData();
-                    renderCartScreen();
-                    if(document.getElementById('homeScreen') && document.getElementById('homeScreen').classList.contains('active')) renderHomeScreen();
+        // ========== TRANSLATIONS ==========
+        const t = (key) => {
+            const dict = {
+                uz: {
+                    greeting: "Salom", balance: "Cashback", randomBtn: "🎡 Tasodifiy taom", categories: ["Barchasi", "Osh", "Fast food", "Ichimliklar"],
+                    cartTitle: "Savat", total: "Jami", cashbackInfo: "Cashback (5%)", finalPrice: "Yakuniy", payment: "To'lovga o'tish",
+                    paymentOptions: "To'lov usuli", confirmPay: "To'lovni tasdiqlash", successMsg: "To'lov muvaffaqiyatli!",
+                    ordersTitle: "Buyurtmalar", profileTitle: "Profil", nameLabel: "Ism", phoneLabel: "Telefon", cashbackLabel: "Cashback balans",
+                    language: "Til", support: "Yordam", contact: "Telegram orqali bog'lanish", useCashback: "Cashbackni ishlatish"
+                },
+                ru: {
+                    greeting: "Здравствуйте", balance: "Кешбэк", randomBtn: "🎡 Случайное блюдо", categories: ["Все", "Плов", "Фастфуд", "Напитки"],
+                    cartTitle: "Корзина", total: "Итого", cashbackInfo: "Кешбэк (5%)", finalPrice: "Итог", payment: "К оплате",
+                    paymentOptions: "Способ оплаты", confirmPay: "Подтвердить", successMsg: "Оплата успешна!",
+                    ordersTitle: "Заказы", profileTitle: "Профиль", nameLabel: "Имя", phoneLabel: "Телефон", cashbackLabel: "Кешбэк баланс",
+                    language: "Язык", support: "Поддержка", contact: "Связаться через Telegram", useCashback: "Использовать кешбэк"
                 }
-            });
-        });
-    }
+            };
+            return dict[currentLang][key] || key;
+        };
 
-    function renderHomeScreen() {
-        if(!currentUser) return;
-        const greeting = `${t('greeting')}, ${currentUser.name}!`;
-        document.getElementById('greetingMsg').innerHTML = greeting;
-        document.getElementById('balanceVal').innerHTML = cashbackBalance;
-        document.getElementById('randomSpinBtnHome').innerHTML = t('randomBtn');
-        // categories
-        let catsHtml = "";
-        const categoriesAll = t('categories');
-        let activeCat = window.currentCat || "Barchasi";
-        categoriesAll.forEach(cat => {
-            catsHtml += `<div class="chip ${activeCat===cat?'active':''}" data-cat="${cat}">${cat}</div>`;
-        });
-        document.getElementById('categoryChips').innerHTML = catsHtml;
-        // filter
-        const filterKey = activeCat === "Barchasi" ? "" : activeCat;
-        let filtered = FOODS;
-        if(filterKey === "Osh") filtered = FOODS.filter(f => f.category === "Osh");
-        else if(filterKey === "Fast food") filtered = FOODS.filter(f => f.category === "Fast food");
-        else if(filterKey === "Ichimliklar") filtered = FOODS.filter(f => f.category === "Ichimliklar");
-        let foodsHtml = "";
-        filtered.forEach(f => {
-            foodsHtml += `<div class="food-item"><img class="food-img" src="${f.image}" /><div class="food-info"><div class="food-name">${getFoodName(f)}</div><div class="food-price">${f.price} so'm</div></div><button class="add-btn" data-id="${f.id}">+</button></div>`;
-        });
-        document.getElementById('foodList').innerHTML = foodsHtml;
-        document.querySelectorAll('.add-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => { addToCart(btn.dataset.id); renderHomeScreen(); });
-        });
-        document.querySelectorAll('.chip').forEach(ch => {
-            ch.addEventListener('click', () => { window.currentCat = ch.innerText; renderHomeScreen(); });
-        });
-    }
-
-    function renderSpinScreen() {
-        const canvas = document.getElementById('wheelCanvas');
-        const ctx = canvas.getContext('2d');
-        const size = 280;
-        canvas.width = size; canvas.height = size;
-        const segments = rouletteItems;
-        const angleStep = (Math.PI * 2) / segments.length;
-        let startAngle = 0;
-        segments.forEach((item, i) => {
-            const endAngle = startAngle + angleStep;
-            ctx.beginPath();
-            ctx.fillStyle = i % 2 === 0 ? '#1b3b1f' : '#2e7d32';
-            ctx.moveTo(size/2, size/2);
-            ctx.arc(size/2, size/2, size/2, startAngle, endAngle);
-            ctx.fill();
-            ctx.save();
-            ctx.translate(size/2, size/2);
-            ctx.rotate(startAngle + angleStep/2);
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 14px Inter';
-            ctx.fillText(getFoodName(item).slice(0,6), 70, 8);
-            ctx.restore();
-            startAngle = endAngle;
-        });
-        document.getElementById('spinBtn').disabled = spinCooldown;
-        if(spinCooldown){
-            document.getElementById('spinTimerText').innerHTML = "⌛ kutib turing";
-        } else {
-            document.getElementById('spinTimerText').innerHTML = "🎡 Aylantirish tayyor";
+        // ========== HELPERS ==========
+        function validatePhone(phone) {
+            const clean = phone.replace(/\s/g, '');
+            return /^\+998[0-9]{9}$/.test(clean);
         }
-    }
 
-    let spinning = false;
-    function spinRoulette() {
-        if(spinCooldown || spinning) return;
-        spinning = true;
-        const canvas = document.getElementById('wheelCanvas');
-        const ctx = canvas.getContext('2d');
-        let currentRotation = 0;
-        const totalSpin = Math.random() * 20 + 20;
-        let animFrame;
-        const spinStep = () => {
-            currentRotation += 0.3;
-            if(currentRotation >= totalSpin) {
-                cancelAnimationFrame(animFrame);
-                const finalSegment = Math.floor(Math.random() * rouletteItems.length);
-                const result = rouletteItems[finalSegment];
-                spinning = false;
-                spinCooldown = true;
-                document.getElementById('spinBtn').disabled = true;
-                let timer = 60;
-                const interval = setInterval(() => {
-                    timer--;
-                    document.getElementById('spinTimerText').innerHTML = `⏱️ 00:${timer<10?'0'+timer:timer}`;
-                    if(timer <= 0) {
-                        clearInterval(interval);
-                        spinCooldown = false;
-                        document.getElementById('spinBtn').disabled = false;
-                        document.getElementById('spinTimerText').innerHTML = "🎡 Aylantirish";
-                    }
-                }, 1000);
-                showResultScreen(result);
-                return;
+        function saveData() {
+            if (currentUser) {
+                localStorage.setItem("campus_user", JSON.stringify({
+                    name: currentUser.name,
+                    phone: currentUser.phone,
+                    cashback: cashbackBalance,
+                    orders: orders,
+                    lang: currentLang
+                }));
             }
-            drawWheelAtRotation(currentRotation);
-            animFrame = requestAnimationFrame(spinStep);
-        };
-        function drawWheelAtRotation(rot){
-            ctx.clearRect(0,0,size,size);
-            let start = rot;
-            segments.forEach((item,i)=>{
-                const end = start+angleStep;
-                ctx.beginPath();
-                ctx.fillStyle = i%2===0?'#1b3b1f':'#2e7d32';
-                ctx.moveTo(size/2,size/2);
-                ctx.arc(size/2,size/2,size/2,start,end);
-                ctx.fill();
-                ctx.save();
-                ctx.translate(size/2,size/2);
-                ctx.rotate(start+angleStep/2);
-                ctx.fillStyle='white';
-                ctx.font='bold 13px Inter';
-                ctx.fillText(getFoodName(item).slice(0,5), 65,6);
-                ctx.restore();
-                start = end;
-            });
+            localStorage.setItem("campus_cart", JSON.stringify(cart));
         }
-        const size = 280, segments=rouletteItems, angleStep = (Math.PI*2)/segments.length;
-        drawWheelAtRotation(0);
-        animFrame = requestAnimationFrame(spinStep);
-    }
 
-    function showResultScreen(food) {
-        setScreen('resultScreen');
-        document.getElementById('resultImg').src = food.image;
-        document.getElementById('resultName').innerText = getFoodName(food);
-        document.getElementById('resultPrice').innerText = food.price + " so'm";
-        document.getElementById('resultDesc').innerText = getDesc(food);
-        const buyBtn = document.getElementById('orderFromResult');
-        const againBtn = document.getElementById('spinAgainBtn');
-        buyBtn.onclick = () => { addToCart(food.id); setScreen('homeScreen'); renderHomeScreen(); };
-        againBtn.onclick = () => { setScreen('spinScreen'); renderSpinScreen(); };
-    }
-
-    function renderPaymentScreen() {
-        const total = getTotalCart();
-        document.getElementById('payTotalAmount').innerText = total;
-        document.getElementById('confirmPayBtn').onclick = () => {
-            if(cart.length===0) return;
-            const cashbackEarned = Math.floor(total*0.05);
-            cashbackBalance += cashbackEarned;
-            const newOrder = {
-                id: Date.now(),
-                items: [...cart],
-                total: total,
-                date: new Date().toLocaleString(),
-                status: 'Qabul qilindi'
-            };
-            orders.unshift(newOrder);
-            cart = [];
-            saveUserData();
-            renderSuccessScreen(cashbackEarned);
-        };
-    }
-
-    function renderSuccessScreen(earned) {
-        setScreen('successScreen');
-        document.getElementById('successMsg').innerHTML = t('successMsg');
-        document.getElementById('cashbackAdded').innerHTML = `+${earned} cashback`;
-    }
-
-    function renderOrdersScreen() {
-        const container = document.getElementById('ordersList');
-        if(!container) return;
-        if(orders.length===0){ container.innerHTML="<div class='card'>Buyurtmalar yo‘q</div>"; return;}
-        let html="";
-        orders.forEach(o=>{
-            html+=`<div class='card'><b>#${o.id}</b> - ${o.date}<br/>Jami: ${o.total} so'm <br/>Status: ${o.status}</div>`;
-        });
-        container.innerHTML=html;
-    }
-
-    function renderProfileScreen() {
-        if(!currentUser) return;
-        document.getElementById('profileName').innerText = currentUser.name;
-        document.getElementById('profilePhone').innerText = currentUser.phone;
-        document.getElementById('profileCashback').innerText = cashbackBalance;
-    }
-
-    function renderAllScreens() {
-        if(!currentUser){ document.getElementById('authScreen').innerHTML = renderAuthScreen(); setScreen('authScreen'); 
-            document.getElementById('authSubmitBtn')?.addEventListener('click',()=>{
-                const name = document.getElementById('userName').value.trim();
-                const phone = document.getElementById('userPhone').value.trim();
-                if(!name || !validatePhone(phone)) { alert("Ism va to‘liq +998XXXXXXXXX telefon kiriting"); return; }
-                currentUser = { name, phone };
-                cashbackBalance = 0; orders = []; cart = [];
-                saveUserData();
-                renderAllScreens();
-            }); return;
+        function loadData() {
+            const userData = localStorage.getItem("campus_user");
+            if (userData) {
+                const data = JSON.parse(userData);
+                currentUser = { name: data.name, phone: data.phone };
+                cashbackBalance = data.cashback || 0;
+                orders = data.orders || [];
+                currentLang = data.lang || "uz";
+            }
+            const savedCart = localStorage.getItem("campus_cart");
+            if (savedCart) cart = JSON.parse(savedCart);
         }
-        renderHomeScreen(); renderCartScreen(); renderSpinScreen(); renderOrdersScreen(); renderProfileScreen(); renderPaymentScreen();
-        setScreen('homeScreen');
-    }
 
-    function attachNavEvents() {
-        const navs = ['homeNav','cartNav','spinNav','ordersNav','profileNav'];
-        navs.forEach(id=>{
-            const el = document.getElementById(id);
-            if(el) el.onclick = ()=>{
-                if(id==='homeNav') setScreen('homeScreen');
-                if(id==='cartNav') { renderCartScreen(); setScreen('cartScreen'); }
-                if(id==='spinNav') { renderSpinScreen(); setScreen('spinScreen');}
-                if(id==='ordersNav') { renderOrdersScreen(); setScreen('ordersScreen');}
-                if(id==='profileNav') { renderProfileScreen(); setScreen('profileScreen');}
+        function getTotalCart() {
+            return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        }
+
+        function getCashbackAmount() {
+            return Math.floor(getTotalCart() * 0.05);
+        }
+
+        function getFinalTotal() {
+            let total = getTotalCart();
+            if (useCashback && cashbackBalance > 0) {
+                total = Math.max(0, total - cashbackBalance);
+            }
+            return total;
+        }
+
+        function addToCart(food) {
+            const existing = cart.find(i => i.id === food.id);
+            if (existing) existing.quantity++;
+            else cart.push({ ...food, quantity: 1 });
+            saveData();
+            renderCurrentScreen();
+        }
+
+        // ========== RENDER FUNCTIONS ==========
+        function renderAuth() {
+            return `
+                <div class="auth-overlay" id="authOverlay">
+                    <div class="card" style="max-width: 400px; width: 100%;">
+                        <h2 style="text-align: center; margin-bottom: 24px;">🍽️ CampusEats</h2>
+                        <div class="input-group">
+                            <label class="input-label">${currentLang === 'uz' ? 'Ismingiz' : 'Ваше имя'}</label>
+                            <input type="text" id="authName" placeholder="${currentLang === 'uz' ? 'Ism' : 'Имя'}">
+                            <div class="error-message" id="nameError">${currentLang === 'uz' ? 'Ism majburiy' : 'Имя обязательно'}</div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">${currentLang === 'uz' ? 'Telefon' : 'Телефон'}</label>
+                            <input type="tel" id="authPhone" placeholder="+998 91 132 55 55">
+                            <div class="error-message" id="phoneError">${currentLang === 'uz' ? "Noto'g'ri format. +998901234567" : 'Неверный формат. +998901234567'}</div>
+                        </div>
+                        <button class="btn-primary" id="loginBtn">${currentLang === 'uz' ? 'Kirish' : 'Войти'}</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderHome() {
+            const greeting = `${t('greeting')}, ${currentUser.name}!`;
+            const filtered = currentCategory === "Barchasi" ? FOODS : FOODS.filter(f => f.category === currentCategory);
+            
+            return `
+                <div class="screen" id="homeScreen">
+                    <div class="card">
+                        <div id="greetingMsg" style="font-size: 24px; font-weight: 700; margin-bottom: 12px;">${greeting}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>💰 <span id="balanceVal">${cashbackBalance}</span> so'm</div>
+                        </div>
+                    </div>
+                    
+                    <div class="category-filter" id="categoryChips">
+                        ${t('categories').map(cat => `<div class="chip ${currentCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</div>`).join('')}
+                    </div>
+                    
+                    <div class="food-grid" id="foodList">
+                        ${filtered.map(food => `
+                            <div class="food-item">
+                                <img class="food-img" src="${food.image}" loading="lazy">
+                                <div class="food-info">
+                                    <div class="food-name">${currentLang === 'uz' ? food.name_uz : food.name_ru}</div>
+                                    <div class="food-price">${food.price.toLocaleString()} so'm</div>
+                                </div>
+                                <button class="add-btn" data-id="${food.id}">+</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCart() {
+            const total = getTotalCart();
+            const cashback = getCashbackAmount();
+            const finalTotal = getFinalTotal();
+            
+            return `
+                <div class="screen" id="cartScreen">
+                    <h2 style="margin-bottom: 20px;">🛒 ${t('cartTitle')}</h2>
+                    <div id="cartList">
+                        ${cart.length === 0 ? '<div class="card">Savat bo\'sh</div>' : cart.map((item, idx) => `
+                            <div class="card">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <strong>${currentLang === 'uz' ? item.name_uz : item.name_ru}</strong><br>
+                                        ${item.price.toLocaleString()} so'm
+                                    </div>
+                                    <div style="display: flex; gap: 12px; align-items: center;">
+                                        <button class="qty-btn" data-idx="${idx}" data-delta="-1" style="background: #2a2a2a; border: none; width: 36px; height: 36px; border-radius: 50%; color: white; font-size: 20px;">-</button>
+                                        <span style="font-size: 18px; font-weight: 600;">${item.quantity}</span>
+                                        <button class="qty-btn" data-idx="${idx}" data-delta="1" style="background: #2a2a2a; border: none; width: 36px; height: 36px; border-radius: 50%; color: white; font-size: 20px;">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    ${cart.length > 0 ? `
+                        <div class="card">
+                            <div class="toggle-switch">
+                                <span class="toggle-label">${t('useCashback')}</span>
+                                <label class="toggle">
+                                    <input type="checkbox" id="useCashbackToggle" ${useCashback ? 'checked' : ''}>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div style="margin-top: 16px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span>${t('total')}:</span>
+                                    <span>${total.toLocaleString()} so'm</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #4caf50;">
+                                    <span>${t('cashbackInfo')}:</span>
+                                    <span>+${cashback.toLocaleString()} so'm</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #2a2a2a; font-size: 18px; font-weight: 700;">
+                                    <span>${t('finalPrice')}:</span>
+                                    <span class="text-green">${finalTotal.toLocaleString()} so'm</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary" id="paymentBtn" style="margin-top: 20px;">${t('payment')}</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function renderOrders() {
+            return `
+                <div class="screen" id="ordersScreen">
+                    <h2 style="margin-bottom: 20px;">📋 ${t('ordersTitle')}</h2>
+                    ${orders.length === 0 ? '<div class="card">No orders yet</div>' : orders.map(order => `
+                        <div class="card">
+                            <div style="font-weight: 600; margin-bottom: 8px;">Order #${order.id}</div>
+                            <div style="color: #aaa; font-size: 14px;">${order.date}</div>
+                            <div style="margin-top: 8px;">Total: ${order.total.toLocaleString()} so'm</div>
+                            <div style="margin-top: 4px; color: #4caf50;">Status: ${order.status}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderProfile() {
+            return `
+                <div class="screen" id="profileScreen">
+                    <div class="card">
+                        <h3 style="margin-bottom: 16px;">👤 ${t('profileTitle')}</h3>
+                        <div class="mb-2"><strong>${t('nameLabel')}:</strong> ${currentUser.name}</div>
+                        <div class="mb-2"><strong>${t('phoneLabel')}:</strong> ${currentUser.phone}</div>
+                        <div class="mb-3"><strong>💰 ${t('cashbackLabel')}:</strong> ${cashbackBalance.toLocaleString()} so'm</div>
+                        <hr style="border-color: #2a2a2a; margin: 16px 0;">
+                        <div class="input-group">
+                            <label class="input-label">${t('language')}</label>
+                            <select id="langSelect" style="background: #1e1e1e; padding: 12px; border-radius: 12px; color: white; width: 100%;">
+                                <option value="uz" ${currentLang === 'uz' ? 'selected' : ''}>O'zbekcha</option>
+                                <option value="ru" ${currentLang === 'ru' ? 'selected' : ''}>Русский</option>
+                            </select>
+                        </div>
+                        <div style="margin-top: 16px;">
+                            <div style="margin-bottom: 8px;"><strong>${t('support')}</strong></div>
+                            <button class="btn-secondary" id="supportBtn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                📱 Telegram: @CampusEatsSupport
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPayment() {
+            return `
+                <div class="screen" id="paymentScreen">
+                    <div class="card">
+                        <h2 style="margin-bottom: 20px;">💳 ${t('paymentOptions')}</h2>
+                        <div style="margin-bottom: 20px;">
+                            <div style="padding: 12px; margin-bottom: 8px; background: #1a1a1a; border-radius: 12px;">Click</div>
+                            <div style="padding: 12px; margin-bottom: 8px; background: #1a1a1a; border-radius: 12px;">Payme</div>
+                            <div style="padding: 12px; margin-bottom: 8px; background: #1a1a1a; border-radius: 12px;">Uzcard</div>
+                            <div style="padding: 12px; background: #1a1a1a; border-radius: 12px;">${currentLang === 'uz' ? 'Naqd' : 'Наличные'}</div>
+                        </div>
+                        <div style="font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 20px;">
+                            ${getFinalTotal().toLocaleString()} so'm
+                        </div>
+                        <button class="btn-primary" id="confirmPaymentBtn">${t('confirmPay')}</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSuccess() {
+            const earned = getCashbackAmount();
+            return `
+                <div class="screen" id="successScreen">
+                    <div class="card" style="text-align: center;">
+                        <div style="font-size: 64px; margin-bottom: 16px;">✅</div>
+                        <h2 style="margin-bottom: 12px;">${t('successMsg')}</h2>
+                        <p class="text-green" style="font-size: 18px;">+${earned} cashback</p>
+                        <button class="btn-primary" id="newOrderBtn" style="margin-top: 24px;">Yangi buyurtma</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showRoulette() {
+            const foods = FOODS.slice(0, 6);
+            let currentAngle = 0;
+            let spinning = false;
+            
+            const modal = document.createElement('div');
+            modal.className = 'roulette-modal';
+            modal.innerHTML = `
+                <div class="card" style="position: relative; width: 90%; max-width: 350px; text-align: center;">
+                    <div class="wheel-wrapper">
+                        <canvas id="wheelCanvas" width="300" height="300"></canvas>
+                        <div class="pointer"></div>
+                    </div>
+                    <button class="btn-primary" id="spinWheelBtn" style="margin-top: 20px;">🎡 Aylantirish</button>
+                    <button class="btn-secondary" id="closeRouletteBtn" style="margin-top: 12px;">Yopish</button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            const canvas = modal.querySelector('#wheelCanvas');
+            const ctx = canvas.getContext('2d');
+            const size = 300;
+            const angles = (Math.PI * 2) / foods.length;
+            
+            function drawWheel() {
+                let start = currentAngle;
+                for (let i = 0; i < foods.length; i++) {
+                    const end = start + angles;
+                    ctx.beginPath();
+                    ctx.fillStyle = i % 2 === 0 ? '#1b3b1f' : '#2e7d32';
+                    ctx.moveTo(size/2, size/2);
+                    ctx.arc(size/2, size/2, size/2, start, end);
+                    ctx.fill();
+                    ctx.save();
+                    ctx.translate(size/2, size/2);
+                    ctx.rotate(start + angles/2);
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 12px Inter';
+                    ctx.fillText((currentLang === 'uz' ? foods[i].name_uz : foods[i].name_ru).slice(0, 8), 65, 8);
+                    ctx.restore();
+                    start = end;
+                }
+            }
+            
+            drawWheel();
+            
+            modal.querySelector('#spinWheelBtn').onclick = () => {
+                if (spinning) return;
+                spinning = true;
+                const spins = 20 + Math.random() * 10;
+                const finalIndex = Math.floor(Math.random() * foods.length);
+                const targetAngle = (finalIndex * angles) + (angles/2);
+                
+                let startTime = null;
+                const duration = 2000;
+                
+                function animateSpin(timestamp) {
+                    if (!startTime) startTime = timestamp;
+                    const elapsed = timestamp - startTime;
+                    const progress = Math.min(1, elapsed / duration);
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
+                    currentAngle = (currentAngle + spins * angles * easeOut) % (Math.PI * 2);
+                    drawWheel();
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animateSpin);
+                    } else {
+                        spinning = false;
+                        const result = foods[finalIndex];
+                        addToCart(result);
+                        modal.remove();
+                        renderCurrentScreen();
+                    }
+                }
+                
+                requestAnimationFrame(animateSpin);
             };
-        });
-        document.getElementById('randomSpinBtnHome')?.addEventListener('click', ()=>{ setScreen('spinScreen'); renderSpinScreen(); });
-        document.getElementById('paymentNavBtn')?.addEventListener('click', ()=>{ renderPaymentScreen(); setScreen('paymentScreen'); });
-        document.getElementById('spinBtn')?.addEventListener('click', spinRoulette);
-    }
+            
+            modal.querySelector('#closeRouletteBtn').onclick = () => modal.remove();
+        }
 
-    function initHtml() {
-        document.getElementById('app').innerHTML = `
-        <div class="lang-switch"><button class="lang-btn ${lang==='uz'?'active':''}" data-lang="uz">UZ</button><button class="lang-btn ${lang==='ru'?'active':''}" data-lang="ru">RU</button></div>
-        <div id="authScreen" class="screen active"></div>
-        <div id="homeScreen" class="screen"><div class="card"><div id="greetingMsg"></div><div>💰 <span id="balanceVal"></span> so'm</div><button id="randomSpinBtnHome" class="btn-outline" style="margin-top:12px;"></button></div><div id="categoryChips" class="category-filter"></div><div id="foodList" class="food-grid"></div></div>
-        <div id="cartScreen" class="screen"><h2>🛒 ${t('cartTitle')}</h2><div id="cart-list"></div><div class="card">${t('total')}: <span id="cart-total">0</span> so'm<br/>${t('cashbackInfo')}: <span id="cart-cashback">0</span><br/><strong>${t('finalPrice')}: <span id="cart-final">0</span> so'm</strong><br/><button id="paymentNavBtn" class="btn-primary" style="margin-top:14px;">${t('payment')}</button></div></div>
-        <div id="spinScreen" class="screen"><h2>🎡 Roulette</h2><div class="wheel-container"><canvas id="wheelCanvas" width="280" height="280"></canvas><button id="spinBtn" class="spin-btn">Ayla</button></div><div id="spinTimerText" class="timer-text"></div></div>
-        <div id="resultScreen" class="screen"><div class="card"><img id="resultImg" width="120" style="border-radius:32px"/><h2 id="resultName"></h2><h3 id="resultPrice"></h3><p id="resultDesc"></p><button id="orderFromResult" class="btn-primary">${t('orderBtn')}</button><button id="spinAgainBtn" class="btn-outline" style="margin-top:12px;">${t('spinAgain')}</button></div></div>
-        <div id="paymentScreen" class="screen"><h2>💳 ${t('paymentOptions')}</h2><div class="card"><p>Click | Payme | Uzcard | Naqd</p><div>Jami: <span id="payTotalAmount"></span> so'm</div><button id="confirmPayBtn" class="btn-primary">${t('confirmPay')}</button></div></div>
-        <div id="successScreen" class="screen"><div class="card"><h2>✅ ${t('successMsg')}</h2><p id="cashbackAdded"></p><button onclick="location.reload()" class="btn-primary">Yangi buyurtma</button></div></div>
-        <div id="ordersScreen" class="screen"><h2>📋 ${t('ordersTitle')}</h2><div id="ordersList"></div></div>
-        <div id="profileScreen" class="screen"><div class="card"><h3>👤 ${t('profileTitle')}</h3><p>${t('nameLabel')}: <span id="profileName"></span></p><p>${t('phoneLabel')}: <span id="profilePhone"></span></p><p>💰 ${t('cashbackLabel')}: <span id="profileCashback"></span> so'm</p></div></div>
-        <div class="bottom-nav"><button class="nav-item" id="homeNav">🏠 Bosh</button><button class="nav-item" id="cartNav">🛒 Savat</button><button class="nav-item" id="spinNav">🎡 Aylantir</button><button class="nav-item" id="ordersNav">📋 Buyurtma</button><button class="nav-item" id="profileNav">👤 Profil</button></div>`;
-        attachNavEvents();
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                lang = btn.dataset.lang;
-                localStorage.setItem('cafe_lang', lang);
-                renderAllScreens();
-                initHtml(); // refresh full UI
+        function renderAllScreens() {
+            const container = document.getElementById('screens');
+            container.innerHTML = `
+                ${renderHome()}
+                ${renderCart()}
+                ${renderOrders()}
+                ${renderProfile()}
+                ${renderPayment()}
+                ${renderSuccess()}
+                
+                <div class="bottom-nav">
+                    <button class="nav-item ${currentScreen === 'home' ? 'active' : ''}" data-nav="home">🏠 ${currentLang === 'uz' ? 'Bosh' : 'Глав'}</button>
+                    <button class="nav-item ${currentScreen === 'cart' ? 'active' : ''}" data-nav="cart">🛒 ${currentLang === 'uz' ? 'Savat' : 'Корз'}</button>
+                    <button class="nav-item ${currentScreen === 'orders' ? 'active' : ''}" data-nav="orders">📋 ${currentLang === 'uz' ? 'Buyurtma' : 'Заказы'}</button>
+                    <button class="nav-item ${currentScreen === 'profile' ? 'active' : ''}" data-nav="profile">👤 ${currentLang === 'uz' ? 'Profil' : 'Профиль'}</button>
+                </div>
+                <button class="fab" id="rouletteFab">🎡</button>
+            `;
+            
+            // Attach events
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.onclick = () => {
+                    currentScreen = btn.dataset.nav;
+                    renderAllScreens();
+                };
             });
-        });
-        loadUserData();
-        initRoulette();
-        renderAllScreens();
-    }
-    initHtml();
-</script>
+            
+            document.getElementById('rouletteFab').onclick = showRoulette;
+            
+            // Category filters
+            document.querySelectorAll('.chip').forEach(chip => {
+                chip.onclick = () => {
+                    currentCategory = chip.dataset.cat;
+                    renderAllScreens();
+                };
+            });
+            
+            // Add to cart buttons
+            document.querySelectorAll('.add-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const food = FOODS.find(f => f.id === parseInt(btn.dataset.id));
+                    if (food) addToCart(food);
+                };
+            });
+            
+            // Cart quantity buttons
+            document.querySelectorAll('.qty-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const idx = parseInt(btn.dataset.idx);
+                    const delta = parseInt(btn.dataset.delta);
+                    if (cart[idx]) {
+                        cart[idx].quantity += delta;
+                        if (cart[idx].quantity <= 0) cart.splice(idx, 1);
+                        saveData();
+                        renderAllScreens();
+                    }
+                };
+            });
+            
+            // Cashback toggle
+            const toggle = document.getElementById('useCashbackToggle');
+            if (toggle) {
+                toggle.onchange = (e) => {
+                    useCashback = e.target.checked;
+                    renderAllScreens();
+                };
+            }
+            
+            // Payment button
+            const paymentBtn = document.getElementById('paymentBtn');
+            if (paymentBtn) paymentBtn.onclick = () => { currentScreen = 'payment'; renderAllScreens(); };
+            
+            // Confirm payment
+            const confirmBtn = document.getElementById('confirmPaymentBtn');
+            if (confirmBtn) {
+                confirmBtn.onclick = () => {
+                    const earned = getCashbackAmount();
+                    cashbackBalance += earned;
+                    if (useCashback) cashbackBalance = Math.max(0, cashbackBalance - getTotalCart());
+                    
+                    const newOrder = {
+                        id: Date.now(),
+                        items: [...cart],
+                        total: getTotalCart(),
+                        date: new Date().toLocaleString(),
+                        status: "Qabul qilindi"
+                    };
+                    orders.unshift(newOrder);
+                    cart = [];
+                    useCashback = false;
+                    saveData();
+                    currentScreen = 'success';
+                    renderAllScreens();
+                };
+            }
+            
+            // New order button
+            const newOrderBtn = document.getElementById('newOrderBtn');
+            if (newOrderBtn) newOrderBtn.onclick = () => { currentScreen = 'home'; renderAllScreens(); };
+            
+            // Language selector
+            const langSelect = document.getElementById('langSelect');
+            if (langSelect) {
+                langSelect.onchange = (e) => {
+                    currentLang = e.target.value;
+                    saveData();
+                    renderAllScreens();
+                };
+            }
+            
+            // Support button
+            const supportBtn = document.getElementById('supportBtn');
+            if (supportBtn) supportBtn.onclick = () => window.open('https://t.me/CampusEatsSupport', '_blank');
+        }
+        
+        // ========== INIT ==========
+        loadData();
+        
+        if (!currentUser) {
+            document.body.insertAdjacentHTML('beforeend', renderAuth());
+            document.getElementById('loginBtn').onclick = () => {
+                const name = document.getElementById('authName').value.trim();
+                const phone = document.getElementById('authPhone').value.trim();
+                let valid = true;
+                
+                if (!name) {
+                    document.getElementById('nameError').classList.add('show');
+                    valid = false;
+                } else {
+                    document.getElementById('nameError').classList.remove('show');
+                }
+                
+                if (!validatePhone(phone)) {
+                    document.getElementById('phoneError').classList.add('show');
+                    valid = false;
+                } else {
+                    document.getElementById('phoneError').classList.remove('show');
+                }
+                
+                if (valid) {
+                    currentUser = { name, phone };
+                    cashbackBalance = 0;
+                    cart = [];
+                    orders = [];
+                    saveData();
+                    document.querySelector('.auth-overlay').remove();
+                    renderAllScreens();
+                }
+            };
+        } else {
+            renderAllScreens();
+        }
+    </script>
 </body>
 </html>
