@@ -343,7 +343,7 @@
             margin: 0 auto;
         }
 
-        canvas {
+        canvas { box-shadow: 0 0 40px rgba(0,255,150,0.4);
             width: 100%;
             height: 100%;
             border-radius: 50%;
@@ -380,6 +380,18 @@
             display: inline-block;
             width: 52px;
             height: 28px;
+        } 
+        .spin-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #00ff99;
+    color: black;
+    padding: 14px 20px;
+    border-radius: 50%;
+    font-weight: bold;
+    box-shadow: 0 0 20px #00ff99;
         }
 
         .toggle input {
@@ -773,7 +785,7 @@ const winSound = new Audio("https://www.soundjay.com/button/sounds/button-3.mp3"
             `;
         }
 
-        function showRoulette() {
+    function showRoulette() {
 
     const foods = FOODS.slice(0, 6);
 
@@ -781,20 +793,19 @@ const winSound = new Audio("https://www.soundjay.com/button/sounds/button-3.mp3"
     modal.className = "roulette-modal";
 
     modal.innerHTML = `
-    <div class="card" style="text-align:center;">
+    <div class="card" style="text-align:center; position:relative;">
 
-        <canvas id="wheelCanvas" width="300" height="300"></canvas>
+        <div style="position:relative; width:300px; height:300px; margin:0 auto;">
+            <canvas id="wheelCanvas" width="300" height="300"></canvas>
 
-        <button id="spinWheelBtn" class="btn-primary" style="margin-top:10px;">
-            🎡 Aylantirish
-        </button>
+            <!-- CENTER BUTTON -->
+            <div class="spin-center" id="spinWheelBtn">SPIN</div>
+        </div>
 
-        <!-- 🔥 RESULT -->
+        <!-- RESULT -->
         <div id="resultBox" style="display:none; margin-top:20px;">
-
             <img id="resultImg"
             style="width:140px;height:140px;object-fit:cover;border-radius:20px;">
-
             <h3 id="resultName"></h3>
             <p id="resultPrice" style="color:#4caf50;"></p>
 
@@ -805,11 +816,10 @@ const winSound = new Audio("https://www.soundjay.com/button/sounds/button-3.mp3"
             <button id="closeResultBtn" style="margin-top:8px;">
                 ❌ Yopish
             </button>
-
         </div>
 
     </div>
-`;
+    `;
 
     document.body.appendChild(modal);
 
@@ -821,6 +831,7 @@ const winSound = new Audio("https://www.soundjay.com/button/sounds/button-3.mp3"
 
     let currentAngle = 0;
 
+    // 🎡 DRAW WHEEL
     function drawWheel() {
         ctx.clearRect(0, 0, size, size);
 
@@ -830,20 +841,28 @@ const winSound = new Audio("https://www.soundjay.com/button/sounds/button-3.mp3"
             const end = start + angles;
 
             ctx.beginPath();
-            ctx.fillStyle = i % 2 === 0 ? '#1b3b1f' : '#2e7d32';
+
+            // gradient premium
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, i % 2 === 0 ? '#00ff99' : '#00cc66');
+            gradient.addColorStop(1, i % 2 === 0 ? '#003d26' : '#00291a');
+
+            ctx.fillStyle = gradient;
+
             ctx.moveTo(size/2, size/2);
             ctx.arc(size/2, size/2, size/2, start, end);
             ctx.fill();
 
+            // text
             ctx.save();
             ctx.translate(size/2, size/2);
             ctx.rotate(start + angles/2);
 
             ctx.fillStyle = 'white';
-            ctx.font = 'bold 13px sans-serif';
+            ctx.font = 'bold 14px sans-serif';
 
-            const text = currentLang === 'uz' 
-                ? foods[i].name_uz 
+            const text = currentLang === 'uz'
+                ? foods[i].name_uz
                 : foods[i].name_ru;
 
             ctx.fillText(text.slice(0, 8), 70, 5);
@@ -858,6 +877,7 @@ const winSound = new Audio("https://www.soundjay.com/button/sounds/button-3.mp3"
     let friction = 0.985;
     let spinning = false;
 
+    // 🎡 SPIN LOGIC
     function spinAnimation() {
         if (!spinning) return;
 
@@ -874,35 +894,45 @@ const winSound = new Audio("https://www.soundjay.com/button/sounds/button-3.mp3"
                 (foods.length - (normalized / (Math.PI * 2)) * foods.length)
             ) % foods.length;
 
-            const result = foods[index]; winSound.play();
-document.getElementById('resultBox').style.display = 'block';
+            const result = foods[index];
 
-document.getElementById('resultImg').src = result.image;
-document.getElementById('resultName').innerText =
-    currentLang === 'uz' ? result.name_uz : result.name_ru;
+            winSound.play().catch(()=>{});
 
-document.getElementById('resultPrice').innerText =
-    result.price + " so'm";
+            // RESULT
+            const box = document.getElementById('resultBox');
+            box.style.display = 'block';
 
-// BUTTON
-document.getElementById('addToCartBtn').onclick = () => {
-    addToCart(result);
-    modal.remove();
-    renderAllScreens();
-};
+            document.getElementById('resultImg').src = result.image;
+            document.getElementById('resultName').innerText =
+                currentLang === 'uz' ? result.name_uz : result.name_ru;
 
-document.getElementById('closeResultBtn').onclick = () => {
-    modal.remove();
-};
+            document.getElementById('resultPrice').innerText =
+                result.price + " so'm";
+
+            document.getElementById('addToCartBtn').onclick = () => {
+                addToCart(result);
+                modal.remove();
+                renderAllScreens();
+            };
+
+            document.getElementById('closeResultBtn').onclick = () => {
+                modal.remove();
+            };
+
             return;
         }
 
         requestAnimationFrame(spinAnimation);
     }
 
+    // 🎡 BUTTON CLICK
     modal.querySelector('#spinWheelBtn').onclick = () => {
         if (spinning) return;
-spinSound.play();
+
+        spinSound.play().catch(()=>{});
+
+        document.getElementById('resultBox').style.display = 'none';
+
         velocity = Math.random() * 0.3 + 0.25;
         spinning = true;
 
@@ -910,9 +940,10 @@ spinSound.play();
     };
 
     drawWheel();
-        }
-                    
-            
+    }
+
+              
+         
         function renderAllScreens() {
 
     const container = document.getElementById('screens');
