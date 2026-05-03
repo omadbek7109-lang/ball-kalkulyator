@@ -350,18 +350,24 @@
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
         }
 
-        .pointer {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 30px solid #ff5722;
-            z-index: 10;
-        }
+
+         .pointer {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 0;
+    height: 0;
+
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+
+    /* 🔥 MUHIM: pastga qaraydigan uch */
+    border-bottom: 20px solid #ff3b3b;
+
+    z-index: 999;
+         }
 
         /* Toggle Switch */
         .toggle-switch {
@@ -889,13 +895,13 @@ const winSound = new Audio("https://www.soundjay.com/button/sounds/button-3.mp3"
         if (velocity < 0.002) {
             spinning = false;
 
-            const normalized = currentAngle % (Math.PI * 2);
-            const index = Math.floor(
-                (foods.length - (normalized / (Math.PI * 2)) * foods.length)
-            ) % foods.length;
+            const normalized = (currentAngle - Math.PI / 2 + Math.PI * 2) % (Math.PI * 2);
 
-            const result = foods[index];
+const index = Math.floor(
+    (foods.length - (normalized / (Math.PI * 2)) * foods.length)
+) % foods.length;
 
+const result = foods[index];
             winSound.play().catch(()=>{});
 
             // RESULT
