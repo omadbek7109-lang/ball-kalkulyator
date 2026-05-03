@@ -726,82 +726,109 @@
             `;
         }
 
-        function showRoulette() { let velocity = 0;
-let friction = 0.985;
-let spinning = false;
+        function showRoulette() {
 
-function spinAnimation() {
-    if (!spinning) return;
+    const foods = FOODS.slice(0, 6);
 
-    currentAngle += velocity;
-    velocity *= friction;
+    const modal = document.createElement('div');
+    modal.className = "roulette-modal";
+
+    modal.innerHTML = `
+        <div class="card" style="text-align:center;">
+            <canvas id="wheelCanvas" width="300" height="300"></canvas>
+            <button id="spinWheelBtn" class="btn-primary" style="margin-top:15px;">🎡 Aylantirish</button>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const canvas = modal.querySelector('#wheelCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const size = 300;
+    const angles = (Math.PI * 2) / foods.length;
+
+    let currentAngle = 0;
+
+    function drawWheel() {
+        ctx.clearRect(0, 0, size, size);
+
+        let start = currentAngle;
+
+        for (let i = 0; i < foods.length; i++) {
+            const end = start + angles;
+
+            ctx.beginPath();
+            ctx.fillStyle = i % 2 === 0 ? '#1b3b1f' : '#2e7d32';
+            ctx.moveTo(size/2, size/2);
+            ctx.arc(size/2, size/2, size/2, start, end);
+            ctx.fill();
+
+            ctx.save();
+            ctx.translate(size/2, size/2);
+            ctx.rotate(start + angles/2);
+
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 13px sans-serif';
+
+            const text = currentLang === 'uz' 
+                ? foods[i].name_uz 
+                : foods[i].name_ru;
+
+            ctx.fillText(text.slice(0, 8), 70, 5);
+
+            ctx.restore();
+
+            start = end;
+        }
+    }
+
+    let velocity = 0;
+    let friction = 0.985;
+    let spinning = false;
+
+    function spinAnimation() {
+        if (!spinning) return;
+
+        currentAngle += velocity;
+        velocity *= friction;
+
+        drawWheel();
+
+        if (velocity < 0.002) {
+            spinning = false;
+
+            const normalized = currentAngle % (Math.PI * 2);
+            const index = Math.floor(
+                (foods.length - (normalized / (Math.PI * 2)) * foods.length)
+            ) % foods.length;
+
+            const result = foods[index];
+
+            setTimeout(() => {
+                addToCart(result);
+                modal.remove();
+                renderAllScreens();
+            }, 400);
+
+            return;
+        }
+
+        requestAnimationFrame(spinAnimation);
+    }
+
+    modal.querySelector('#spinWheelBtn').onclick = () => {
+        if (spinning) return;
+
+        velocity = Math.random() * 0.3 + 0.25;
+        spinning = true;
+
+        spinAnimation();
+    };
 
     drawWheel();
-
-    if (velocity < 0.002) {
-        spinning = false;
-
-        // 🎯 REAL RESULT (pointer asosida)
-        const normalized = currentAngle % (Math.PI * 2);
-        const index = Math.floor((foods.length - (normalized / (Math.PI*2)) * foods.length)) % foods.length;
-
-        const result = foods[index];
-
-        setTimeout(() => {
-            addToCart(result);
-            modal.remove();
-            renderAllScreens();
-        }, 500);
-
-        return;
-    }
-
-    requestAnimationFrame(spinAnimation);
-}
-
-// 🎡 BUTTON
-modal.querySelector('#spinWheelBtn').onclick = () => {
-    if (spinning) return;
-
-    velocity = Math.random() * 0.3 + 0.25;
-    spinning = true;
-
-    spinAnimation();
-}; 
-    function drawWheel() {
-    ctx.clearRect(0, 0, size, size);
-
-    let start = currentAngle;
-
-    for (let i = 0; i < foods.length; i++) {
-        const end = start + angles;
-
-        // segment
-        ctx.beginPath();
-        ctx.fillStyle = i % 2 === 0 ? '#1b3b1f' : '#2e7d32';
-        ctx.moveTo(size/2, size/2);
-        ctx.arc(size/2, size/2, size/2, start, end);
-        ctx.fill();
-
-        // text
-        ctx.save();
-        ctx.translate(size/2, size/2);
-        ctx.rotate(start + angles/2);
-
-        ctx.fillStyle = 'white';
-        ctx.font = 'bold 13px sans-serif';
-
-        const text = currentLang === 'uz' 
-            ? foods[i].name_uz 
-            : foods[i].name_ru;
-
-        ctx.fillText(text.slice(0, 8), 70, 5);
-
-        ctx.restore();
-
-        start = end;
-    }
-            }                             
+        }
+                    
             
         function renderAllScreens() {
 
