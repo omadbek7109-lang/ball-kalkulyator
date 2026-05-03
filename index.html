@@ -431,7 +431,52 @@
 
         .mb-3 {
             margin-bottom: 12px;
-        }
+        } #resultBox {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, #000 80%, transparent);
+    border-radius: 24px 24px 0 0;
+    padding: 20px;
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+} #resultImg {
+    width: 100%;
+    border-radius: 16px;
+    animation: zoomIn 0.5s ease;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+} #resultName {
+    font-size: 22px;
+    font-weight: bold;
+    color: #4caf50;
+    animation: glow 1s ease infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 5px #4caf50; }
+    to { text-shadow: 0 0 20px #4caf50; }
+}
     </style>
 </head>
 <body>
@@ -449,7 +494,9 @@
             { id: 5, name_uz: "Somsa", name_ru: "Самса", price: 8000, category: "Fast food",image: "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=300&h=300&fit=crop", desc_uz: "Tandir somsa", desc_ru: "Тандыр самса" },
             { id: 6, name_uz: "Moxito", name_ru: "Мохито", price: 12000, category: "Ichimliklar", image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=200&h=200&fit=crop", desc_uz: "Yalpizli moxito", desc_ru: "Мохито с мятой" },
             { id: 7, name_uz: "Sharbat", name_ru: "Сок", price: 7000, category: "Ichimliklar", image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=200&h=200&fit=crop", desc_uz: "Tabiiy meva sharbati", desc_ru: "Натуральный сок" }
-        ];
+        ]; 
+        const spinSound = new Audio("https://www.soundjay.com/misc/sounds/spin.mp3");
+const winSound = new Audio("https://www.soundjay.com/button/sounds/button-3.mp3");
 
         // ========== APP STATE ==========
         let currentUser = null;
@@ -734,11 +781,35 @@
     modal.className = "roulette-modal";
 
     modal.innerHTML = `
-        <div class="card" style="text-align:center;">
-            <canvas id="wheelCanvas" width="300" height="300"></canvas>
-            <button id="spinWheelBtn" class="btn-primary" style="margin-top:15px;">🎡 Aylantirish</button>
+    <div class="card" style="text-align:center;">
+
+        <canvas id="wheelCanvas" width="300" height="300"></canvas>
+
+        <button id="spinWheelBtn" class="btn-primary" style="margin-top:10px;">
+            🎡 Aylantirish
+        </button>
+
+        <!-- 🔥 RESULT -->
+        <div id="resultBox" style="display:none; margin-top:20px;">
+
+            <img id="resultImg"
+            style="width:140px;height:140px;object-fit:cover;border-radius:20px;">
+
+            <h3 id="resultName"></h3>
+            <p id="resultPrice" style="color:#4caf50;"></p>
+
+            <button id="addToCartBtn" class="btn-primary">
+                🛒 Savatga qo‘shish
+            </button>
+
+            <button id="closeResultBtn" style="margin-top:8px;">
+                ❌ Yopish
+            </button>
+
         </div>
-    `;
+
+    </div>
+`;
 
     document.body.appendChild(modal);
 
@@ -803,14 +874,26 @@
                 (foods.length - (normalized / (Math.PI * 2)) * foods.length)
             ) % foods.length;
 
-            const result = foods[index];
+            const result = foods[index]; winSound.play();
+document.getElementById('resultBox').style.display = 'block';
 
-            setTimeout(() => {
-                addToCart(result);
-                modal.remove();
-                renderAllScreens();
-            }, 400);
+document.getElementById('resultImg').src = result.image;
+document.getElementById('resultName').innerText =
+    currentLang === 'uz' ? result.name_uz : result.name_ru;
 
+document.getElementById('resultPrice').innerText =
+    result.price + " so'm";
+
+// BUTTON
+document.getElementById('addToCartBtn').onclick = () => {
+    addToCart(result);
+    modal.remove();
+    renderAllScreens();
+};
+
+document.getElementById('closeResultBtn').onclick = () => {
+    modal.remove();
+};
             return;
         }
 
@@ -819,7 +902,7 @@
 
     modal.querySelector('#spinWheelBtn').onclick = () => {
         if (spinning) return;
-
+spinSound.play();
         velocity = Math.random() * 0.3 + 0.25;
         spinning = true;
 
