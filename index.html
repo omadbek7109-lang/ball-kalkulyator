@@ -1050,37 +1050,48 @@ const result = foods[index];
         };
     }
 
-    // 🔴 CONFIRM PAYMENT
-    const confirmBtn = document.getElementById('confirmPaymentBtn');
-    if (confirmBtn) {
-        confirmBtn.onclick = () => {
+// 🔴 CONFIRM PAYMENT
+const confirmBtn = document.getElementById('confirmPaymentBtn');
 
-            const earned = getCashbackAmount();
-            cashbackBalance += earned;
+if (confirmBtn) {
+    confirmBtn.onclick = () => {
 
-            if (useCashback) {
-                cashbackBalance = Math.max(0, cashbackBalance - getTotalCart());
-            }
+        const total = getTotalCart();
+        const earned = getCashbackAmount();
 
-            const newOrder = {
-                id: Date.now(),
-                items: [...cart],
-                total: getTotalCart(),
-                date: new Date().toLocaleString(),
-                status: "Qabul qilindi"
-            };
+        // ✅ 1. AVVAL ESKI CASHBACK ISHLATILADI
+        if (useCashback && cashbackBalance > 0) {
+            cashbackBalance = Math.max(0, cashbackBalance - total);
+        }
 
-            orders.unshift(newOrder);
+        // ✅ 2. KEYIN YANGI CASHBACK QO‘SHILADI
+        cashbackBalance += earned;
 
-            cart = [];
-            useCashback = false;
-
-            saveData();
-
-            currentScreen = 'success';
-            renderAllScreens();
+        // ✅ ORDER SAQLASH
+        const newOrder = {
+            id: Date.now(),
+            items: [...cart],
+            total: total,
+            date: new Date().toLocaleString(),
+            status: "Qabul qilindi"
         };
-    }
+
+        orders.unshift(newOrder);
+
+        // 🛒 savatni tozalash
+        cart = [];
+
+        // toggle reset
+        useCashback = false;
+
+        saveData();
+
+        // success screen
+        currentScreen = 'success';
+        renderAllScreens();
+    };
+                    }
+                
 
     // 🔴 NEW ORDER
     const newOrderBtn = document.getElementById('newOrderBtn');
