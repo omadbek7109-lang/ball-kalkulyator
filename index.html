@@ -638,19 +638,28 @@ const winSound = new Audio("https://www.soundjay.com/button/sounds/button-3.mp3"
             return total;
         }
 
-        // ➕ qo‘shish
+// ➕ qo‘shish
 function addItem(id) {
+
     const food = FOODS.find(f => f.id === id);
+
+    if (!food) return;
+
     const existing = cart.find(i => i.id === id);
 
     if (existing) {
         existing.quantity++;
     } else {
-        cart.push({ ...food, quantity: 1 });
+        cart.push({
+            ...food,
+            quantity: 1
+        });
     }
 
     saveData();
-    renderCurrentScreen();
+
+    // 🔥 UI qayta chizish
+    renderAllScreens();
 }
 
 
