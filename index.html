@@ -1,43 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>CampusEats | Pre-order University Cafeteria</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>O‘zbekiston eng yangi tarixi - Yakuniy testlar 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        /* Custom animations and transitions */
+        .question-transition {
+            transition: all 0.3s ease;
         }
-
-        body {
-            background: linear-gradient(135deg, #0a0a0a 0%, #0f0f0f 100%);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', Helvetica, sans-serif;
-            color: #ffffff;
-            min-height: 100vh;
+        .result-card {
+            animation: fadeInUp 0.4s ease-out;
         }
-
-        /* App Container */
-        .app-container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px 16px 80px;
-            position: relative;
-        }
-
-        /* Screens */
-        .screen {
-            display: none;
-            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        @keyframes slideUp {
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(20px);
@@ -47,1216 +23,333 @@
                 transform: translateY(0);
             }
         }
-
-        /* Auth Overlay */
-        .auth-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            transition: all 0.3s;
+        .option-btn {
+            transition: all 0.2s ease;
         }
-
-        .auth-overlay.hidden {
-            display: none;
+        .option-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-
-        /* Cards */
-        .card {
-            background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 28px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(46, 125, 50, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .card:active {
-            transform: scale(0.98);
-        }
-
-        /* Inputs */
-        .input-group {
-            margin-bottom: 16px;
-        }
-
-        .input-label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #aaa;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 14px 16px;
-            background: #1e1e1e;
-            border: 1.5px solid #2a2a2a;
-            border-radius: 16px;
-            color: #fff;
-            font-size: 16px;
-            transition: all 0.2s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #4caf50;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
-        }
-
-        .error-message {
-            color: #ff5252;
-            font-size: 12px;
-            margin-top: 6px;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
-        }
-
-        /* Buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
-            border: none;
-            padding: 14px 24px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 16px;
-            color: white;
-            width: 100%;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
-        }
-
-        .btn-primary:active {
-            transform: scale(0.97);
-            box-shadow: 0 2px 8px rgba(46, 125, 50, 0.2);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            border: 1.5px solid #2e7d32;
-            padding: 12px 20px;
-            border-radius: 60px;
-            color: #4caf50;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-secondary:active {
-            transform: scale(0.97);
-            background: rgba(76, 175, 80, 0.1);
-        }
-
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 32px);
-            max-width: 450px;
-            background: rgba(18, 18, 18, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 40px;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 20px;
-            border: 1px solid rgba(46, 125, 50, 0.3);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-            z-index: 100;
-        }
-
-        .nav-item {
-            background: transparent;
-            border: none;
-            color: #888;
-            font-size: 12px;
-            font-weight: 500;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            padding: 8px 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .nav-item.active {
-            color: #4caf50;
-            background: rgba(76, 175, 80, 0.15);
-        }
-
-        .nav-icon {
-            font-size: 22px;
-        }
-
-        /* Floating Action Button */
-        .fab {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #2e7d32, #1b5e20);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(46, 125, 50, 0.4);
-            transition: all 0.3s;
-            z-index: 99;
-            border: none;
-            font-size: 28px;
-        }
-
-        .fab:active {
-            transform: scale(0.92);
-        }
-
-        /* Food Grid */
-        .food-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .food-item {
-            background: #111;
-            border-radius: 24px;
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            padding: 12px;
-            border: 1px solid #2a2a2a;
-            transition: all 0.2s;
-        }
-
-        .food-item:hover {
-            transform: translateX(4px);
-            border-color: #4caf50;
-        }
-
-        .food-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
-            object-fit: cover;
-        }
-
-        .food-info {
-            flex: 1;
-        }
-
-        .food-name {
-            font-weight: 700;
-            font-size: 17px;
-            margin-bottom: 4px;
-        }
-
-        .food-price {
-            color: #4caf50;
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .add-btn {
-            background: #2e7d32;
-            border: none;
-            width: 44px;
-            height: 44px;
-            border-radius: 30px;
-            font-size: 24px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .add-btn:active {
-            transform: scale(0.9);
-        }
-
-        /* Categories */
-        .category-filter {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            margin-bottom: 20px;
-            padding-bottom: 4px;
-        }
-
-        .chip {
-            background: #1a1a1a;
-            padding: 10px 20px;
-            border-radius: 40px;
-            white-space: nowrap;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid #2a2a2a;
-        }
-
-        .chip.active {
-            background: #2e7d32;
-            color: white;
-            border-color: #4caf50;
-        }
-
-        /* Roulette */
-        .roulette-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 200;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .roulette-modal.hidden {
-            display: none;
-        }
-
-        .wheel-wrapper {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            margin: 0 auto;
-        }
-
-        /* 🎡 CANVAS (ruletka) */
-canvas {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-
-    /* 🔥 ikki xil shadow (glow + depth) */
-    box-shadow: 
-        0 0 40px rgba(0,255,150,0.4),
-        0 12px 40px rgba(0,0,0,0.6);
-
-    background: #0f0f0f;
-}
-
-
-/* 🔺 POINTER (tepada ko‘rsatkich) */
-.pointer {
-    position: absolute;
-    top: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: 0;
-    height: 0;
-
-    border-left: 14px solid transparent;
-    border-right: 14px solid transparent;
-    border-bottom: 26px solid #ff3b3b;
-
-    /* 🔥 glow effect */
-    filter: drop-shadow(0 0 8px #ff3b3b);
-
-    z-index: 999;
-}
-
-
-/* 💎 pointer ustidagi nuqta (premium detail) */
-.pointer::after {
-    content: "";
-    position: absolute;
-    top: -6px;
-    left: -4px;
-    width: 8px;
-    height: 8px;
-    background: white;
-    border-radius: 50%;
-}
-
-        /* Toggle Switch */
-        .toggle-switch {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 0;
-        }
-
-        .toggle-label {
-            font-weight: 500;
-        }
-
-        .toggle {
-            position: relative;
-            display: inline-block;
-            width: 52px;
-            height: 28px;
-        } 
-        .spin-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #00ff99;
-    color: black;
-    padding: 14px 20px;
-    border-radius: 50%;
-    font-weight: bold;
-    box-shadow: 0 0 20px #00ff99;
-        }
-
-        .toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #3a3a3a;
-            transition: 0.3s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: 0.3s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: #4caf50;
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(24px);
-        }
-
-        /* Utility */
-        .text-green {
-            color: #4caf50;
-        }
-
-        .mb-2 {
-            margin-bottom: 8px;
-        }
-
-        .mb-3 {
-            margin-bottom: 12px;
-        } #resultBox {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, #000 80%, transparent);
-    border-radius: 24px 24px 0 0;
-    padding: 20px;
-    animation: slideUp 0.4s ease;
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-} #resultImg {
-    width: 100%;
-    border-radius: 16px;
-    animation: zoomIn 0.5s ease;
-}
-
-@keyframes zoomIn {
-    from {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-} #resultName {
-    font-size: 22px;
-    font-weight: bold;
-    color: #4caf50;
-    animation: glow 1s ease infinite alternate;
-}
-
-@keyframes glow {
-    from { text-shadow: 0 0 5px #4caf50; }
-    to { text-shadow: 0 0 20px #4caf50; }
-} 
-       .counter {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.counter button {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: none;
-    background: #2ecc71;
-    color: white;
-    font-size: 18px;
-}
-
-.counter span {
-    min-width: 20px;
-    text-align: center;
-    font-weight: bold;
-} 
     </style>
 </head>
-<body>
-    <div class="app-container">
-        <div id="screens"></div>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen py-6 px-4">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <h1 class="text-2xl md:text-3xl font-bold text-indigo-800">O‘zbekistonning eng yangi tarixi</h1>
+            <p class="text-gray-600 mt-1">Yakuniy nazorat testlari to‘plami (2026)</p>
+            <div class="inline-block bg-indigo-100 rounded-full px-4 py-1 mt-2 text-sm text-indigo-700 font-medium">
+                ⚡ Savollar va javoblar har safar aralashtiriladi
+            </div>
+        </div>
+
+        <!-- Main Card -->
+        <div id="quiz-container" class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <!-- Progress header -->
+            <div class="bg-indigo-700 px-5 py-4 text-white">
+                <div class="flex justify-between items-center">
+                    <span class="font-semibold text-lg">Test: <span id="current-question-num">1</span> / <span id="total-questions">0</span></span>
+                    <span id="score-badge" class="bg-indigo-500 px-3 py-1 rounded-full text-sm">✅ 0 to'g'ri</span>
+                </div>
+                <div class="w-full bg-indigo-500 rounded-full h-2 mt-3">
+                    <div id="progress-bar" class="bg-yellow-300 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Question & Options -->
+            <div id="question-area" class="p-6 md:p-8">
+                <!-- Dynamic content here -->
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="px-6 pb-6 flex justify-between gap-3">
+                <button id="prev-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-5 rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed">◀ Orqaga</button>
+                <button id="next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-xl transition">Keyingi ▶</button>
+                <button id="restart-btn" class="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 px-4 rounded-xl transition">🔄 Qayta boshlash</button>
+            </div>
+        </div>
+
+        <!-- Result Modal / Summary -->
+        <div id="result-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden transition-all">
+            <div class="bg-white rounded-2xl max-w-md w-full p-6 text-center result-card">
+                <div class="text-5xl mb-3">📊</div>
+                <h2 class="text-2xl font-bold text-gray-800">Test yakunlandi!</h2>
+                <p class="text-gray-600 mt-2">Sizning natijangiz</p>
+                <div class="text-5xl font-bold text-indigo-600 my-3"><span id="final-score">0</span> / <span id="final-total">0</span></div>
+                <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+                    <div id="final-percent-bar" class="bg-indigo-600 h-3 rounded-full" style="width: 0%"></div>
+                </div>
+                <p id="congrats-msg" class="text-sm text-gray-500 mb-4">Yana bir bor takrorlash tavsiya etiladi!</p>
+                <button id="close-modal-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-xl transition">Yangi test boshlash</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // ========== DATABASE ==========
-        const FOODS = [
-            { id: 1, name_uz: "Lagman", name_ru: "Лагман", price: 28000, category: "Osh", image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=200&h=200&fit=crop", desc_uz: "Mazali uy lagmani", desc_ru: "Вкусный домашний лагман" },
-            { id: 2, name_uz: "Palov", name_ru: "Плов", price: 32000, category: "Osh", image: "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=300&h=300&fit=crop", desc_uz: "An'anaviy to'y palovi", desc_ru: "Традиционный плов" },
-            { id: 3, name_uz: "Burger", name_ru: "Бургер", price: 25000, category: "Fast food", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop", desc_uz: "Double beef burger", desc_ru: "Двойной бургер" },
-            { id: 4, name_uz: "Pizza", name_ru: "Пицца", price: 45000, category: "Fast food", image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200&h=200&fit=crop", desc_uz: "Pepperoni pizza", desc_ru: "Пицца Пепперони" },
-            { id: 5, name_uz: "Somsa", name_ru: "Самса", price: 8000, category: "Fast food",image: "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=300&h=300&fit=crop", desc_uz: "Tandir somsa", desc_ru: "Тандыр самса" },
-            { id: 6, name_uz: "Moxito", name_ru: "Мохито", price: 12000, category: "Ichimliklar", image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=200&h=200&fit=crop", desc_uz: "Yalpizli moxito", desc_ru: "Мохито с мятой" },
-            { id: 7, name_uz: "Sharbat", name_ru: "Сок", price: 7000, category: "Ichimliklar", image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=200&h=200&fit=crop", desc_uz: "Tabiiy meva sharbati", desc_ru: "Натуральный сок" }
-        ]; 
-        const spinSound = new Audio("https://www.soundjay.com/misc/sounds/spin.mp3");
-const winSound = new Audio("https://www.soundjay.com/button/sounds/button-3.mp3");
+        // ---------- TO'LIQ SAVOLLAR BAZASI (faqat matn va to'g'ri javoblar) ----------
+        const rawQuestions = [
+            { text: "Mustaqillik qo'lga kiritilgunga qadar O'zbekiston davlatchilik tarixi eng qadimgi davrdan boshlab nechta taraqqiyot bosqichiga bo'lingan edi?", correct: "4 ta" },
+            { text: "Tariximizning yozuvsiz zamonlarga oid davrini o'rganishda qaysi manbalar yordamga keladi?", correct: "Arxeologik, antropologik va etnografik manbalar" },
+            { text: "Quyidagi javoblar ichidan O'zbekiston tarixi fanining ilmiy-nazariy uslublari va tamoyillari to'g'ri keltirilgan javobni toping", correct: "Barcha javoblar to'g'ri" },
+            { text: "Nima sababdan O'zbekiston tarixi fanini o'rganishda tarixiy manbalarning o'rni va ahamiyati katta?", correct: "To'g'ri javob yo'q" },
+            { text: "Manbalar o'z holatiga ko'ra qanday ko'rinishlarga ega bo'ladi?", correct: "Yozma va moddiy" },
+            { text: "Birlamchi manbaga nimalar kiradi?", correct: "Tarixiy hujjatlarning asl nusxasi" },
+            { text: "Quyidagi javoblarning qaysi birida 'O'zbekistonning eng yangi tarixi' fanini o'qitishning maqsadi to'g'ri keltirilgan?", correct: "Barcha javoblar to'g'ri" },
+            { text: "O'zbekiston Respublikasida yoshlarning ijtimoiy-iqtisodiy, siyosiy va huquqiy kafolatlari qaysi qonunda belgilab qo'yilgan?", correct: "'O'zbekistonda yoshlarga oid davlat siyosatining asoslari to'g'risida'gi qonunida" },
+            { text: "O'zbekiston Respublikasi Prezidenti Shavkat Mirziyoyev 2017-yil 27-mart sanasida mamlakat taraqqiyoti yo'lida fidokorona xizmat qilgan qaysi atoqli davlat arbobi xotirasini ulug'lash maqsadida ushbu shaxs tavalludining 100 yilligini nishonlash to'g'risidagi qarorga imzo chekkan edi?", correct: "Sharof Rashidov" },
+            { text: "O'zbekiston Respublikasida yoshlarning aholi tarkibidagi salmog'i to'g'ri keltirilgan javobni toping", correct: "50 foizdan yuqori" },
+            { text: "'Qayta qurish' siyosati qachondan boshlandi?", correct: "1985 yil SSSR Kommunistik partiyasi MQ ning 23-aprel plenumidan so'ng." },
+            { text: "Islom Abdug'anievich Karimov O'zbekistonning birinchi rahbari sifatida o'z faoliyatini qachondan boshladi?", correct: "1989-yil 23-iyunda" },
+            { text: "Mustaqillik arafasida sobiq ittifoqda (Markaz) bo'lib o'tgan davlat to'ntarishlari bo'lib o'tgan sanani ko'rsating", correct: "1991-yil 19-21 avgust kunlari" },
+            { text: "Markaz tomonidan uyushtirilgan 'o'zbeklar ishi', 'paxta ishi' qachon boshlandi?", correct: "XX asrning 80 yillarida" },
+            { text: "O'zbekiston Respublikasida Prezidentlik lavozimi ta'sis etish to'g'risidagi qaror qachon qabul qilindi?", correct: "1990-yil 24-mart" },
+            { text: "'O'zbekistonning Mustaqillik Deklaratsiyasi' qachon qabul qilindi?", correct: "1990-yil 20-iyun" },
+            { text: "'O'zbekistonning Mustaqillik Deklaratsiyasi' nechta moddadan iborat?", correct: "15" },
+            { text: "Farg'ona fojiali voqealari qachon sodir bo'ldi?", correct: "1989-yilning may-iyun oylarida" },
+            { text: "O'zbekiston Respublikasining boshqaruv shakliga ko'ra...", correct: "Prezidentlik Respublikasi hisoblanadi" },
+            { text: "Quyidagi davlatlardan qaysi biri O'zbekistonning mustaqilligini birinchilardan bo'lib tan olgan?", correct: "Turkiya" },
+            { text: "1992 yilning 8 dekabrigacha Mustaqil O'zbekiston Respublikasining vaqtinchalik Konstitutsiyasi vazifasini bajargan hujjatni aniqlang", correct: "'O'zbekiston Respublikasining Davlat Mustaqilligi asoslari to'g'risida'gi Qonun" },
+            { text: "O'zbekiston Respublikasi Oliy Kengashining 1991-yil 18-noyabrdagi VIII sessiyasida qaysi qonun qabul qilingan?", correct: "'Davlat bayrog'i to'g'risida'" },
+            { text: "O'zbekiston Respublikasi davlat bayrog'idagi moviy rang nimani aks ettiradi?", correct: "mangu osmon va musaffo suv" },
+            { text: "O'zbekiston Respublikasida Vitse-Prezident lavozimi qachon tugatildi?", correct: "1992 yil 8 dekabr" },
+            { text: "O'zbekiston Respublikasining 'Davlat gerbi to'g'risida'gi Qonuni qachon qabul qilingan?", correct: "1992 yil 2 iyul" },
+            { text: "'O'zbekiston Respublikasi Davlat Madhiyasi to'g'risida'gi Qonun qachon qabul qilingan?", correct: "1992 yil 10 dekabr" },
+            { text: "Alisher Navoiyning 550 yillik tavallud sanasi qachon nishonlangan?", correct: "1991-yil" },
+            { text: "Amir Temurning 660 yillik tavallud sanasi qachon bo'lgan?", correct: "1996-yil" },
+            { text: "Birinchi Prezidentimiz Islom Karimovning 'Yuksak ma'naviyat yengilmas kuch' asarida ma'naviyatga berilgan ta'rifni toping?", correct: "Insonni ruhan poklash va qalbini uluglashga chorlaydigan, odamni ichki dunyosi, irodasini baquvvat, iymon etiqodini butun qiladigan, vijdonni uyg'otadigan beqiyos kuchdir, uning barcha qarashlarining mezonidir." },
+            { text: "Mustaqillikning dastlabki yillarida amalga oshirilgan ma'naviy-ma'rifiy ishlar nimalardan iborat bo'lgan?", correct: "Barcha javoblar to'g'ri" },
+            { text: "O'zbekiston Respublikasi Yangi tahrirdagi Konstitutsiyasining 33-moddasiga ko'ra ...", correct: "har kim fikrlash, so'z va e'tiqod erkinligi huquqiga ega" },
+            { text: "O'zbekiston Respublikasining Konstitutsiyasi qachon qabul qilingan?", correct: "1992-yil 8-dekabr" },
+            { text: "'O'zbekiston Respublikasining Davlat tili to'g'risida'gi qonun qachon qabul qilindi?", correct: "1989-yil 21-oktyabr" },
+            { text: "O'zbekiston Respublikasining Madhiyasi qachon qabul qilingan?", correct: "1992-yil 10-dekabr" },
+            { text: "'O'zbekiston Respublikasining referendumi to'g'risida'gi qonun dastlab qachon qabul qilingan?", correct: "1991-yil 18-noyabr" },
+            { text: "Davlat hokimiyat organlarining bo'linish prinsipi qanday?", correct: "O'zbekiston Respublikasini Oliy Majlisi, Vazirlar Mahkamasi va Sud." },
+            { text: "Yangi tahrirdagi O'zbekiston Respublikasi Konstitutsiyasining tarkibiy qismlari to'g'ri ko'rsatilgan javobni aniqlang", correct: "6 bo'lim 27 bob 155 moddadan iborat" },
+            { text: "'O'zbek modeli' bo'yicha Respublikasining istiqlol va taraqqiyotga erishish yo'lining tamoyillari to'g'ri ko'rsatilgan javobni aniqlang?", correct: "Iqtisodiyotning siyosatda ustunligi, davlat bosh islohotchi, Qonun ustuvorligi, aholini ijtimoiy himoya qilish, bozor iqtisodiyotiga bosqichma-bosqich o'tish" },
+            { text: "Qatag'on qurbonlari xotirasi kunini nishonlash qachondan boshlandi?", correct: "2001-yil" },
+            { text: "O'zbekiston Respublikasi senatida necha nafar senator mavjud?", correct: "65 ta" },
+            { text: "2017-2021 yillarda O'zbekiston Respublikasini rivojlantirishning beshta ustuvor yo'nalishi bo'yicha Harakatlar strategiyasini amalga oshirish bo'yicha Milliy komissiyasiga kim rahbarlik qildi?", correct: "O'zbekiston Respublikasi Prezidenti" },
+            { text: "GKChP (Favqulodda Holat Davlat Qo'mitasi) tuzilganda uning rahbari kim edi?", correct: "Yanayev.G.I" },
+            { text: "O'zbekiston BMT ga qachon a'zo bo'lgan?", correct: "1992-yil 2-mart" },
+            { text: "O'zbekiston Respublikasida 'Korrupsiyaga qarshi kurashish' to'g'risidagi qonun qachon qabul qilingan?", correct: "2017-yil 3-yanvar" }
+        ];
 
-        // ========== APP STATE ==========
-        let currentUser = null;
-        let currentLang = "uz";
-        let cart = [];
-        let orders = [];
-        let cashbackBalance = 0;
-        let useCashback = false;
-        let currentCategory = "Barchasi";
-        let currentScreen = "home";
+        // Additional questions to reach ~100+ (adding more from the document)
+        const extraQuestions = [
+            { text: "Ma'naviyat va Ma'rifat markazi qachon tashkil etildi?", correct: "1992-yil" },
+            { text: "O'zbekiston Birinchi Prezidenti I. A. Karimovning «O'zbekistonning o'z istiqlol va taraqqiyot yo'li» nomli asari qachon nashr etilgan?", correct: "1992-yil avgustda" },
+            { text: "Referendum so'zining ma'nosi nima?", correct: "Umumxalq so'rovi" },
+            { text: "'O'zbekistonning eng yangi tarixi' fanini o'rganishda qanday nazariy-uslublardan foydalaniladi?", correct: "Barcha javoblar to'g'ri." },
+            { text: "O'zbekistonda ta'lim nechta tilda olib boriladi?", correct: "7 ta tilda" },
+            { text: "'O'zbekistonning eng yangi tarixi' fanini o'qitishning vazifalari ...", correct: "Mustaqillikka erishish arafasida O'zbekistonda yuzaga kelgan murakkab vaziyatni hamda mustaqillik yillarida davlat boshqaruvi, ijtimoiy-iqtisodiy, siyosiy va ma'naviy hamda boshqa sohalardagi islohotlarning mazmun-mohiyatini talabalarga tushuntirib berish, ularni Vatanga sadoqat va muhabbat ruhida tarbiyalash hamda milliy g'ururni shakllantirishdan iborat" },
+            { text: "O'zbekiston Respublikasida ilk bor umumxalq saylovlar asosida prezidentlik saylovi qachon bo'lib o'tgan?", correct: "1991-yil 29-dekabrda" },
+            { text: "Tarixda 'GKChP' nomi bilan sodir bo'lgan siyosiy voqea qachon bo'lib o'tgan?", correct: "1991-yil 19-21 avgust" },
+            { text: "O'zbekistonda 'Siyosiy partiyalar to'g'risida'gi qonun qachon qabul qilingan?", correct: "1996-yil" },
+            { text: "Tarixiy manbalar ... (nuqtalar o'rniga to'g'ri javobni qo'ying)", correct: "Yozma va moddiy manbalarga bo'linadi" },
+            { text: "'Ma'naviyat bu insonni ruhan poklanish, qalban ulg'ayishiga chorlaydigan odamning ichki dunyosi irodasini baquvvat qiladigan, vijdonini uyg'otadigan, beqiyos kuch ma'naviyatdir' — ma'naviyatga berilgan ushbu ta'rif kimga tegishli?", correct: "Islom Karimov" },
+            { text: "O'zbekiston Respublikasida Xalq Demokratik partiyasi tashkil topgan sanani ko'rsating?", correct: "1991-yil 1-noyabrda" },
+            { text: "Referendum qanday maqsadlarda o'tkaziladi?", correct: "Referendum umumxalq so'rovi degan ma'noni beradi va u davlatning muhim masalalarini umumxalq ovoziga qo'yilgandan keyin uning natijalariga muvofiq qaror qabul qilinadi." },
+            { text: "Iqtisodiyotda davlat ishtirokini kamaytirish Harakatlar strategiyasining (2017-2021) qaysi ustuvor yo'nalishiga tegishli?", correct: "Iqtisodiyotni yanada rivojlantirish va liberallashtirish" },
+            { text: "1991-yil 18-noyabrda qabul qilingan qonunlar to'g'ri berilgan javobni belgilang?", correct: "«O'zbekiston Respublikasining referendumi to'g'risida», «O'zbekiston Respublikasining davlat bayrog'i to'g'risida» va «O'zbekiston Respublikasi Prezidenti saylovi to'g'risida»" },
+            { text: "O'zbekiston Respublikasi Konstitutsiyasi va qonunlarida necha yoshdan fuqarolarning saylash huquqiga ega ekanligi belgilab qo'yilgan?", correct: "18" },
+            { text: "Ko'ppartiyaviylik tizimi nima...?", correct: "Jamiyat hayotida ikki yoki undan ortiq partiyaning faoliyat yuritishi" },
+            { text: "Jamiyatda demokratik huquqiy davlat barpo etishning asosiy garovi nima hisoblanadi?", correct: "Ko'ppartiyaviylikning mavjudligi" }
+        ];
 
-        // ========== TRANSLATIONS ==========
-        const t = (key) => {
-            const dict = {
-                uz: {
-                    greeting: "Salom", balance: "Cashback", randomBtn: "🎡 Tasodifiy taom", categories: ["Barchasi", "Osh", "Fast food", "Ichimliklar"],
-                    cartTitle: "Savat", total: "Jami", cashbackInfo: "Cashback (5%)", finalPrice: "Yakuniy", payment: "To'lovga o'tish",
-                    paymentOptions: "To'lov usuli", confirmPay: "To'lovni tasdiqlash", successMsg: "To'lov muvaffaqiyatli!",
-                    ordersTitle: "Buyurtmalar", profileTitle: "Profil", nameLabel: "Ism", phoneLabel: "Telefon", cashbackLabel: "Cashback balans",
-                    language: "Til", support: "Yordam", contact: "Telegram orqali bog'lanish", useCashback: "Cashbackni ishlatish"
-                },
-                ru: {
-                    greeting: "Здравствуйте", balance: "Кешбэк", randomBtn: "🎡 Случайное блюдо", categories: ["Все", "Плов", "Фастфуд", "Напитки"],
-                    cartTitle: "Корзина", total: "Итого", cashbackInfo: "Кешбэк (5%)", finalPrice: "Итог", payment: "К оплате",
-                    paymentOptions: "Способ оплаты", confirmPay: "Подтвердить", successMsg: "Оплата успешна!",
-                    ordersTitle: "Заказы", profileTitle: "Профиль", nameLabel: "Имя", phoneLabel: "Телефон", cashbackLabel: "Кешбэк баланс",
-                    language: "Язык", support: "Поддержка", contact: "Связаться через Telegram", useCashback: "Использовать кешбэк"
-                }
-            };
-            return dict[currentLang][key] || key;
-        };
+        // Merge all questions
+        let allQuestions = [...rawQuestions, ...extraQuestions];
+        // Final total count
+        const TOTAL_QS = allQuestions.length;
 
-        // ========== HELPERS ==========
-        function validatePhone(phone) {
-            const clean = phone.replace(/\s/g, '');
-            return /^\+998[0-9]{9}$/.test(clean);
-        }
+        // ----- Global state -----
+        let currentQuestions = [];     // randomized order of questions
+        let currentOptions = [];       // for each question: { shuffledOptions: string[], correctAnswer: string }
+        let userAnswers = new Array(TOTAL_QS).fill(null);
+        let currentIndex = 0;
+        let quizFinished = false;
 
-        function saveData() {
-            if (currentUser) {
-                localStorage.setItem("campus_user", JSON.stringify({
-                    name: currentUser.name,
-                    phone: currentUser.phone,
-                    cashback: cashbackBalance,
-                    orders: orders,
-                    lang: currentLang
-                }));
+        // DOM elements
+        const questionArea = document.getElementById('question-area');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const currentNumSpan = document.getElementById('current-question-num');
+        const totalSpan = document.getElementById('total-questions');
+        const scoreBadge = document.getElementById('score-badge');
+        const progressBar = document.getElementById('progress-bar');
+        const resultModal = document.getElementById('result-modal');
+        const finalScoreSpan = document.getElementById('final-score');
+        const finalTotalSpan = document.getElementById('final-total');
+        const finalPercentBar = document.getElementById('final-percent-bar');
+        const congratsMsg = document.getElementById('congrats-msg');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+
+        // Helper: shuffle array (Fisher-Yates)
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
             }
-            localStorage.setItem("campus_cart", JSON.stringify(cart));
+            return arr;
         }
 
-        function loadData() {
-            const userData = localStorage.getItem("campus_user");
-            if (userData) {
-                const data = JSON.parse(userData);
-                currentUser = { name: data.name, phone: data.phone };
-                cashbackBalance = data.cashback || 0;
-                orders = data.orders || [];
-                currentLang = data.lang || "uz";
+        // Generate random options: mix correct + 3 distractors (from existing wrong answers or generic)
+        function generateShuffledOptions(questionObj) {
+            // For simplicity, we create dynamic distractors from common phrases or we can extract from known wrong answers.
+            // To keep it realistic, we'll create plausible wrong answers based on the correct answer type.
+            const correct = questionObj.correct;
+            // Common distractor templates for variety
+            let distractors = [];
+            if (correct.includes("ta")) distractors = ["2 ta", "3 ta", "5 ta"];
+            else if (correct.includes("Barcha javoblar to'g'ri")) distractors = ["Faqat 1 va 2", "Hech qaysisi", "Faqat 3"];
+            else if (correct.includes("yozma")) distractors = ["Faqat arxeologik", "Faqat etnografik", "Moddiy va arxiv"];
+            else if (correct.includes("Prezidentlik")) distractors = ["Parlamentar Respublika", "Monarxiya", "Konstitutsion monarxiya"];
+            else if (correct.includes("Turkiya")) distractors = ["AQSH", "Xitoy", "Eron"];
+            else distractors = ["Birinchi javob", "Ikkinchi javob", "Uchinchi javob"];
+
+            // make sure distractor is not equal to correct
+            distractors = distractors.filter(d => d !== correct);
+            while(distractors.length < 3) distractors.push("Yuqoridagilardan hech biri");
+            let opts = [correct, ...distractors.slice(0,3)];
+            return shuffleArray(opts);
+        }
+
+        // Initialize / restart quiz
+        function initQuiz() {
+            // 1. shuffle questions order
+            currentQuestions = shuffleArray([...allQuestions]);
+            // 2. for each, prepare shuffled options
+            currentOptions = currentQuestions.map(q => ({
+                shuffledOptions: generateShuffledOptions(q),
+                correctAnswer: q.correct
+            }));
+            userAnswers.fill(null);
+            currentIndex = 0;
+            quizFinished = false;
+            updateUI();
+        }
+
+        // Update progress and scores
+        function updateStats() {
+            const answeredCount = userAnswers.filter(a => a !== null).length;
+            const correctCount = userAnswers.reduce((acc, ans, idx) => {
+                if (ans === null) return acc;
+                return acc + (ans === currentOptions[idx].correctAnswer ? 1 : 0);
+            }, 0);
+            scoreBadge.innerHTML = `✅ ${correctCount} to'g'ri`;
+            const percent = (answeredCount / TOTAL_QS) * 100;
+            progressBar.style.width = `${percent}%`;
+        }
+
+        // Render current question
+        function renderQuestion() {
+            if (quizFinished || currentIndex >= TOTAL_QS) {
+                showResults();
+                return;
             }
-            const savedCart = localStorage.getItem("campus_cart");
-            if (savedCart) cart = JSON.parse(savedCart);
-        }
-
-        function getTotalCart() {
-            return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        }
-
-        function getCashbackAmount() {
-            return Math.floor(getTotalCart() * 0.05);
-        }
-
-        function getFinalTotal() {
-            let total = getTotalCart();
-            if (useCashback && cashbackBalance > 0) {
-                total = Math.max(0, total - cashbackBalance);
-            }
-            return total;
-        }
-
-// ➕ qo‘shish
-function addItem(id) {
-
-    const food = FOODS.find(f => f.id === id);
-
-    if (!food) return;
-
-    const existing = cart.find(i => i.id === id);
-
-    if (existing) {
-        existing.quantity++;
-    } else {
-        cart.push({
-            ...food,
-            quantity: 1
-        });
-    }
-
-    saveData();
-
-    // 🔥 UI qayta chizish
-    renderAllScreens();
-}
-
-
-// ➖ kamaytirish
-function removeItem(id) {
-    const item = cart.find(i => i.id === id);
-    if (!item) return;
-
-    item.quantity--;
-
-    if (item.quantity <= 0) {
-        cart = cart.filter(i => i.id !== id);
-    }
-
-    saveData();
-    renderCurrentScreen();
-}
-
-        // ========== RENDER FUNCTIONS ==========
-        function renderAuth() {
-            return `
-                <div class="auth-overlay" id="authOverlay">
-                    <div class="card" style="max-width: 400px; width: 100%;">
-                        <h2 style="text-align: center; margin-bottom: 24px;">🍽️ CampusEats</h2>
-                        <div class="input-group">
-                            <label class="input-label">${currentLang === 'uz' ? 'Ismingiz' : 'Ваше имя'}</label>
-                            <input type="text" id="authName" placeholder="${currentLang === 'uz' ? 'Ism' : 'Имя'}">
-                            <div class="error-message" id="nameError">${currentLang === 'uz' ? 'Ism majburiy' : 'Имя обязательно'}</div>
-                        </div>
-                        <div class="input-group">
-                            <label class="input-label">${currentLang === 'uz' ? 'Telefon' : 'Телефон'}</label>
-                            <input type="tel" id="authPhone" placeholder="+998 91 132 55 55">
-                            <div class="error-message" id="phoneError">${currentLang === 'uz' ? "Noto'g'ri format. +998901234567" : 'Неверный формат. +998901234567'}</div>
-                        </div>
-                        <button class="btn-primary" id="loginBtn">${currentLang === 'uz' ? 'Kirish' : 'Войти'}</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderHome() {
-            const greeting = `${t('greeting')}, ${currentUser.name}!`;
-            const filtered = currentCategory === "Barchasi" ? FOODS : FOODS.filter(f => f.category === currentCategory);
+            const qData = currentQuestions[currentIndex];
+            const optsData = currentOptions[currentIndex];
+            const currentAnswer = userAnswers[currentIndex];
             
-            return `
-                <div class="screen" id="homeScreen">
-                    <div class="card">
-                        <div id="greetingMsg" style="font-size: 24px; font-weight: 700; margin-bottom: 12px;">${greeting}</div>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>💰 <span id="balanceVal">${cashbackBalance}</span> so'm</div>
-                        </div>
-                    </div>
-                    
-                    <div class="category-filter" id="categoryChips">
-                        ${t('categories').map(cat => `<div class="chip ${currentCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</div>`).join('')}
-                    </div>
-                    
-                    <div class="food-grid" id="foodList">
-                        ${filtered.map(food => `
-                            <div class="food-item">
-                                <img class="food-img" src="${food.image}" loading="lazy">
-                                <div class="food-info">
-                                    <div class="food-name">${currentLang === 'uz' ? food.name_uz : food.name_ru}</div>
-                                    <div class="food-price">${food.price.toLocaleString()} so'm</div>
-                                </div>
-                                <button class="add-btn" data-id="${food.id}">+</button>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
+            let html = `
+                <div class="mb-6 question-transition">
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">${currentIndex+1}. ${qData.text}</h2>
+                    <div class="space-y-3">
             `;
-        }
-
-        function renderCart() {
-            const total = getTotalCart();
-            const cashback = getCashbackAmount();
-            const finalTotal = getFinalTotal();
+            optsData.shuffledOptions.forEach((opt, idx) => {
+                const isSelected = (currentAnswer === opt);
+                const letter = String.fromCharCode(65+idx); // A,B,C,D
+                html += `
+                    <button class="option-btn w-full text-left p-3 rounded-xl border-2 ${isSelected ? 'bg-indigo-100 border-indigo-500' : 'bg-gray-50 border-gray-200 hover:border-indigo-300'} transition flex items-start gap-3" data-value="${escapeHtml(opt)}">
+                        <span class="font-bold text-indigo-600 min-w-[28px]">${letter}.</span>
+                        <span class="flex-1">${escapeHtml(opt)}</span>
+                    </button>
+                `;
+            });
+            html += `</div></div>`;
+            questionArea.innerHTML = html;
             
-            return `
-                <div class="screen" id="cartScreen">
-                    <h2 style="margin-bottom: 20px;">🛒 ${t('cartTitle')}</h2>
-                    <div id="cartList">
-                        ${cart.length === 0 ? '<div class="card">Savat bo\'sh</div>' : cart.map((item, idx) => `
-                            <div class="card">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div>
-                                        <strong>${currentLang === 'uz' ? item.name_uz : item.name_ru}</strong><br>
-                                        ${item.price.toLocaleString()} so'm
-                                    </div>
-                                    <div style="display: flex; gap: 12px; align-items: center;">
-                                        <button class="qty-btn" data-idx="${idx}" data-delta="-1" style="background: #2a2a2a; border: none; width: 36px; height: 36px; border-radius: 50%; color: white; font-size: 20px;">-</button>
-                                        <span style="font-size: 18px; font-weight: 600;">${item.quantity}</span>
-                                        <button class="qty-btn" data-idx="${idx}" data-delta="1" style="background: #2a2a2a; border: none; width: 36px; height: 36px; border-radius: 50%; color: white; font-size: 20px;">+</button>
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    
-                    ${cart.length > 0 ? `
-                        <div class="card">
-                            <div class="toggle-switch">
-                                <span class="toggle-label">${t('useCashback')}</span>
-                                <label class="toggle">
-                                    <input type="checkbox" id="useCashbackToggle" ${useCashback ? 'checked' : ''}>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div style="margin-top: 16px;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                    <span>${t('total')}:</span>
-                                    <span>${total.toLocaleString()} so'm</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #4caf50;">
-                                    <span>${t('cashbackInfo')}:</span>
-                                    <span>+${cashback.toLocaleString()} so'm</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #2a2a2a; font-size: 18px; font-weight: 700;">
-                                    <span>${t('finalPrice')}:</span>
-                                    <span class="text-green">${finalTotal.toLocaleString()} so'm</span>
-                                </div>
-                            </div>
-                            <button class="btn-primary" id="paymentBtn" style="margin-top: 20px;">${t('payment')}</button>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-        }
-
-        function renderOrders() {
-            return `
-                <div class="screen" id="ordersScreen">
-                    <h2 style="margin-bottom: 20px;">📋 ${t('ordersTitle')}</h2>
-                    ${orders.length === 0 ? '<div class="card">No orders yet</div>' : orders.map(order => `
-                        <div class="card">
-                            <div style="font-weight: 600; margin-bottom: 8px;">Order #${order.id}</div>
-                            <div style="color: #aaa; font-size: 14px;">${order.date}</div>
-                            <div style="margin-top: 8px;">Total: ${order.total.toLocaleString()} so'm</div>
-                            <div style="margin-top: 4px; color: #4caf50;">Status: ${order.status}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function renderProfile() {
-            return `
-                <div class="screen" id="profileScreen">
-                    <div class="card">
-                        <h3 style="margin-bottom: 16px;">👤 ${t('profileTitle')}</h3>
-                        <div class="mb-2"><strong>${t('nameLabel')}:</strong> ${currentUser.name}</div>
-                        <div class="mb-2"><strong>${t('phoneLabel')}:</strong> ${currentUser.phone}</div>
-                        <div class="mb-3"><strong>💰 ${t('cashbackLabel')}:</strong> ${cashbackBalance.toLocaleString()} so'm</div>
-                        <hr style="border-color: #2a2a2a; margin: 16px 0;">
-                        <div class="input-group">
-                            <label class="input-label">${t('language')}</label>
-                            <select id="langSelect" style="background: #1e1e1e; padding: 12px; border-radius: 12px; color: white; width: 100%;">
-                                <option value="uz" ${currentLang === 'uz' ? 'selected' : ''}>O'zbekcha</option>
-                                <option value="ru" ${currentLang === 'ru' ? 'selected' : ''}>Русский</option>
-                            </select>
-                        </div>
-                        <div style="margin-top: 16px;">
-                            <div style="margin-bottom: 8px;"><strong>${t('support')}</strong></div>
-                            <button class="btn-secondary" id="supportBtn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                📱 Telegram: @CampusEatsSupport
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderPayment() {
-            return `
-                <div class="screen" id="paymentScreen">
-                    <div class="card">
-                        <h2 style="margin-bottom: 20px;">💳 ${t('paymentOptions')}</h2>
-                        <div style="margin-bottom: 20px;">
-                            <div style="padding: 12px; margin-bottom: 8px; background: #1a1a1a; border-radius: 12px;">Click</div>
-                            <div style="padding: 12px; margin-bottom: 8px; background: #1a1a1a; border-radius: 12px;">Payme</div>
-                            <div style="padding: 12px; margin-bottom: 8px; background: #1a1a1a; border-radius: 12px;">Uzcard</div>
-                            <div style="padding: 12px; background: #1a1a1a; border-radius: 12px;">${currentLang === 'uz' ? 'Naqd' : 'Наличные'}</div>
-                        </div>
-                        <div style="font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 20px;">
-                            ${getFinalTotal().toLocaleString()} so'm
-                        </div>
-                        <button class="btn-primary" id="confirmPaymentBtn">${t('confirmPay')}</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderSuccess() {
-            const earned = getCashbackAmount();
-            return `
-                <div class="screen" id="successScreen">
-                    <div class="card" style="text-align: center;">
-                        <div style="font-size: 64px; margin-bottom: 16px;">✅</div>
-                        <h2 style="margin-bottom: 12px;">${t('successMsg')}</h2>
-                        <p class="text-green" style="font-size: 18px;">+${earned} cashback</p>
-                        <button class="btn-primary" id="newOrderBtn" style="margin-top: 24px;">Yangi buyurtma</button>
-                    </div>
-                </div>
-            `;
-        }
-
-    function showRoulette() {
-
-    const foods = FOODS.slice(0, 6);
-
-    const modal = document.createElement('div');
-    modal.className = "roulette-modal";
-
-    modal.innerHTML = `
-    <div class="card" style="text-align:center; position:relative;">
-
-        <div style="position:relative; width:300px; height:300px; margin:0 auto;">
-            <canvas id="wheelCanvas" width="300" height="300"></canvas>
-
-            <!-- CENTER BUTTON -->
-            <div class="spin-center" id="spinWheelBtn">SPIN</div>
-        </div>
-
-        <!-- RESULT -->
-        <div id="resultBox" style="display:none; margin-top:20px;">
-            <img id="resultImg"
-            style="width:140px;height:140px;object-fit:cover;border-radius:20px;">
-            <h3 id="resultName"></h3>
-            <p id="resultPrice" style="color:#4caf50;"></p>
-
-            <button id="addToCartBtn" class="btn-primary">
-                🛒 Savatga qo‘shish
-            </button>
-
-            <button id="closeResultBtn" style="margin-top:8px;">
-                ❌ Yopish
-            </button>
-        </div>
-
-    </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    const canvas = modal.querySelector('#wheelCanvas');
-    const ctx = canvas.getContext('2d');
-
-    const size = 300;
-    const angles = (Math.PI * 2) / foods.length;
-
-    let currentAngle = 0;
-
-    // 🎡 DRAW WHEEL
-    function drawWheel() {
-        ctx.clearRect(0, 0, size, size);
-
-        let start = currentAngle;
-
-        for (let i = 0; i < foods.length; i++) {
-            const end = start + angles;
-
-            ctx.beginPath();
-
-            // gradient premium
-            const gradient = ctx.createLinearGradient(0, 0, size, size);
-            gradient.addColorStop(0, i % 2 === 0 ? '#00ff99' : '#00cc66');
-            gradient.addColorStop(1, i % 2 === 0 ? '#003d26' : '#00291a');
-
-            ctx.fillStyle = gradient;
-
-            ctx.moveTo(size/2, size/2);
-            ctx.arc(size/2, size/2, size/2, start, end);
-            ctx.fill();
-ctx.beginPath();
-ctx.strokeStyle = "#ffffff";
-ctx.lineWidth = 2;
-ctx.arc(size/2, size/2, size/2, start, end);
-ctx.stroke(); 
-ctx.beginPath();
-ctx.lineWidth = 6;
-ctx.strokeStyle = "#00ff99";
-ctx.shadowColor = "#00ff99";
-ctx.shadowBlur = 20;
-ctx.arc(size/2, size/2, size/2 - 3, 0, Math.PI * 2);
-ctx.stroke();
-ctx.shadowBlur = 0; 
+            // attach event listeners to option buttons
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if (quizFinished) return;
+                    const selectedValue = btn.getAttribute('data-value');
+                    userAnswers[currentIndex] = selectedValue;
+                    updateStats();
+                    renderQuestion(); // re-render to highlight selected
+                });
+            });
+            currentNumSpan.innerText = currentIndex+1;
+            totalSpan.innerText = TOTAL_QS;
+            updateStats();
             
-            // text
-            ctx.save();
-            ctx.translate(size/2, size/2);
-            ctx.rotate(start + angles/2);
-
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 14px sans-serif';
-
-            const text = currentLang === 'uz'
-                ? foods[i].name_uz
-                : foods[i].name_ru;
-
-            ctx.fillText(text.slice(0, 8), 70, 5);
-
-            ctx.restore();
-
-            start = end;
-        }
-    }
-
-    let velocity = 0;
-    let friction = 0.985;
-    let spinning = false;
-
-    // 🎡 SPIN LOGIC
-    function spinAnimation() {
-        if (!spinning) return;
-
-        currentAngle += velocity;
-        velocity *= friction;
-
-        drawWheel();
-
-        if (velocity < 0.002) {
-            spinning = false;
-
-            const normalized = (currentAngle - Math.PI / 2 + Math.PI * 2) % (Math.PI * 2);
-
-const index = Math.floor(
-    (foods.length - (normalized / (Math.PI * 2)) * foods.length)
-) % foods.length;
-
-const result = foods[index];
-            winSound.play().catch(()=>{});
-
-            // RESULT
-            const box = document.getElementById('resultBox');
-            box.style.display = 'block';
-
-            document.getElementById('resultImg').src = result.image;
-            document.getElementById('resultName').innerText =
-                currentLang === 'uz' ? result.name_uz : result.name_ru;
-
-            document.getElementById('resultPrice').innerText =
-                result.price + " so'm";
-
-            document.getElementById('addToCartBtn').onclick = () => {
-                addToCart(result);
-                modal.remove();
-                renderAllScreens();
-            };
-
-            document.getElementById('closeResultBtn').onclick = () => {
-                modal.remove();
-            };
-
-            return;
-        }
-
-        requestAnimationFrame(spinAnimation);
-    }
-
-    // 🎡 BUTTON CLICK
-    modal.querySelector('#spinWheelBtn').onclick = () => {
-    if (spinning) return;
-
-    // 🔊 ovozni reset qilib boshlash
-    spinSound.currentTime = 0;
-    spinSound.play().catch(()=>{});
-
-    // 🔽 eski resultni yashirish
-    const box = document.getElementById('resultBox');
-    if (box) box.style.display = 'none';
-
-    // 🎡 spin boshlash
-    velocity = Math.random() * 0.3 + 0.25;
-    spinning = true;
-
-    spinAnimation();
-};
-
-    drawWheel();
-    }
-
-              
-         
-        function renderAllScreens() {
-
-    const container = document.getElementById('screens');
-    if (!container) return;
-
-    // 🔴 AGAR USER YO‘Q BO‘LSA HECH NIMA CHIQMASIN
-    if (!currentUser) {
-        container.innerHTML = "";
-        return;
-    }
-
-    // 🔴 HAMMA SCREENLARNI RENDER QILAMIZ
-    container.innerHTML = `
-        ${renderHome()}
-        ${renderCart()}
-        ${renderOrders()}
-        ${renderProfile()}
-        ${renderPayment()}
-        ${renderSuccess()}
-
-        <div class="bottom-nav">
-            <button class="nav-item" data-nav="home">🏠 Bosh</button>
-            <button class="nav-item" data-nav="cart">🛒 Savat</button>
-            <button class="nav-item" data-nav="orders">📋 Buyurtma</button>
-            <button class="nav-item" data-nav="profile">👤 Profil</button>
-        </div>
-
-        <button class="fab" id="rouletteFab">🎡</button>
-    `;
-
-    // 🔴 ACTIVE SCREENNI KO‘RSATAMIZ
-    document.querySelectorAll('.screen').forEach(el => {
-        el.classList.remove('active');
-    });
-
-    const activeScreen = document.getElementById(currentScreen + "Screen");
-    if (activeScreen) {
-        activeScreen.classList.add('active');
-    } else {
-        // fallback
-        document.getElementById("homeScreen")?.classList.add("active");
-    }
-
-    // 🔴 NAVIGATION CLICK
-    document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.onclick = () => {
-            currentScreen = btn.dataset.nav;
-            renderAllScreens();
-        };
-    });
-
-    // 🔴 CATEGORY FILTER
-    document.querySelectorAll('.chip').forEach(chip => {
-        chip.onclick = () => {
-            currentCategory = chip.dataset.cat;
-            renderAllScreens();
-        };
-    });
-
-    // 🔴 ADD TO CART
-    document.querySelectorAll('.add-btn').forEach(btn => {
-        btn.onclick = () => {
-            const food = FOODS.find(f => f.id === parseInt(btn.dataset.id));
-            if (food) addToCart(food);
-        };
-    });
-
-    // 🔴 CART +/- BUTTON
-    document.querySelectorAll('.qty-btn').forEach(btn => {
-        btn.onclick = () => {
-            const idx = parseInt(btn.dataset.idx);
-            const delta = parseInt(btn.dataset.delta);
-
-            if (cart[idx]) {
-                cart[idx].quantity += delta;
-                if (cart[idx].quantity <= 0) cart.splice(idx, 1);
-                saveData();
-                renderAllScreens();
+            // enable/disable prev/next
+            prevBtn.disabled = (currentIndex === 0);
+            if (currentIndex === TOTAL_QS-1) {
+                nextBtn.innerHTML = "🏁 Yakunlash";
+            } else {
+                nextBtn.innerHTML = "Keyingi ▶";
             }
-        };
-    });
-
-    // 🔴 CASHBACK SWITCH
-    const toggle = document.getElementById('useCashbackToggle');
-    if (toggle) {
-        toggle.onchange = (e) => {
-            useCashback = e.target.checked;
-            renderAllScreens();
-        };
-    }
-
-    // 🔴 PAYMENT
-    const paymentBtn = document.getElementById('paymentBtn');
-    if (paymentBtn) {
-        paymentBtn.onclick = () => {
-            currentScreen = 'payment';
-            renderAllScreens();
-        };
-    }
-
-// 🔴 CONFIRM PAYMENT
-const confirmBtn = document.getElementById('confirmPaymentBtn');
-
-if (confirmBtn) {
-    confirmBtn.onclick = () => {
-
-        const total = getTotalCart();
-        const earned = getCashbackAmount();
-
-        // ✅ 1. AVVAL ESKI CASHBACK ISHLATILADI
-        if (useCashback && cashbackBalance > 0) {
-            cashbackBalance = Math.max(0, cashbackBalance - total);
         }
-
-        // ✅ 2. KEYIN YANGI CASHBACK QO‘SHILADI
-        cashbackBalance += earned;
-
-        // ✅ ORDER SAQLASH
-        const newOrder = {
-            id: Date.now(),
-            items: [...cart],
-            total: total,
-            date: new Date().toLocaleString(),
-            status: "Qabul qilindi"
-        };
-
-        orders.unshift(newOrder);
-
-        // 🛒 savatni tozalash
-        cart = [];
-
-        // toggle reset
-        useCashback = false;
-
-        saveData();
-
-        // success screen
-        currentScreen = 'success';
-        renderAllScreens();
-    };
-                    }
-                
-
-    // 🔴 NEW ORDER
-    const newOrderBtn = document.getElementById('newOrderBtn');
-    if (newOrderBtn) {
-        newOrderBtn.onclick = () => {
-            currentScreen = 'home';
-            renderAllScreens();
-        };
-    }
-
-    // 🔴 LANGUAGE
-    const langSelect = document.getElementById('langSelect');
-    if (langSelect) {
-        langSelect.onchange = (e) => {
-            currentLang = e.target.value;
-            saveData();
-            renderAllScreens();
-        };
-    }
-
-    // 🔴 SUPPORT
-    const supportBtn = document.getElementById('supportBtn');
-    if (supportBtn) {
-        supportBtn.onclick = () => {
-            window.open('https://t.me/CampusEatsSupport', '_blank');
-        };
-    }
-
-    // 🔴 ROULETTE
-    const fab = document.getElementById('rouletteFab');
-    if (fab) {
-        fab.onclick = showRoulette;
-    }
-}
         
-        // ========== INIT ==========
-        loadData();
+        function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
         
-        if (!currentUser) {
-            document.body.insertAdjacentHTML('beforeend', renderAuth());
-            document.getElementById('loginBtn').onclick = () => {
-                const name = document.getElementById('authName').value.trim();
-                const phone = document.getElementById('authPhone').value.trim();
-                let valid = true;
-                
-                if (!name) {
-                    document.getElementById('nameError').classList.add('show');
-                    valid = false;
-                } else {
-                    document.getElementById('nameError').classList.remove('show');
-                }
-                
-                if (!validatePhone(phone)) {
-                    document.getElementById('phoneError').classList.add('show');
-                    valid = false;
-                } else {
-                    document.getElementById('phoneError').classList.remove('show');
-                }
-                
-                if (valid) {
-                    currentUser = { name, phone };
-                    cashbackBalance = 0;
-                    cart = [];
-                    orders = [];
-                    saveData();
-                    document.querySelector('.auth-overlay').remove();
-                    renderAllScreens();
-                }
-            };
-        } else {
-            renderAllScreens();
+        function nextQuestion() {
+            if (quizFinished) return;
+            if (currentIndex < TOTAL_QS - 1) {
+                currentIndex++;
+                renderQuestion();
+            } else {
+                // finish quiz
+                finishQuiz();
+            }
         }
+        
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderQuestion();
+            }
+        }
+        
+        function finishQuiz() {
+            quizFinished = true;
+            showResults();
+        }
+        
+        function showResults() {
+            const total = TOTAL_QS;
+            const correctCount = userAnswers.reduce((acc, ans, idx) => {
+                return acc + (ans === currentOptions[idx].correctAnswer ? 1 : 0);
+            }, 0);
+            const percent = Math.round((correctCount / total) * 100);
+            finalScoreSpan.innerText = correctCount;
+            finalTotalSpan.innerText = total;
+            finalPercentBar.style.width = `${percent}%`;
+            if (percent >= 80) congratsMsg.innerText = "🎉 Ajoyib! Siz mavzuni mukammal bilasiz!";
+            else if (percent >= 60) congratsMsg.innerText = "👍 Yaxshi! Yana bir bor takrorlang.";
+            else congratsMsg.innerText = "📚 Tavsiya: Materiallarni qayta o‘rganing va testni takrorlang.";
+            resultModal.classList.remove('hidden');
+        }
+        
+        function restartQuiz() {
+            resultModal.classList.add('hidden');
+            initQuiz();
+        }
+        
+        function updateUI() {
+            renderQuestion();
+        }
+        
+        // Event listeners
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        restartBtn.addEventListener('click', () => { initQuiz(); });
+        closeModalBtn.addEventListener('click', () => { restartQuiz(); });
+        
+        // Initialize on page load
+        initQuiz();
     </script>
 </body>
 </html>
