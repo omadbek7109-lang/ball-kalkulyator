@@ -6,54 +6,60 @@
     <title>O‘zbekiston eng yangi tarixi - Yakuniy test 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @keyframes fadeOut {
-            0% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0.95); }
-        }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-out {
-            animation: fadeOut 0.2s ease forwards;
         }
         .fade-in {
             animation: fadeIn 0.3s ease forwards;
         }
         .correct-flash {
             background-color: #22c55e !important;
-            transition: 0.1s;
         }
         .wrong-flash {
             background-color: #ef4444 !important;
-            transition: 0.1s;
         }
         .option-btn {
             transition: all 0.2s ease;
+            cursor: pointer;
         }
         .option-btn:active {
             transform: scale(0.98);
         }
+        .tab-active {
+            background-color: #4f46e5;
+            color: white;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+        .tab-inactive {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-900 via-purple-800 to-indigo-900 min-h-screen py-4 px-3">
+<body class="min-h-screen py-4 px-3" style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #2e1065 100%);">
 
     <div class="max-w-2xl mx-auto">
         <!-- Header -->
         <div class="text-center mb-4">
             <h1 class="text-xl md:text-2xl font-bold text-white">O‘zbekistonning eng yangi tarixi</h1>
             <p class="text-indigo-200 text-sm">Yakuniy nazorat testlari (2026)</p>
-            <div class="inline-block bg-white/20 backdrop-blur rounded-full px-3 py-0.5 mt-2 text-xs text-white">
-                🔄 Savollar va javoblar har safar aralashtiriladi
-            </div>
+        </div>
+
+        <!-- Bo'lim Tabs -->
+        <div class="flex flex-wrap gap-2 mb-4 justify-center">
+            <button data-section="0" class="section-tab px-4 py-2 rounded-xl font-semibold transition-all tab-active">1-bo‘lim (1-20)</button>
+            <button data-section="1" class="section-tab px-4 py-2 rounded-xl font-semibold transition-all tab-inactive">2-bo‘lim (21-40)</button>
+            <button data-section="2" class="section-tab px-4 py-2 rounded-xl font-semibold transition-all tab-inactive">3-bo‘lim (41-60)</button>
+            <button data-section="3" class="section-tab px-4 py-2 rounded-xl font-semibold transition-all tab-inactive">4-bo‘lim (61-80)</button>
+            <button data-section="4" class="section-tab px-4 py-2 rounded-xl font-semibold transition-all tab-inactive">5-bo‘lim (81-102)</button>
         </div>
 
         <!-- Test Card -->
         <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
-            <!-- Progress Header -->
             <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4 text-white">
                 <div class="flex justify-between items-center">
-                    <span class="font-semibold">📋 Test: <span id="current-num">1</span> / <span id="total-num">0</span></span>
+                    <span class="font-semibold">📋 <span id="section-name">1-bo‘lim</span> — <span id="current-num">1</span> / <span id="total-num">0</span></span>
                     <span id="score-badge" class="bg-white/20 px-3 py-1 rounded-full text-sm">⭐ 0 to'g'ri</span>
                 </div>
                 <div class="w-full bg-white/30 rounded-full h-2 mt-3">
@@ -61,71 +67,167 @@
                 </div>
             </div>
 
-            <!-- Question Area -->
-            <div id="question-area" class="p-5 md:p-6 min-h-[320px]">
+            <div id="question-area" class="p-5 md:p-6 min-h-[340px]">
                 <!-- Dynamic -->
             </div>
 
-            <!-- Feedback Message -->
-            <div id="feedback" class="px-5 pb-3 text-center text-sm font-medium hidden">
-                <!-- dynamic -->
-            </div>
+            <div id="feedback" class="px-5 pb-2 text-center text-sm font-medium hidden"></div>
 
-            <!-- Bottom Buttons -->
             <div class="px-5 pb-5 flex gap-3">
-                <button id="restart-btn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 rounded-xl transition">🔄 Qayta boshlash</button>
+                <button id="restart-btn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 rounded-xl transition">🔄 Bo‘limni qayta boshlash</button>
             </div>
         </div>
 
         <!-- Result Modal -->
         <div id="result-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
-            <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl transform transition-all scale-100">
+            <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl">
                 <div class="text-5xl mb-2">📊</div>
                 <h2 class="text-2xl font-bold text-gray-800">Test yakunlandi!</h2>
-                <p class="text-gray-500 mt-1">Sizning natijangiz</p>
+                <p class="text-gray-500 mt-1">Bo‘lim yakuni</p>
                 <div class="text-5xl font-bold text-indigo-600 my-2"><span id="final-score">0</span> / <span id="final-total">0</span></div>
                 <div class="w-full bg-gray-200 rounded-full h-3 mb-3">
                     <div id="final-bar" class="bg-indigo-600 h-3 rounded-full" style="width: 0%"></div>
                 </div>
-                <p id="congrats" class="text-sm text-gray-500 mb-4">Yana bir bor sinab ko‘ring!</p>
-                <button id="modal-restart" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-xl transition w-full">🔄 Yangi test</button>
+                <p id="congrats" class="text-sm text-gray-500 mb-4"></p>
+                <button id="modal-restart" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-xl transition w-full">🔄 Bo‘limni qayta</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ==================== TO‘LIQ SAVOLLAR (real variantlar bilan) ====================
-        const rawQuestions = [
+        // ==================== TO‘LIQ SAVOLLAR (102 TA, 5 BO‘LIMGA BO‘LINGAN) ====================
+        
+        // 1-bo'lim: 1-20 savollar
+        const section0 = [
             { text: "Mustaqillik qo'lga kiritilgunga qadar O'zbekiston davlatchilik tarixi eng qadimgi davrdan boshlab nechta taraqqiyot bosqichiga bo'lingan edi?", options: ["3 ta", "5 ta", "2 ta", "4 ta"], correct: "4 ta" },
             { text: "Tariximizning yozuvsiz zamonlarga oid davrini o'rganishda qaysi manbalar yordamga keladi?", options: ["Moddiy va yozma manbalar", "Yozma va arxiv manbalari", "Arxeologik va yozma manbalar", "Arxeologik, antropologik va etnografik manbalar"], correct: "Arxeologik, antropologik va etnografik manbalar" },
-            { text: "Quyidagi javoblar ichidan O'zbekiston tarixi fanining ilmiy-nazariy uslublari va tamoyillari to'g'ri keltirilgan javobni toping", options: ["Tarixiy hodisa va voqealarni, hujjat va faktlarni ilmiy, xolisona o'rganish va tahlil qilish", "Tarixni milliylik va umuminsoniylik asosida o'rganish va tahlil qilish", "Tarixni haqqoniy, tarixiy-falsafiy mantiqiylik asosida o'rganish va yozish", "Barcha javoblar to'g'ri"], correct: "Barcha javoblar to'g'ri" },
-            { text: "Nima sababdan O'zbekiston tarixi fanini o'rganishda tarixiy manbalarning o'rni va ahamiyati katta?", options: ["Manbalar tarixni tilga kiritadi", "Haqqoniy tarix faqatgina yozma manbalarda yozib qoldirilgan", "Inson qo'li va aql-zakovati bilan yaratilganligi uchun", "To'g'ri javob yo'q"], correct: "To'g'ri javob yo'q" },
-            { text: "Manbalar o'z holatiga ko'ra qanday ko'rinishlarga ega bo'ladi?", options: ["Arxeologik va moddiy", "Yozma va moddiy", "Etnografik va moddiy-ashyoviy", "Yozma va arxiv manbalari"], correct: "Yozma va moddiy" },
-            { text: "Birlamchi manbaga nimalar kiradi?", options: ["Moddiy manbalar", "Yozma manbalar", "Tarixiy hujjatlarning asl nusxasi", "Kitoblar va adabiyotlar"], correct: "Tarixiy hujjatlarning asl nusxasi" },
-            { text: "O'zbekiston Respublikasida yoshlarning ijtimoiy-iqtisodiy, siyosiy va huquqiy kafolatlari qaysi qonunda belgilab qo'yilgan?", options: ["Ta'lim to'g'risida", "Kadrlar tayyorlash milliy dasturi", "O'zbekistonda yoshlarga oid davlat siyosatining asoslari to'g'risida", "Yoshlar to'g'risida"], correct: "O'zbekistonda yoshlarga oid davlat siyosatining asoslari to'g'risida" },
-            { text: "Farg'ona fojiali voqealari qachon sodir bo'ldi?", options: ["1985-1987 yilning may oyida", "1990-yilning iyun-iyul oylarida", "1989-yilning may-iyun oylarida", "1991 yilning sentabr oyida"], correct: "1989-yilning may-iyun oylarida" },
-            { text: "O'zbekiston Respublikasining boshqaruv shakliga ko'ra...", options: ["Prezidentlik Respublikasi", "Monarxiya davlati", "Konstitutsion monarxiya", "Parlamentar Respublika"], correct: "Prezidentlik Respublikasi" },
-            { text: "Quyidagi davlatlardan qaysi biri O'zbekistonning mustaqilligini birinchilardan bo'lib tan olgan?", options: ["AQSH", "Turkiya", "Eron", "Xitoy"], correct: "Turkiya" },
-            { text: "O'zbekiston Respublikasi Prezidenti Shavkat Mirziyoyev 2017-yil 27-martda kimning 100 yilligini nishonlash to'g'risida qaror imzolagan?", options: ["Ozod Sharafiddinov", "Sharof Rashidov", "Jaloliddin Manguberdi", "Amir Temur"], correct: "Sharof Rashidov" },
-            { text: "O'zbekiston Respublikasida yoshlarning aholi tarkibidagi salmog'i qancha?", options: ["50 foiz", "50 foizdan yuqori", "60 foizdan yuqori", "70 foiz"], correct: "50 foizdan yuqori" },
-            { text: "Qayta qurish siyosati qachon boshlandi?", options: ["1985 yil SSSR MK 23-aprel plenumidan so'ng", "1989 yil SSSR MK XXV syezdidan so'ng", "1990 yil mustaqillik deklaratsiyasidan so'ng", "1980-1985 yillarda Gorbachev boshchiligida"], correct: "1985 yil SSSR MK 23-aprel plenumidan so'ng" },
-            { text: "Islom Karimov O'zbekiston rahbari sifatida faoliyatini qachon boshladi?", options: ["1989-yil 23-iyun", "1990-yil 20-iyun", "1991-yil 1-sentabr", "1989-yil 20-oktyabr"], correct: "1989-yil 23-iyun" },
-            { text: "Mustaqillik arafasida Markazda davlat to'ntarishiga urinish qachon bo'ldi?", options: ["1991-yil 19-avgust", "1989-yil may-iyun", "1985-yil aprel", "1991-yil 19-21 avgust"], correct: "1991-yil 19-21 avgust" },
-            { text: "Paxta ishi va o'zbeklar ishi qachon boshlandi?", options: ["XX asr 90-yillar", "XX asr 80-yillar", "XX asr 70-yillar", "XX asr 60-yillar"], correct: "XX asr 80-yillar" },
-            { text: "Prezidentlik lavozimi ta'sis etish qachon qabul qilindi?", options: ["1990-yil 24-mart", "1990-yil 20-iyun", "1990-yil 10-dekabr", "1991-yil 29-dekabr"], correct: "1990-yil 24-mart" },
-            { text: "Mustaqillik Deklaratsiyasi qachon qabul qilindi?", options: ["1990-yil 20-iyun", "1990-yil 24-mart", "1990-yil 10-dekabr", "1991-yil 31-avgust"], correct: "1990-yil 20-iyun" },
+            { text: "O'zbekiston tarixi fanining ilmiy-nazariy uslublari va tamoyillari to'g'ri keltirilgan javobni toping", options: ["Tarixiy hodisa va voqealarni ilmiy o'rganish", "Tarixni milliylik asosida o'rganish", "Tarixni haqqoniy o'rganish", "Barcha javoblar to'g'ri"], correct: "Barcha javoblar to'g'ri" },
+            { text: "Tarixiy manbalarning o'rni va ahamiyati nega katta?", options: ["Manbalar tarixni tilga kiritadi", "Haqqoniy tarix faqat yozma manbalarda", "Inson qo'li bilan yaratilgan", "To'g'ri javob yo'q"], correct: "To'g'ri javob yo'q" },
+            { text: "Manbalar o'z holatiga ko'ra qanday ko'rinishlarga ega?", options: ["Arxeologik va moddiy", "Yozma va moddiy", "Etnografik va moddiy-ashyoviy", "Yozma va arxiv"], correct: "Yozma va moddiy" },
+            { text: "Birlamchi manbaga nimalar kiradi?", options: ["Moddiy manbalar", "Yozma manbalar", "Tarixiy hujjatlarning asl nusxasi", "Kitoblar"], correct: "Tarixiy hujjatlarning asl nusxasi" },
+            { text: "O'zbekiston Respublikasida yoshlarning ijtimoiy kafolatlari qaysi qonunda?", options: ["Ta'lim to'g'risida", "Kadrlar tayyorlash dasturi", "Yoshlarga oid davlat siyosati asoslari to'g'risida", "Yoshlar to'g'risida"], correct: "Yoshlarga oid davlat siyosati asoslari to'g'risida" },
+            { text: "Farg'ona fojiali voqealari qachon sodir bo'ldi?", options: ["1985-1987 yil may", "1990-yil iyun-iyul", "1989-yil may-iyun", "1991-yil sentabr"], correct: "1989-yil may-iyun" },
+            { text: "O'zbekiston boshqaruv shakliga ko'ra qanday davlat?", options: ["Prezidentlik Respublikasi", "Monarxiya", "Konstitutsion monarxiya", "Parlamentar Respublika"], correct: "Prezidentlik Respublikasi" },
+            { text: "O'zbekiston mustaqilligini birinchilardan tan olgan davlat?", options: ["AQSH", "Turkiya", "Eron", "Xitoy"], correct: "Turkiya" },
+            { text: "Shavkat Mirziyoyev 2017-yil 27-martda kimning 100 yilligini nishonlagan?", options: ["Ozod Sharafiddinov", "Sharof Rashidov", "Jaloliddin Manguberdi", "Amir Temur"], correct: "Sharof Rashidov" },
+            { text: "O'zbekistonda yoshlar aholi tarkibidagi salmog'i?", options: ["50%", "50% dan yuqori", "60% dan yuqori", "70%"], correct: "50% dan yuqori" },
+            { text: "Qayta qurish siyosati qachon boshlandi?", options: ["1985 yil", "1989 yil", "1990 yil", "1980-1985"], correct: "1985 yil" },
+            { text: "Islom Karimov O'zbekiston rahbari sifatida qachon faoliyat boshladi?", options: ["1989-yil 23-iyun", "1990-yil 20-iyun", "1991-yil 1-sentabr", "1989-yil 20-oktyabr"], correct: "1989-yil 23-iyun" },
+            { text: "Mustaqillik arafasida davlat to'ntarishiga urinish qachon bo'ldi?", options: ["1991-yil 19-avgust", "1989-yil may-iyun", "1985-yil aprel", "1991-yil 19-21 avgust"], correct: "1991-yil 19-21 avgust" },
+            { text: "Paxta ishi va o'zbeklar ishi qachon boshlandi?", options: ["90-yillar", "80-yillar", "70-yillar", "60-yillar"], correct: "80-yillar" },
+            { text: "Prezidentlik lavozimi qachon ta'sis etilgan?", options: ["1990-yil 24-mart", "1990-yil 20-iyun", "1990-yil 10-dekabr", "1991-yil 29-dekabr"], correct: "1990-yil 24-mart" },
+            { text: "Mustaqillik Deklaratsiyasi qachon qabul qilingan?", options: ["1990-yil 20-iyun", "1990-yil 24-mart", "1990-yil 10-dekabr", "1991-yil 31-avgust"], correct: "1990-yil 20-iyun" },
             { text: "Mustaqillik Deklaratsiyasi necha moddadan iborat?", options: ["12", "10", "17", "15"], correct: "15" },
-            { text: "O'zbekiston Respublikasi Konstitutsiyasi qachon qabul qilingan?", options: ["1991-yil 8-dekabr", "1990-yil 20-iyun", "1992-yil 8-dekabr", "1991-yil 31-avgust"], correct: "1992-yil 8-dekabr" }
+            { text: "O'zbekiston Konstitutsiyasi qachon qabul qilingan?", options: ["1991-yil 8-dekabr", "1990-yil 20-iyun", "1992-yil 8-dekabr", "1991-yil 31-avgust"], correct: "1992-yil 8-dekabr" }
         ];
 
-        let allQuestions = [...rawQuestions];
-        const TOTAL = allQuestions.length;
+        // 2-bo'lim: 21-40 savollar
+        const section1 = [
+            { text: "O'zbekiston Respublikasining davlat bayrog'idagi moviy rang nimani anglatadi?", options: ["Tinchlik va poklik", "Mangu osmon va musaffo suv", "Hayotiy kuch", "Tiriklik ramzi"], correct: "Mangu osmon va musaffo suv" },
+            { text: "Vitse-Prezident lavozimi qachon tugatilgan?", options: ["1991-yil 18-noyabr", "1991-yil 29-dekabr", "1992-yil 4-yanvar", "1992-yil 8-dekabr"], correct: "1992-yil 8-dekabr" },
+            { text: "Davlat gerbi to'g'risidagi qonun qachon qabul qilingan?", options: ["1992-yil 2-iyul", "1992-yil 2-iyun", "1992-yil 20-iyul", "1992-yil 20-iyun"], correct: "1992-yil 2-iyul" },
+            { text: "Davlat madhiyasi to'g'risidagi qonun qachon qabul qilingan?", options: ["1991-yil 8-dekabr", "1991-yil 10-dekabr", "1992-yil 20-iyul", "1992-yil 10-dekabr"], correct: "1992-yil 10-dekabr" },
+            { text: "Alisher Navoiyning 550 yilligi qachon nishonlangan?", options: ["1991", "1992", "2001", "2011"], correct: "1991" },
+            { text: "Amir Temurning 660 yilligi qachon bo'lgan?", options: ["1996", "1998", "2006", "2005"], correct: "1996" },
+            { text: "Konstitutsiyaning 33-moddasiga ko'ra...", options: ["Inson huquqlari kafolatlanadi", "Bir xil huquqlar mavjud", "Har kim fikrlash, so'z va e'tiqod erkinligiga ega", "To'g'ri javob yo'q"], correct: "Har kim fikrlash, so'z va e'tiqod erkinligiga ega" },
+            { text: "Davlat tili to'g'risidagi qonun qachon qabul qilingan?", options: ["1989-yil 21-oktyabr", "1991-yil 21-oktyabr", "1999-yil 10-dekabr", "2000-yil 20-iyun"], correct: "1989-yil 21-oktyabr" },
+            { text: "Referendum to'g'risidagi qonun dastlab qachon qabul qilingan?", options: ["1991-yil 18-noyabr", "1992-yil 14-yanvar", "1992-yil 29-dekabr", "1993-yil 28-dekabr"], correct: "1991-yil 18-noyabr" },
+            { text: "Hokimiyat bo'linishi prinsipi qanday?", options: ["Prezident, Bosh vazir", "Oliy Majlis, Vazirlar Mahkamasi", "Oliy Majlis, Vazirlar Mahkamasi va Sud", "Prezident va Oliy Majlis"], correct: "Oliy Majlis, Vazirlar Mahkamasi va Sud" },
+            { text: "Yangi Konstitutsiya necha bo'lim va moddadan iborat?", options: ["6 bo'lim 27 bob 155 modda", "6 bo'lim 26 bob 128 modda", "6 bo'lim 30 bob 128 modda", "Yaxlit 128 modda"], correct: "6 bo'lim 27 bob 155 modda" },
+            { text: "O'zbek modeli tamoyillari qaysi?", options: ["Iqtisod siyosatda ustun", "Kuchli ijtimoiy himoya", "Bozorga bosqichma-bosqich", "Barcha javoblar to'g'ri"], correct: "Barcha javoblar to'g'ri" },
+            { text: "Qatag'on qurbonlari xotirasi kuni qachondan nishonlanadi?", options: ["2002", "2001", "2003", "2000"], correct: "2001" },
+            { text: "Senatda necha senator bor?", options: ["50", "100", "65", "160"], correct: "65" },
+            { text: "Harakatlar strategiyasiga kim rahbarlik qilgan?", options: ["Senat raisi", "Prezident", "Bosh prokuror", "Bosh vazir"], correct: "Prezident" },
+            { text: "GKChP rahbari kim edi?", options: ["Yanayev", "Gorbachyov", "Putin", "Yeltsin"], correct: "Yanayev" },
+            { text: "O'zbekiston BMTga qachon a'zo bo'lgan?", options: ["1992-yil 4-mart", "1990-yil 2-mart", "1992-yil 2-mart", "1993-yil 28-sentabr"], correct: "1992-yil 2-mart" },
+            { text: "Korrupsiyaga qarshi qonun qachon qabul qilingan?", options: ["2017-yil 3-yanvar", "2018-yil 3-yanvar", "2019-yil 3-yanvar", "2016-yil 3-yanvar"], correct: "2017-yil 3-yanvar" },
+            { text: "Ma'naviyat va Ma'rifat markazi qachon tashkil etilgan?", options: ["1992", "1991", "1994", "1993"], correct: "1992" },
+            { text: "Ilk prezidentlik saylovi qachon bo'lib o'tgan?", options: ["1991-yil 29-dekabr", "1991-yil 8-dekabr", "1989-yil 21-oktyabr", "1991-yil 1-sentabr"], correct: "1991-yil 29-dekabr" }
+        ];
 
-        // Global state
-        let shuffledQuestions = [];     // random order of questions
-        let userAnswers = new Array(TOTAL).fill(null);
+        // 3-bo'lim: 41-60 savollar
+        const section2 = [
+            { text: "GKChP voqeasi qachon sodir bo'lgan?", options: ["1991-yil 18-19 avgust", "1991-yil 19-21 avgust", "1990-yil 18-25 sentabr", "1991-yil 4-29 dekabr"], correct: "1991-yil 19-21 avgust" },
+            { text: "Siyosiy partiyalar to'g'risidagi qonun qachon qabul qilingan?", options: ["1993", "1996", "1997", "1998"], correct: "1996" },
+            { text: "Tarixiy manbalar qanday bo'linadi?", options: ["Ma'naviy va yozma", "Moddiy va ilmiy", "Yozma va moddiy", "Ma'rifiy va ma'naviy"], correct: "Yozma va moddiy" },
+            { text: "Ma'naviyat ta'rifi kimga tegishli?", options: ["Abdulla Oripov", "Erkin Vohidov", "Islom Karimov", "Shavkat Mirziyoyev"], correct: "Islom Karimov" },
+            { text: "Xalq Demokratik partiyasi qachon tashkil topgan?", options: ["1998-yil 28-dekabr", "1995-yil 18-fevral", "1995-yil 3-iyun", "1991-yil 1-noyabr"], correct: "1991-yil 1-noyabr" },
+            { text: "Referendum nima?", options: ["Umumxalq saylovi", "To'g'ri javob yo'q", "Umumxalq so'rovi", "Prezidentlik saylovi"], correct: "Umumxalq so'rovi" },
+            { text: "Saylash huquqi necha yoshdan?", options: ["19", "21", "18", "25"], correct: "18" },
+            { text: "Ko'ppartiyaviylik tizimi nima?", options: ["Bir partiya faoliyati", "Ikki yoki undan ortiq partiya", "Deputatlari doimiy", "Birgina partiya kurashi"], correct: "Ikki yoki undan ortiq partiya" },
+            { text: "Demokratik davlat barpo etish garovi?", options: ["Partiyalarni hokimiyat boshqarishi", "Partiyalarning viloyat faoliyati", "Ko'ppartiyaviylik mavjudligi", "Partiyalarning erkin faoliyati"], correct: "Ko'ppartiyaviylik mavjudligi" },
+            { text: "O'zbek modeli bo'yicha iqtisodiy islohotlar necha yo'nalishda?", options: ["4", "5", "6", "7"], correct: "5" },
+            { text: "Milliy valyuta so'm qachon muomalaga kiritilgan?", options: ["1993-yil 21-mart", "1993-yil 18-noyabr", "1994-yil 1-oktyabr", "1994-yil 1-iyul"], correct: "1994-yil 1-iyul" },
+            { text: "Harakatlar strategiyasining farmoni qachon e'lon qilingan?", options: ["2021-yil 2-mart", "2017-yil 7-fevral", "2020-yil 17-iyun", "2018-yil 27-may"], correct: "2017-yil 7-fevral" },
+            { text: "Harakatlar strategiyasi necha ustuvor yo'nalishdan iborat?", options: ["10", "7", "5", "4"], correct: "5" },
+            { text: "Toshkent Islom Universiteti qachon ochilgan?", options: ["1999-yil 6-may", "2001-yil 9-may", "2007-yil 21-mart", "1992-yil 8-dekabr"], correct: "1999-yil 6-may" },
+            { text: "2023-yil qanday yil deb e'lon qilingan?", options: ["Obod mahalla yili", "Insonga e'tibor va sifatli ta'lim yili", "Mehr va muruvvat yili", "Qishloq taraqqiyoti yili"], correct: "Insonga e'tibor va sifatli ta'lim yili" },
+            { text: "Ijtimoiy himoya nima?", options: ["Kam ta'minlanganlarni qo'llab-quvvatlash", "Davlatning ko'makka muhtojlarga g'amxo'rligi", "Chora-tadbirlar majmui", "Barcha javoblar to'g'ri"], correct: "Barcha javoblar to'g'ri" },
+            { text: "Navro'z qachondan bayram sifatida nishonlanadi?", options: ["1990", "1991", "1992", "1993"], correct: "1991" },
+            { text: "Zulfiya nomidagi Davlat mukofoti qachon ta'sis etilgan?", options: ["1999-yil 10-iyun", "1996-yil 26-aprel", "1995-yil 22-dekabr", "1995-yil may"], correct: "1999-yil 10-iyun" },
+            { text: "Shahidlar xotirasi kuni qaysi kun?", options: ["31-avgust", "1-avgust", "30-avgust", "2-sentabr"], correct: "31-avgust" },
+            { text: "Temuriylar tarixi davlat muzeyi qachon ochilgan?", options: ["1996-yil 11-sentabr", "1995-yil", "1997-yil", "1998-yil"], correct: "1996-yil 11-sentabr" }
+        ];
+
+        // 4-bo'lim: 61-80 savollar
+        const section3 = [
+            { text: "1997-yilda qaysi shaharlarning 2500 yilligi nishonlangan?", options: ["Marg'ilon, Termiz", "Buxoro, Xiva", "Toshkent, Buxoro", "Samarqand, Toshkent"], correct: "Samarqand, Toshkent" },
+            { text: "Ma'naviyat va ma'rifat markazi qachon tashkil etilgan?", options: ["1994", "1991", "1992", "1993"], correct: "1992" },
+            { text: "Avestoning 2700 yilligi qachon nishonlangan?", options: ["2001", "2002", "2003", "2004"], correct: "2001" },
+            { text: "Kadrlar tayyorlash Milliy dasturining asosiy maqsadi?", options: ["Ta'limni isloh qilish", "Yuqori malakali kadrlar tayyorlash", "Yangicha dunyoqarash", "Barcha javoblar to'g'ri"], correct: "Yuqori malakali kadrlar tayyorlash" },
+            { text: "Orol muammosi haqida birinchi marta qachon BMTda aytilgan?", options: ["1993 yil 48-sessiya", "1994 yil 36-sessiya", "1995 yil 24-sessiya", "1996 yil 72-sessiya"], correct: "1993 yil 48-sessiya" },
+            { text: "Yangi Konstitutsiyaning tashqi siyosatga oid moddalari?", options: ["17-18", "31", "Faqat xalqaro huquq", "To'g'ri javob yo'q"], correct: "17-18" },
+            { text: "O'zbekiston 1992-yil fevralda qaysi tashkilotga a'zo bo'lgan?", options: ["YEXHT", "NATO", "EKO", "MDH"], correct: "EKO" },
+            { text: "Tashqi siyosat tamoyillari?", options: ["Suvеrеn tеnglik", "Xalq manfaatlari", "Harbiy bloklarga kirmaslik", "Barcha javoblar to'g'ri"], correct: "Barcha javoblar to'g'ri" },
+            { text: "O'zbekiston nechta davlat bilan diplomatik aloqada?", options: ["168", "130", "100 dan ortiq", "155"], correct: "155" },
+            { text: "Toshkentda nechta elchixona bor?", options: ["46", "30 dan ortiq", "50 ga yaqin", "142"], correct: "50 ga yaqin" },
+            { text: "O'zbekiston YuNESKOga qachon a'zo bo'lgan?", options: ["1993", "1991", "1992", "1994"], correct: "1993" },
+            { text: "Totalitar tuzum nima?", options: ["Davlat nazorati", "Demokratik tartib", "Monarxiya", "To'g'ri javob yo'q"], correct: "Davlat nazorati" },
+            { text: "Eng yangi tarixning xronologik chegarasi?", options: ["80-90-yillardan hozirgacha", "50-60-yillardan hozirgacha", "40-50-yillardan hozirgacha", "O'rtalardan hozirgacha"], correct: "80-90-yillardan hozirgacha" },
+            { text: "Sh.Rashidovning 100 yilligi qachon bo'lgan?", options: ["2017", "2018", "1997", "2007"], correct: "2017" },
+            { text: "I.Karimovning Tarixiy xotirasiz kelajak yo'q asari qachon yozilgan?", options: ["1998", "1999", "1997", "1996"], correct: "1998" },
+            { text: "Millat o'zligini anglash nimadan boshlanadi?", options: ["Tarixni bilishdan", "Ma'naviyatni bilishdan", "Ma'rifatni bilishdan", "Davlat tilini bilishdan"], correct: "Tarixni bilishdan" },
+            { text: "Moddiy-ashyoviy manbalarga nimalar kiradi?", options: ["Inson qo'li bilan yaratilgan narsalar", "Yozma manbalar", "Qadimgi bitiklar", "Mehnat qurollari"], correct: "Inson qo'li bilan yaratilgan narsalar" },
+            { text: "Paxta ishi bo'yicha necha kishi qamoqqa olingan?", options: ["4 ming", "6 ming", "7 ming", "10 ming"], correct: "4 ming" },
+            { text: "Mustaqillik kuni qaysi?", options: ["1-sentabr", "24-mart", "8-dekabr", "29-dekabr"], correct: "1-sentabr" },
+            { text: "MDH qachon tashkil topgan?", options: ["1991-yil 8-dekabr", "1992-yil 8-dekabr", "1991-yil 29-dekabr", "1991-yil 31-avgust"], correct: "1991-yil 8-dekabr" }
+        ];
+
+        // 5-bo'lim: 81-102 savollar
+        const section4 = [
+            { text: "MDH Almati Deklaratsiyasi qachon bo'lgan?", options: ["1991-yil 21-dekabr", "1921-yil 8-dekabr", "1992-yil 2-mart", "1991-yil 29-dekabr"], correct: "1991-yil 21-dekabr" },
+            { text: "Prezident vakolat muddati?", options: ["7 yil", "5 yil", "4 yil", "Umrbod"], correct: "7 yil" },
+            { text: "Oliy Majlis qaysi hokimiyat tarmog'i?", options: ["Qonun chiqaruvchi", "Ijro etuvchi", "Sud", "Qonun chiqaruvchi va ijro"], correct: "Qonun chiqaruvchi" },
+            { text: "Vazirlar Mahkamasi qaysi hokimiyat tarmog'i?", options: ["Qonun chiqaruvchi", "Ijro etuvchi", "Sud", "Qonun va ijro"], correct: "Ijro etuvchi" },
+            { text: "2021-yil qanday nom bilan atalgan?", options: ["Yoshlarni qo'llab-quvvatlash yili", "Faol tadbirkorlik yili", "Ilm-ma'rifat va raqamli iqtisodiyot yili", "Pandemiya yili"], correct: "Yoshlarni qo'llab-quvvatlash yili" },
+            { text: "Prezident so'zining ma'nosi?", options: ["Oldinda o'tiruvchi", "Gapirmoq", "So'zlamoq", "To'g'ri javob yo'q"], correct: "Oldinda o'tiruvchi" },
+            { text: "Parlament so'zining ma'nosi?", options: ["Gapirmoq", "Oldinda o'tiruvchi", "So'zlamoq", "To'g'ri javob yo'q"], correct: "Gapirmoq" },
+            { text: "O'zbekistonda necha millat yashaydi?", options: ["130 dan ortiq", "120 ga yaqin", "100 ga yaqin", "50 ga yaqin"], correct: "130 dan ortiq" },
+            { text: "Huquqiy davlat belgilari?", options: ["Qonun ustuvorligi", "Demokratik saylov", "Hokimiyat bo'linishi", "Barcha javoblar to'g'ri"], correct: "Barcha javoblar to'g'ri" },
+            { text: "Xususiylashtirish nima?", options: ["Mulkni davlat tasarrufidan chiqarish", "Iqtisodiy formatsiya", "Mahsulotni o'zi sotish", "Talab va taklif"], correct: "Mulkni davlat tasarrufidan chiqarish" },
+            { text: "UzDeuAvto qachon ochilgan?", options: ["1996-yil 19-iyul", "1992-yil 8-dekabr", "2008-yil 20-mart", "2008-yil 19-aprel"], correct: "1996-yil 19-iyul" },
+            { text: "2008-yil qanday nomlangan?", options: ["Yoshlar yili", "Obod mahalla yili", "Qariyalarni qadrlash yili", "Onalar va bolalar yili"], correct: "Yoshlar yili" },
+            { text: "Mirzo Ulug'bek 600 yilligi qachon?", options: ["1992", "1993", "1991", "1994"], correct: "1994" },
+            { text: "2020-yil qanday nomlangan?", options: ["Ilm, ma'rifat va raqamli iqtisodiyot yili", "Yoshlarni qo'llab-quvvatlash yili", "Faol investitsiyalar yili", "Faol tadbirkorlik yili"], correct: "Ilm, ma'rifat va raqamli iqtisodiyot yili" },
+            { text: "Korrupsiya ta'rifi?", options: ["Qonunga zid faoliyat", "Mansabdan shaxsiy manfaat uchun foydalanish", "Ijtimoiy hodisa", "Siyosiy hodisa"], correct: "Mansabdan shaxsiy manfaat uchun foydalanish" },
+            { text: "Referendumda kim qatnashadi?", options: ["21 yoshdan", "18 yoshdan", "Fuqarolik hashorati", "Barcha javoblar"], correct: "18 yoshdan" },
+            { text: "Vatan so'zi qaysi tildan olingan?", options: ["Forscha", "Hindcha", "Turkcha", "Arabcha"], correct: "Arabcha" },
+            { text: "Renessans ma'nosi?", options: ["Qayta tug'ilish", "Uyg'onish", "Yangilanish", "Barcha javoblar to'g'ri"], correct: "Barcha javoblar to'g'ri" },
+            { text: "Yangi Konstitutsiya referendumi qachon bo'lgan?", options: ["2023-yil 30-aprel", "2023-yil 30-dekabr", "2022-yil 30-aprel", "2022-yil 30-dekabr"], correct: "2023-yil 30-aprel" },
+            { text: "Siyosiy-ma'muriy bo'linish?", options: ["Qoraqalpog'iston + 14 viloyat", "Qoraqalpog'iston + 13 viloyat", "Qoraqalpog'iston + 12 viloyat + Toshkent", "Qoraqalpog'iston + 11 viloyat"], correct: "Qoraqalpog'iston + 12 viloyat + Toshkent" },
+            { text: "O'zbekistonda qaysi yil hisobi?", options: ["Milodiy", "Hijriy", "Qamariy", "Shamsiy"], correct: "Milodiy" },
+            { text: "Tarix so'zining ma'nosi?", options: ["Odam haqidagi fan", "O'tmish haqidagi fan", "O'simlik haqidagi fan", "Bitiklar haqidagi fan"], correct: "O'tmish haqidagi fan" }
+        ];
+
+        const allSections = [section0, section1, section2, section3, section4];
+        const sectionNames = ["1-bo‘lim (1-20)", "2-bo‘lim (21-40)", "3-bo‘lim (41-60)", "4-bo‘lim (61-80)", "5-bo‘lim (81-102)"];
+
+        let currentSection = 0;
+        let shuffledQuestions = [];
+        let userAnswers = [];
         let currentIndex = 0;
-        let isLocked = false;           // prevent double click while animating
+        let isLocked = false;
+        let totalQuestions = 0;
 
         // DOM elements
         const questionArea = document.getElementById('question-area');
@@ -141,8 +243,8 @@
         const finalBar = document.getElementById('final-bar');
         const congratsSpan = document.getElementById('congrats');
         const modalRestart = document.getElementById('modal-restart');
+        const sectionNameSpan = document.getElementById('section-name');
 
-        // Helper: shuffle array
         function shuffleArray(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -151,26 +253,24 @@
             return arr;
         }
 
-        // Shuffle options for a single question
         function shuffleOptions(question) {
-            let shuffled = [...question.options];
-            return shuffleArray(shuffled);
+            return shuffleArray([...question.options]);
         }
 
-        // Initialize quiz
-        function initQuiz() {
-            // Shuffle questions order
-            shuffledQuestions = shuffleArray([...allQuestions]);
-            // For each question, keep original options but we'll shuffle display order
-            userAnswers.fill(null);
+        function loadSection(sectionIdx) {
+            currentSection = sectionIdx;
+            const sectionData = allSections[currentSection];
+            shuffledQuestions = shuffleArray([...sectionData]);
+            totalQuestions = shuffledQuestions.length;
+            userAnswers = new Array(totalQuestions).fill(null);
             currentIndex = 0;
             isLocked = false;
             feedbackDiv.classList.add('hidden');
+            sectionNameSpan.innerText = sectionNames[currentSection];
             renderQuestion();
             updateStats();
         }
 
-        // Update score and progress
         function updateStats() {
             const correctCount = userAnswers.reduce((acc, ans, idx) => {
                 if (ans === null) return acc;
@@ -178,24 +278,22 @@
             }, 0);
             scoreBadge.innerHTML = `⭐ ${correctCount} to'g'ri`;
             const answered = userAnswers.filter(a => a !== null).length;
-            const percent = (answered / TOTAL) * 100;
+            const percent = (answered / totalQuestions) * 100;
             progressBar.style.width = `${percent}%`;
         }
 
-        // Render current question with SHUFFLED options
         function renderQuestion() {
-            if (currentIndex >= TOTAL) {
+            if (currentIndex >= totalQuestions) {
                 showResults();
                 return;
             }
             const q = shuffledQuestions[currentIndex];
-            // Shuffle options for this display
             const shuffledOpts = shuffleOptions(q);
             
             let html = `
                 <div class="fade-in">
                     <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm text-indigo-500 font-semibold bg-indigo-100 px-3 py-1 rounded-full">Savol ${currentIndex+1}/${TOTAL}</span>
+                        <span class="text-sm text-indigo-500 font-semibold bg-indigo-100 px-3 py-1 rounded-full">Savol ${currentIndex+1}/${totalQuestions}</span>
                     </div>
                     <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-5 leading-relaxed">${escapeHtml(q.text)}</h2>
                     <div class="space-y-3">
@@ -205,7 +303,7 @@
             shuffledOpts.forEach((opt, idx) => {
                 const isSelected = (userAnswers[currentIndex] === opt);
                 html += `
-                    <button class="option-btn w-full text-left p-3 rounded-xl border-2 ${isSelected ? 'bg-indigo-100 border-indigo-500' : 'bg-gray-50 border-gray-200 hover:border-indigo-300'} transition flex items-start gap-3" data-value="${escapeHtml(opt)}">
+                    <button class="option-btn w-full text-left p-3 rounded-xl border-2 ${isSelected ? 'bg-indigo-100 border-indigo-500' : 'bg-gray-50 border-gray-200 hover:border-indigo-300'} flex items-start gap-3" data-value="${escapeHtml(opt)}">
                         <span class="font-bold text-indigo-600 min-w-[30px]">${letters[idx]}.</span>
                         <span class="flex-1">${escapeHtml(opt)}</span>
                     </button>
@@ -215,7 +313,6 @@
             html += `</div></div>`;
             questionArea.innerHTML = html;
             
-            // Attach click handlers
             document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     if (isLocked) return;
@@ -224,7 +321,7 @@
                 });
             });
             
-            totalNumSpan.innerText = TOTAL;
+            totalNumSpan.innerText = totalQuestions;
             currentNumSpan.innerText = currentIndex + 1;
         }
         
@@ -232,42 +329,42 @@
             const currentQ = shuffledQuestions[currentIndex];
             const isCorrect = (selected === currentQ.correct);
             
-            // Save answer
             userAnswers[currentIndex] = selected;
             updateStats();
             
-            // Visual feedback
             isLocked = true;
             
-            // Flash color on the selected button
             if (isCorrect) {
                 btnElement.classList.add('correct-flash');
                 showFeedback("✅ To‘g‘ri javob!", "text-green-600");
+                setTimeout(() => {
+                    btnElement.classList.remove('correct-flash');
+                    moveToNext();
+                }, 800);
             } else {
                 btnElement.classList.add('wrong-flash');
                 showFeedback(`❌ Noto‘g‘ri! To‘g‘ri javob: ${currentQ.correct}`, "text-red-600");
+                setTimeout(() => {
+                    btnElement.classList.remove('wrong-flash');
+                    moveToNext();
+                }, 3000);
             }
-            
-            // Animate out and go to next question
-            setTimeout(() => {
-                // Remove flash
-                btnElement.classList.remove('correct-flash', 'wrong-flash');
-                // Move to next question
-                if (currentIndex + 1 < TOTAL) {
-                    currentIndex++;
-                    renderQuestion();
-                    isLocked = false;
-                    feedbackDiv.classList.add('hidden');
-                } else if (currentIndex + 1 === TOTAL) {
-                    // This was the last question, finish quiz
-                    currentIndex++;
-                    isLocked = false;
-                    feedbackDiv.classList.add('hidden');
-                    showResults();
-                } else {
-                    isLocked = false;
-                }
-            }, 600);
+        }
+        
+        function moveToNext() {
+            if (currentIndex + 1 < totalQuestions) {
+                currentIndex++;
+                renderQuestion();
+                isLocked = false;
+                feedbackDiv.classList.add('hidden');
+            } else if (currentIndex + 1 === totalQuestions) {
+                currentIndex++;
+                isLocked = false;
+                feedbackDiv.classList.add('hidden');
+                showResults();
+            } else {
+                isLocked = false;
+            }
         }
         
         function showFeedback(msg, colorClass) {
@@ -280,9 +377,9 @@
                 if (ans === null) return acc;
                 return acc + (ans === shuffledQuestions[idx].correct ? 1 : 0);
             }, 0);
-            const percent = Math.round((correctCount / TOTAL) * 100);
+            const percent = Math.round((correctCount / totalQuestions) * 100);
             finalScoreSpan.innerText = correctCount;
-            finalTotalSpan.innerText = TOTAL;
+            finalTotalSpan.innerText = totalQuestions;
             finalBar.style.width = `${percent}%`;
             
             if (percent >= 80) congratsSpan.innerHTML = "🎉 Ajoyib! Siz mavzuni mukammal bilasiz!";
@@ -292,9 +389,9 @@
             resultModal.classList.remove('hidden');
         }
         
-        function restartQuiz() {
+        function restartCurrentSection() {
             resultModal.classList.add('hidden');
-            initQuiz();
+            loadSection(currentSection);
         }
         
         function escapeHtml(str) {
@@ -306,12 +403,27 @@
             });
         }
         
-        // Event listeners
-        restartBtn.addEventListener('click', () => { initQuiz(); });
-        modalRestart.addEventListener('click', () => { initQuiz(); resultModal.classList.add('hidden'); });
+        // Tab switching
+        document.querySelectorAll('.section-tab').forEach((tab, idx) => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.section-tab').forEach(t => {
+                    t.classList.remove('tab-active');
+                    t.classList.add('tab-inactive');
+                });
+                tab.classList.remove('tab-inactive');
+                tab.classList.add('tab-active');
+                loadSection(idx);
+            });
+        });
         
-        // Start
-        initQuiz();
+        restartBtn.addEventListener('click', restartCurrentSection);
+        modalRestart.addEventListener('click', () => {
+            resultModal.classList.add('hidden');
+            loadSection(currentSection);
+        });
+        
+        // Start with first section
+        loadSection(0);
     </script>
 </body>
 </html>
